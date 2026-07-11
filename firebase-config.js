@@ -17,4 +17,11 @@
      appId: "1:1234567890:web:abcdef"
    };
    ============================================================ */
-window.FIREBASE_CONFIG = null;
+window.FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAKg8b2b8WQYF_yyA6bbPqFUnEQUGMj5NY",
+  authDomain: "donggun-routine.firebaseapp.com",
+  projectId: "donggun-routine",
+  storageBucket: "donggun-routine.firebasestorage.app",
+  messagingSenderId: "589123901967",
+  appId: "1:589123901967:web:3232f7c01d64afac57a17a"
+};
