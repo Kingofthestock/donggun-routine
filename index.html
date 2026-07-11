@@ -451,7 +451,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.1.1';
+const APP_VERSION = '1.1.2';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -1810,14 +1810,22 @@ async function onCloudLogin(user) {
 async function cloudLogin() {
   if (!window.FIREBASE_CONFIG) { toast('클라우드 설정이 아직 완료되지 않았어요'); return; }
   if (!FB) { toast('동기화 모듈을 못 불러왔어요 — 인터넷 연결을 확인해주세요'); return; }
-  const iosStandalone = navigator.standalone === true;
+  // 모든 기기에서 팝업 우선 — 리다이렉트는 모바일 브라우저의
+  // 서드파티 저장소 차단 정책 때문에 결과가 소실될 수 있음
   try {
-    if (iosStandalone) await FB.loginRedirect();   // iOS 홈화면 앱은 리다이렉트가 안정적
-    else await FB.login();
+    await FB.login();
   } catch (e) {
-    const c = e && e.code;
-    if (c === 'auth/popup-blocked') { try { await FB.loginRedirect(); } catch (e2) {} }
-    else if (c !== 'auth/popup-closed-by-user' && c !== 'auth/cancelled-popup-request') toast('로그인에 실패했어요');
+    const c = (e && e.code) || '';
+    if (c === 'auth/popup-blocked' || c === 'auth/operation-not-supported-in-this-environment') {
+      try { await FB.loginRedirect(); }
+      catch (e2) { toast('로그인 실패: ' + ((e2 && e2.code) || '알 수 없는 오류')); }
+    } else if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') {
+      /* 사용자가 창을 닫음 — 조용히 넘어감 */
+    } else if (c === 'auth/unauthorized-domain') {
+      toast('이 주소가 Firebase 승인 도메인 목록에 없어요');
+    } else {
+      toast('로그인 실패: ' + (c || '알 수 없는 오류'));
+    }
   }
 }
 async function cloudLogout() {
@@ -2079,7 +2087,7 @@ if (window.FIREBASE_CONFIG) {
         ignoreUndefinedProperties: true,
         localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() })
       });
-      A.getRedirectResult(auth).catch(() => {});
+      A.getRedirectResult(auth).catch(e => console.warn('리다이렉트 로그인 결과 처리 실패:', e));
       let unsub = null;
       window.__fbInit({
         onAuth: cb => A.onAuthStateChanged(auth, cb),
