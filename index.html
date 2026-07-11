@@ -444,13 +444,14 @@ textarea.input{resize:vertical;min-height:64px}
 <input type="file" id="import-file" accept=".json,application/json" hidden>
 <canvas id="share-canvas" width="1080" height="1350" hidden></canvas>
 
+<script src="firebase-config.js"></script>
 <script>
 'use strict';
 /* ============================================================
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -547,6 +548,7 @@ function load() {
 }
 function save() {
   try {
+    if (!applyingRemote) S.meta.updatedAt = new Date().toISOString();
     const raw = JSON.stringify(S);
     // 하루 1회, 덮어쓰기 전 상태를 보조 백업으로 보관
     const bakDay = localStorage.getItem(LS_KEY + '_bakday');
@@ -556,6 +558,7 @@ function save() {
       localStorage.setItem(LS_KEY + '_bakday', todayStr());
     }
     localStorage.setItem(LS_KEY, raw);
+    queuePush();
   } catch (e) { toast('⚠️ 저장 공간이 부족해요'); }
 }
 
@@ -1099,7 +1102,20 @@ function renderSettings() {
           `<button class="${s.weekStart === k ? 'on' : ''}" data-action="set-ws" data-k="${k}" style="padding:8px 13px">${l}</button>`).join('')}</div></div>
     </div>
     <div class="card">
-      <div class="card-title">데이터 <span class="hint">이 기기에만 저장됩니다</span></div>
+      <div class="card-title">☁️ 클라우드 자동 동기화 ${cloud.user ? '<span class="hint" style="color:var(--accent-dark)">● 켜짐</span>' : ''}</div>
+      ${!window.FIREBASE_CONFIG ? `
+        <div class="sd" style="font-size:.84rem;color:var(--sub);line-height:1.7">아직 준비 중이에요. Firebase 설정이 연결되면 이 자리에서 구글 로그인으로 켤 수 있어요.</div>`
+      : cloud.user ? `
+        <div class="set-row" style="padding-top:4px"><div><div class="sl">${esc(cloud.user.email || '내 구글 계정')}</div>
+          <div class="sd">${cloud.lastSync ? '마지막 동기화 ' + cloud.lastSync.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) : '동기화 준비 중…'}</div></div>
+          <button class="btn btn-sm" data-action="cloud-logout">로그아웃</button></div>
+        <div class="sd" style="font-size:.8rem;color:var(--sub);margin-top:6px">모든 변경이 자동으로 클라우드에 저장돼요. 다른 기기에서도 같은 계정으로 로그인하면 항상 같은 데이터를 봐요.</div>`
+      : `
+        <button class="btn btn-primary btn-block" data-action="cloud-login" style="margin-bottom:10px">Google로 로그인하고 자동 동기화 켜기</button>
+        <div class="sd" style="font-size:.8rem;color:var(--sub)">로그인하면 이 기기의 데이터가 내 구글 계정 클라우드에 자동 백업되고, 폰↔PC가 항상 똑같아져요. 백업 파일을 신경 쓸 필요가 없어요.</div>`}
+    </div>
+    <div class="card">
+      <div class="card-title">데이터 <span class="hint">${cloud.user ? '클라우드 동기화 중' : '이 기기에만 저장됩니다'}</span></div>
       <div class="set-row"><div><div class="sl">백업 내보내기</div><div class="sd">${s.lastBackup ? '마지막 백업 ' + s.lastBackup : '아직 백업한 적이 없어요'}</div></div>
         <button class="btn btn-sm" data-action="export">JSON 저장</button></div>
       <div class="set-row"><div><div class="sl">백업 가져오기</div><div class="sd">폰↔PC 이동은 이 파일로 해요</div></div>
@@ -1120,8 +1136,8 @@ function renderSettings() {
       <div class="card-title">정보</div>
       <div class="sd" style="font-size:.84rem;color:var(--sub);line-height:1.9">
         🌱 <b>동건루틴</b> v${APP_VERSION}<br>
-        데이터는 서버 없이 <b>이 기기 안에만</b> 저장되는 개인 앱이에요.<br>
-        기기를 바꾸거나 브라우저 데이터를 지우기 전엔 꼭 <b>백업 내보내기</b>를 해주세요.<br>
+        데이터는 내 기기에 저장되는 개인 앱이에요. 클라우드 동기화를 켜면 <b>내 구글 계정에만</b> 자동 백업돼요.<br>
+        동기화를 안 쓴다면, 브라우저 데이터를 지우기 전에 꼭 <b>백업 내보내기</b>를 해주세요.<br>
         함께한 지 <b>${diffDays(S.meta.firstUse || todayStr(), todayStr()) + 1}일째</b> 🎉
       </div>
     </div>
@@ -1719,6 +1735,108 @@ async function resetAll() {
 }
 
 /* ============================================================
+   클라우드 자동 동기화 (Firebase) — firebase-config.js 설정 시 활성화
+   ============================================================ */
+let FB = null;                                  // 모듈 스크립트가 주입하는 Firebase API
+const cloud = { user: null, lastSync: null, ready: false };
+let applyingRemote = false;
+let pushTimer = null;
+const deviceId = (() => {
+  let d = localStorage.getItem('dgr_device');
+  if (!d) { d = uid(); localStorage.setItem('dgr_device', d); }
+  return d;
+})();
+
+function queuePush() {
+  if (!FB || !cloud.user || applyingRemote) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(pushCloud, 1200);
+}
+async function pushCloud() {
+  clearTimeout(pushTimer); pushTimer = null;
+  if (!FB || !cloud.user) return;
+  try {
+    await FB.saveData(cloud.user.uid, { data: S, device: deviceId, appVersion: APP_VERSION });
+    cloud.lastSync = new Date();
+    if (V.tab === 'settings') render();
+  } catch (e) { console.warn('클라우드 저장 실패(오프라인이면 다시 연결될 때 저장돼요)', e); }
+}
+function applyRemote(data) {
+  applyingRemote = true;
+  S = Object.assign(DEFAULT_DATA(), data);
+  save(); applyTheme(); render();
+  applyingRemote = false;
+  cloud.lastSync = new Date();
+}
+const dataSummary = d => `할 일 ${(d.todos || []).length} · 루틴 ${(d.routines || []).length} · 목표 ${(d.goals || []).length}`;
+const isTrivial = d => !(d.todos || []).length && !(d.routines || []).length && !(d.goals || []).length;
+
+function chooseDataDlg(remoteData) {
+  return new Promise(res => {
+    openModal(`
+      <div class="m-title">어느 데이터를 사용할까요?</div>
+      <p style="color:var(--sub);font-size:.9rem;margin:-6px 0 12px">이 기기와 클라우드에 서로 다른 데이터가 있어요.<br>선택하지 않은 쪽은 덮어써져요.</p>
+      <div class="menu-list">
+        <button class="btn" id="ch-cloud" style="display:block;text-align:left">☁️ 클라우드 데이터 사용<br><span style="font-size:.78rem;color:var(--sub);font-weight:500">${dataSummary(remoteData)}</span></button>
+        <button class="btn" id="ch-local" style="display:block;text-align:left">📱 이 기기 데이터를 클라우드에 업로드<br><span style="font-size:.78rem;color:var(--sub);font-weight:500">${dataSummary(S)}</span></button>
+      </div>`);
+    $('#ch-cloud').onclick = () => { closeModal(); res(true); };
+    $('#ch-local').onclick = () => { closeModal(); res(false); };
+  });
+}
+async function onCloudLogin(user) {
+  cloud.user = user;
+  try {
+    const remote = await FB.loadData(user.uid);
+    if (!remote || !remote.data || isTrivial(remote.data)) {
+      await pushCloud();                        // 클라우드가 비어있음 → 내 데이터 업로드
+    } else if (isTrivial(S)) {
+      applyRemote(remote.data);                 // 이 기기가 비어있음 → 클라우드 사용
+      toast('클라우드 데이터를 불러왔어요 ☁️');
+    } else if ((remote.data.meta || {}).updatedAt !== S.meta.updatedAt) {
+      const useCloud = await chooseDataDlg(remote.data);
+      if (useCloud) { applyRemote(remote.data); toast('클라우드 데이터로 맞췄어요 ☁️'); }
+      else await pushCloud();
+    }
+    FB.listen(user.uid, payload => {            // 다른 기기의 변경을 실시간 반영
+      if (!payload || !payload.data) return;
+      if (payload.device === deviceId) return;
+      if ((payload.data.meta || {}).updatedAt === S.meta.updatedAt) return;
+      applyRemote(payload.data);
+    });
+  } catch (e) { console.warn('클라우드 연결 실패', e); }
+  if (V.tab === 'settings') render();
+}
+async function cloudLogin() {
+  if (!window.FIREBASE_CONFIG) { toast('클라우드 설정이 아직 완료되지 않았어요'); return; }
+  if (!FB) { toast('동기화 모듈을 못 불러왔어요 — 인터넷 연결을 확인해주세요'); return; }
+  const iosStandalone = navigator.standalone === true;
+  try {
+    if (iosStandalone) await FB.loginRedirect();   // iOS 홈화면 앱은 리다이렉트가 안정적
+    else await FB.login();
+  } catch (e) {
+    const c = e && e.code;
+    if (c === 'auth/popup-blocked') { try { await FB.loginRedirect(); } catch (e2) {} }
+    else if (c !== 'auth/popup-closed-by-user' && c !== 'auth/cancelled-popup-request') toast('로그인에 실패했어요');
+  }
+}
+async function cloudLogout() {
+  if (FB) { try { await FB.logout(); } catch (e) {} }
+  cloud.user = null; cloud.lastSync = null;
+  render(); toast('로그아웃했어요. 데이터는 이 기기에 그대로 있어요');
+}
+window.__fbInit = api => {
+  FB = api; cloud.ready = true;
+  FB.onAuth(user => {
+    if (user) onCloudLogin(user);
+    else { cloud.user = null; if (V.tab === 'settings') render(); }
+  });
+};
+const flushPush = () => { if (pushTimer) pushCloud(); };
+document.addEventListener('visibilitychange', () => { if (document.hidden) flushPush(); });
+window.addEventListener('pagehide', flushPush);
+
+/* ============================================================
    이벤트 위임
    ============================================================ */
 document.addEventListener('click', async e => {
@@ -1824,6 +1942,10 @@ document.addEventListener('click', async e => {
     case 'reset': resetAll(); break;
     case 'install':
       if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null; }
+      break;
+    case 'cloud-login': cloudLogin(); break;
+    case 'cloud-logout':
+      if (await confirmDlg('로그아웃', '자동 동기화가 꺼져요. 데이터는 이 기기에 그대로 남아요.', { ok: '로그아웃' })) cloudLogout();
       break;
 
     /* --- 모달 내부 공용(서브태스크/마일스톤 편집) --- */
@@ -1938,6 +2060,44 @@ render();
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+</script>
+<script type="module">
+/* Firebase SDK 로더 — 설정이 있을 때만 동작. 실패해도 앱은 로컬 모드로 정상 동작 */
+if (window.FIREBASE_CONFIG) {
+  (async () => {
+    try {
+      const V = '10.12.2';
+      const [{ initializeApp }, A, F] = await Promise.all([
+        import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`),
+        import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`),
+        import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`)
+      ]);
+      const app = initializeApp(window.FIREBASE_CONFIG);
+      const auth = A.getAuth(app);
+      const db = F.initializeFirestore(app, {
+        ignoreUndefinedProperties: true,
+        localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() })
+      });
+      A.getRedirectResult(auth).catch(() => {});
+      let unsub = null;
+      window.__fbInit({
+        onAuth: cb => A.onAuthStateChanged(auth, cb),
+        login: () => A.signInWithPopup(auth, new A.GoogleAuthProvider()),
+        loginRedirect: () => A.signInWithRedirect(auth, new A.GoogleAuthProvider()),
+        logout: () => { if (unsub) { unsub(); unsub = null; } return A.signOut(auth); },
+        saveData: (uid, payload) => F.setDoc(F.doc(db, 'users', uid), { ...payload, updatedAt: F.serverTimestamp() }),
+        loadData: async uid => { const s = await F.getDoc(F.doc(db, 'users', uid)); return s.exists() ? s.data() : null; },
+        listen: (uid, cb) => {
+          if (unsub) unsub();
+          unsub = F.onSnapshot(F.doc(db, 'users', uid), s => {
+            if (s.metadata.hasPendingWrites) return;
+            cb(s.exists() ? s.data() : null);
+          });
+        }
+      });
+    } catch (e) { console.warn('Firebase 초기화 실패 — 로컬 모드로 동작:', e); }
+  })();
 }
 </script>
 </body>
