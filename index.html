@@ -342,13 +342,26 @@ input,select,textarea{font:inherit;color:var(--text)}
 .sec-sub{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:17px 2px 8px;font-size:.85rem;font-weight:800}
 .sec-sub span{font-size:.7rem;color:var(--sub);font-weight:600;text-align:right}
 .div-cal{display:flex;align-items:flex-end;gap:3px;height:106px;padding-top:15px}
-.div-cal .dc{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;min-width:0}
+.div-cal .dc{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;min-width:0;cursor:pointer;border-radius:8px;padding:3px 0 2px}
 .div-cal .dc b{font-size:.54rem;color:var(--sub);font-weight:700;white-space:nowrap}
 .div-cal .dc i{width:100%;max-width:20px;border-radius:5px 5px 2px 2px;background:var(--accent-soft2)}
 .div-cal .dc.cur i{background:var(--accent)}
 .div-cal .dc span{font-size:.58rem;color:var(--faint);white-space:nowrap}
 .div-cal .dc.cur span{color:var(--accent-dark);font-weight:800}
 [data-theme="dark"] .div-cal .dc.cur span{color:var(--accent)}
+.div-cal .dc.sel{background:var(--accent-soft)}
+.div-cal .dc.sel span{color:var(--accent-dark);font-weight:800}
+[data-theme="dark"] .div-cal .dc.sel span{color:var(--accent)}
+.div-mdetail{background:var(--card2);border-radius:12px;padding:11px 13px 5px;margin-top:10px}
+.div-mdetail .dm-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:.84rem;font-weight:800;margin-bottom:3px}
+.div-mdetail .dm-head span{font-size:.7rem;color:var(--sub);font-weight:600;text-align:right}
+.dm-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.85rem}
+.dm-row:last-child{border-bottom:none}
+.dm-dot{flex:none;width:8px;height:8px;border-radius:99px}
+.dm-row .dm-name{flex:none;max-width:45%;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-row .dm-sub{flex:1;font-size:.7rem;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-row .dm-val{flex:none;font-weight:800;font-variant-numeric:tabular-nums}
+.dm-empty{font-size:.82rem;color:var(--sub);padding:4px 0 8px}
 .dvgoal{background:var(--card2);border-radius:12px;padding:11px 13px;margin-top:15px;cursor:pointer}
 .dvgoal .dg-head{display:flex;justify-content:space-between;align-items:center;font-size:.83rem;font-weight:700}
 .dvgoal .dg-sub{font-size:.72rem;color:var(--sub);margin-top:6px}
@@ -483,7 +496,13 @@ textarea.input{resize:vertical;min-height:64px}
 
 /* ---------- 기록(트래커) ---------- */
 .item.tracker{border-left-color:var(--violet)}
+.item.life{border-left-color:var(--accent)}
 .tk-emoji{flex:none;width:26px;text-align:center;font-size:1.15rem;margin-top:1px}
+.life-line{display:flex;gap:7px;margin-bottom:8px}
+.life-line .input{flex:1;min-width:0}
+.life-line [data-f="a"]{flex:0 0 88px}
+.life-line [data-f="k"]{flex:0 0 68px}
+.life-line .lf-rm{flex:none;width:34px;border-radius:10px;color:var(--faint);background:var(--card2);font-size:.85rem}
 .tk-go{flex:none;color:var(--faint);font-size:1.15rem;align-self:center;padding:0 2px}
 .preset-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
 .preset-chips .chip{padding:9px 14px;font-size:.85rem;cursor:pointer}
@@ -602,7 +621,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.5.0';
+const APP_VERSION = '1.6.0';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -683,7 +702,8 @@ const DEFAULT_DATA = () => ({
   goals: [],
   reflections: {},
   trackers: [],
-  trackerLog: {}
+  trackerLog: {},
+  lifeLog: {}
 });
 let S = DEFAULT_DATA();
 
@@ -853,28 +873,28 @@ const allTags = () => [...new Set(S.todos.flatMap(t => t.tags || []))];
      (보유 종목 sh=수량, pr=현재가, ac=평단, div=주당 연배당, sec=섹터)
    ============================================================ */
 const PF_SNAPSHOT = {
-  asOf: '2026-07-11',        // 데이터 기준일
-  priceDate: '2026-07-10',   // 가격 종가일
-  fx: 1498.70,               // 환율(원/$)
+  asOf: '2026-07-18',        // 데이터 기준일
+  priceDate: '2026-07-17',   // 가격 종가일
+  fx: 1487.46,               // 환율(원/$)
   taxRate: 0.15,             // 미국 배당세(한미 조세협약)
   cashUSD: 999.14,           // 외화 예수금
   holdings: [
-    { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 357.18, ac: 155.29,   div: 0.96,  sec: '기술' },
-    { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 76,  pr: 372.69, ac: 224.4726, div: 4.20,  sec: 'ETF' },
-    { t: 'SGOV',  name: '단기 국채 ETF',    sh: 171, pr: 100.50, ac: 100.5628, div: 4.50,  sec: '채권' },
-    { t: 'ZTS',   name: '조에티스',         sh: 175, pr: 75.56,  ac: 105.4745, div: 2.12,  sec: '헬스케어' },
-    { t: 'HRL',   name: '호멜 푸즈',        sh: 443, pr: 24.73,  ac: 31.9648,  div: 1.17,  sec: '필수소비재' },
-    { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 140.79, ac: 45.873,   div: 2.40,  sec: '금융' },
-    { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 57.83,  ac: 53.9682,  div: 2.00,  sec: '필수소비재' },
-    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 124.40, ac: 102.3749, div: 2.55,  sec: '산업' },
-    { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 151.58, ac: 99.1924,  div: 1.60,  sec: '임의소비재' },
-    { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 157, pr: 35.07,  ac: 35.1858,  div: 1.55,  sec: '유틸리티' },
-    { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 137.38, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
-    { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 147.04, ac: 141.39,   div: 4.23,  sec: '필수소비재' },
-    { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 63.31,  ac: 63.7805,  div: 3.246, sec: '리츠' },
-    { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 353.71, ac: 223.3162, div: 0.84,  sec: '헬스케어' },
-    { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 30.43,  ac: 56.2913,  div: 0.92,  sec: '임의소비재' },
-    { t: 'MCO',   name: '무디스',           sh: 2,   pr: 487.28, ac: 244.83,   div: 4.12,  sec: '금융' }
+    { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 346.77, ac: 155.29,   div: 0.96,  sec: '기술' },
+    { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 76,  pr: 367.01, ac: 224.4726, div: 4.20,  sec: 'ETF' },
+    { t: 'SGOV',  name: '단기 국채 ETF',    sh: 171, pr: 100.58, ac: 100.5628, div: 4.50,  sec: '채권' },
+    { t: 'ZTS',   name: '조에티스',         sh: 175, pr: 76.56,  ac: 105.4745, div: 2.12,  sec: '헬스케어' },
+    { t: 'HRL',   name: '호멜 푸즈',        sh: 443, pr: 25.39,  ac: 31.9648,  div: 1.17,  sec: '필수소비재' },
+    { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 129.36, ac: 45.873,   div: 2.40,  sec: '금융' },
+    { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 57.77,  ac: 53.9682,  div: 2.00,  sec: '필수소비재' },
+    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 129.03, ac: 102.3749, div: 2.55,  sec: '산업' },
+    { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 149.39, ac: 99.1924,  div: 1.60,  sec: '임의소비재' },
+    { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 157, pr: 33.91,  ac: 35.1858,  div: 1.55,  sec: '유틸리티' },
+    { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 137.12, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
+    { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 149.98, ac: 141.39,   div: 4.23,  sec: '필수소비재' },
+    { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 65.71,  ac: 63.7805,  div: 3.246, sec: '리츠' },
+    { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 358.24, ac: 223.3162, div: 0.84,  sec: '헬스케어' },
+    { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 30.51,  ac: 56.2913,  div: 0.92,  sec: '임의소비재' },
+    { t: 'MCO',   name: '무디스',           sh: 2,   pr: 510.86, ac: 244.83,   div: 4.12,  sec: '금융' }
   ]
 };
 const PF_SECTOR_COLORS = {
@@ -1130,6 +1150,36 @@ function lastTrackerEntry(tk) {
 }
 const trackerDayCount = tk => Object.keys(S.trackerLog).filter(d => S.trackerLog[d][tk.id] !== undefined).length;
 
+/* ---------- 라이프로그(식단·운동·독서) ----------
+   S.lifeLog[날짜] = { meal:{b,l,d,s}, workout:[{n,a,k}], read:[{b,a}] } */
+const LIFE_MEALS = [['b', '아침'], ['l', '점심'], ['d', '저녁'], ['s', '간식']];
+const LIFE_KINDS = {
+  meal:    { emoji: '🍽️', name: '식단', hint: '오늘 뭘 먹었나요?',    done: '식단을 기록했어요 🍽️' },
+  workout: { emoji: '💪', name: '운동', hint: '뭘 얼마나 했나요?',    done: '운동을 기록했어요 💪' },
+  read:    { emoji: '📖', name: '독서', hint: '어떤 책을 읽었나요?',  done: '독서를 기록했어요 📖' }
+};
+const LIFE_ORDER = ['meal', 'workout', 'read'];
+const lifeOf = d => S.lifeLog[d] || {};
+function setLife(d, key, val) {
+  const day = S.lifeLog[d] || (S.lifeLog[d] = {});
+  if (val == null) delete day[key]; else day[key] = val;
+  if (!Object.keys(day).length) delete S.lifeLog[d];
+}
+const lifeKcal = w => (w || []).reduce((a, x) => a + (+x.k || 0), 0);
+function lifeSummary(kind, d) {   // 목록 행에 보여줄 한 줄 요약 (없으면 null)
+  const L = lifeOf(d);
+  if (kind === 'meal') {
+    const m = L.meal; if (!m) return null;
+    return LIFE_MEALS.filter(([k]) => m[k]).map(([k, label]) => `${label} ${m[k]}`).join(' · ');
+  }
+  if (kind === 'workout') {
+    const w = L.workout; if (!w || !w.length) return null;
+    return w.map(x => x.n + (x.a ? ' ' + x.a : '')).join(' · ');
+  }
+  const r = L.read; if (!r || !r.length) return null;
+  return r.map(x => x.b + (x.a ? ' (' + x.a + ')' : '')).join(' · ');
+}
+
 /* ---------- 뷰 상태 ---------- */
 const V = {
   tab: 'today',
@@ -1141,7 +1191,8 @@ const V = {
   statsRange: 'week',
   assetCur: 'KRW',                   // 자산 탭 통화 (KRW | USD)
   holdSort: 'weight',                // 보유 종목 정렬 (weight | plPct | yield)
-  holdOpen: null                     // 상세가 펼쳐진 보유 종목 티커
+  holdOpen: null,                    // 상세가 펼쳐진 보유 종목 티커
+  divMonth: new Date().getMonth() + 1 // 배당 캘린더에서 선택된 월 (null = 닫힘)
 };
 
 /* ---------- 공용 UI ---------- */
@@ -1241,6 +1292,23 @@ function trackerRowHTML(tk, d) {
       <div class="item-meta">
         ${has ? `<span class="chip violet">${esc(shown)}</span>` : `<span class="chip">기록 없음 — 눌러서 기록</span>`}
         ${tk.type === 'number' && tk.target != null ? `<span class="chip">🎯 ${fmtNum(tk.target)}${tk.unit ? ' ' + esc(tk.unit) : ''}</span>` : ''}
+      </div>
+    </div>
+    <span class="tk-go">›</span>
+  </div>`;
+}
+function lifeRowHTML(kind, d) {
+  const K = LIFE_KINDS[kind];
+  const sum = lifeSummary(kind, d);
+  const kcal = kind === 'workout' ? lifeKcal(lifeOf(d).workout) : 0;
+  const shown = sum && sum.length > 34 ? sum.slice(0, 34) + '…' : sum;
+  return `<div class="item tracker life" data-action="life-modal" data-k="${kind}" data-date="${d}">
+    <span class="tk-emoji">${K.emoji}</span>
+    <div class="item-body">
+      <div class="item-title">${K.name}</div>
+      <div class="item-meta">
+        ${sum ? `<span class="chip accent">${esc(shown)}</span>` : `<span class="chip">${K.hint} — 눌러서 기록</span>`}
+        ${kcal > 0 ? `<span class="chip red">🔥 ${fmtNum(kcal)} kcal</span>` : ''}
       </div>
     </div>
     <span class="tk-go">›</span>
@@ -1360,6 +1428,8 @@ function renderToday() {
           ${Object.entries(TRACKER_PRESETS).map(([k, p]) => `<button class="chip" data-action="preset-tracker" data-k="${k}">${p.emoji} ${p.name}</button>`).join('')}
           <button class="chip accent" data-action="add-tracker">＋ 직접 만들기</button>
         </div></div>`}
+    <div class="sec-head"><h2>🥗 식단 · 운동 · 독서 <span class="cnt">${LIFE_ORDER.filter(k => lifeSummary(k, d)).length}/3</span></h2></div>
+    ${LIFE_ORDER.map(k => lifeRowHTML(k, d)).join('')}
     <div style="height:6px"></div>
     ${reflHTML(d)}
   `;
@@ -1423,6 +1493,7 @@ function renderCalendar() {
     ${ts.length ? ts.map(x => todoHTML(x)).join('') : ''}
     ${!rs.length && !ts.length ? `<div class="card empty">이 날의 일정이 없어요</div>` : ''}
     ${activeTrackers().map(tk => trackerRowHTML(tk, sel)).join('')}
+    ${LIFE_ORDER.map(k => lifeRowHTML(k, sel)).join('')}
     <button class="btn btn-block btn-ghost" data-action="add-todo-date" data-date="${sel}" style="margin-top:4px">＋ 이 날짜에 할 일 추가</button>
     ${sel <= todayStr() ? reflHTML(sel) : ''}
   `;
@@ -1623,12 +1694,41 @@ function renderAssets() {
     const krw = v * pf.fx;
     return krw >= 1e8 ? (Math.round(krw / 1e7) / 10) + '억' : Math.round(krw / 1e4) + '만';
   };
+  const selM = V.divMonth;   // 선택된 월 — 탭하면 그 달의 종목별 배당 상세
   const divCal = md.map((v, i) => `
-    <div class="dc ${i === nowM ? 'cur' : ''}">
+    <div class="dc ${i === nowM ? 'cur' : ''} ${selM === i + 1 ? 'sel' : ''}" data-action="div-month" data-m="${i + 1}">
       <b>${v > 0 ? tiny(v) : ''}</b>
       <i style="height:${Math.max(4, v / maxMd * 100)}%"></i>
       <span>${i + 1}월</span>
     </div>`).join('');
+  // 선택한 달 — 어떤 종목이 얼마나 주는지 (세후 기준, 종가·환율은 스냅샷)
+  const exact = usd => {   // 상세용 정밀 표기 (세후)
+    const v = usd * (1 - pf.taxRate);
+    if (cur === 'USD') return '$' + v.toLocaleString('en-US', { minimumFractionDigits: v < 100 ? 1 : 0, maximumFractionDigits: v < 100 ? 1 : 0 });
+    return '₩' + Math.round(v * pf.fx).toLocaleString('en-US');
+  };
+  const gross = usd => cur === 'USD'
+    ? '$' + Math.round(usd).toLocaleString('en-US')
+    : '₩' + Math.round(usd * pf.fx).toLocaleString('en-US');
+  let divDetail = '';
+  if (selM) {
+    const rows = pf.holdings
+      .filter(h => h.annualDiv > 0 && payMonthsOf(h).includes(selM))
+      .map(h => ({ h, usd: h.annualDiv / payMonthsOf(h).length }))
+      .sort((a, b) => b.usd - a.usd);
+    const tot = rows.reduce((a, r) => a + r.usd, 0);
+    divDetail = `<div class="div-mdetail">
+      <div class="dm-head"><b>${selM}월 예상 배당${selM === nowM + 1 ? ' (이번 달)' : ''}</b>
+        ${rows.length ? `<span>세후 <b>${exact(tot)}</b> · 세전 ${gross(tot)}</span>` : ''}</div>
+      ${rows.length ? rows.map(({ h, usd }) => `
+        <div class="dm-row">
+          <span class="dm-dot" style="background:${h.color}"></span>
+          <span class="dm-name">${esc(h.name)}</span>
+          <span class="dm-sub">${h.sh}주 · ${payMonthsOf(h).length === 12 ? '매월' : '연 ' + payMonthsOf(h).length + '회'}</span>
+          <b class="dm-val">${exact(usd)}</b>
+        </div>`).join('') : '<div class="dm-empty">이 달에는 예상 배당이 없어요</div>'}
+    </div>`;
+  }
   const divTop = pf.holdings.filter(h => h.annualDiv > 0).sort((a, b) => b.annualDiv - a.annualDiv).slice(0, 5);
   const maxDiv = divTop.length ? divTop[0].annualDiv : 1;
   const divTopRows = divTop.map(h => `
@@ -1685,8 +1785,9 @@ function renderAssets() {
         <div class="pf-div-box"><div class="k">월평균 (세후)</div><div class="v">${M(pf.divAfterUSD / 12)}</div><div class="s">자는 동안에도 쌓여요</div></div>
         <div class="pf-div-box"><div class="k">하루평균 (세후)</div><div class="v">${M(pf.divAfterUSD / 365)}</div><div class="s">매일 들어오는 셈</div></div>
       </div>
-      <div class="sec-sub">월별 예상 배당 <span>세후 · 지급월은 예상 · 이번 달 <b>${tiny(md[nowM])}</b></span></div>
+      <div class="sec-sub">월별 예상 배당 <span>세후 · 지급월은 예상 · <b>월을 탭하면 종목별 상세</b></span></div>
       <div class="div-cal">${divCal}</div>
+      ${divDetail}
       <div class="sec-sub">배당 기여 TOP ${divTop.length} <span>연 배당(세전) 기준</span></div>
       <div class="wbars" style="gap:9px">${divTopRows}</div>
       ${divGoalHTML}
@@ -2297,6 +2398,101 @@ function trackersManager() {
           <span style="flex:1;text-align:left">${esc(tk.emoji || '')} ${esc(tk.name)}</span></button>`).join('') : ''}
     </div>
   `);
+}
+
+/* ============================================================
+   모달: 라이프로그(식단·운동·독서)
+   ============================================================ */
+const MEAL_PLACEHOLDER = { b: '예: 계란후라이, 우유', l: '예: 김치찌개', d: '예: 닭가슴살 샐러드', s: '예: 사과 (선택)' };
+function lifeModal(kind, d) {
+  const K = LIFE_KINDS[kind]; if (!K) return;
+  if (d > todayStr()) { toast('미래 날짜는 기록할 수 없어요'); return; }
+  const L = lifeOf(d);
+  const dateChip = `<span class="chip">${fmtKoShort(d)} ${KD[dow(d)]}</span>`;
+
+  /* --- 식단: 아침/점심/저녁/간식 --- */
+  if (kind === 'meal') {
+    const m = L.meal || {};
+    openModal(`
+      <div class="m-title">🍽️ 식단 ${dateChip}</div>
+      ${LIFE_MEALS.map(([k, label]) => `
+        <div class="field"><label>${label}</label>
+          <input class="input lf-meal" data-k="${k}" maxlength="120" placeholder="${MEAL_PLACEHOLDER[k]}" value="${esc(m[k] || '')}"></div>`).join('')}
+      <div class="m-actions">
+        ${L.meal ? '<button class="btn btn-danger" id="lf-del">지우기</button>' : ''}
+        <button class="btn btn-primary" id="lf-save" style="flex:1">저장</button>
+      </div>`);
+    $('#lf-save').onclick = () => {
+      const out = {};
+      $$('.lf-meal').forEach(inp => { const v = inp.value.trim(); if (v) out[inp.dataset.k] = v; });
+      if (!Object.keys(out).length) { toast('한 끼라도 입력해주세요'); return; }
+      setLife(d, 'meal', out);
+      save(); closeModal(); render(); toast(K.done);
+    };
+    if (L.meal) $('#lf-del').onclick = () => {
+      setLife(d, 'meal', null);
+      save(); closeModal(); render(); toast('기록을 지웠어요');
+    };
+    if (!L.meal) setTimeout(() => { const i = $('.lf-meal'); if (i) i.focus(); }, 250);
+    return;
+  }
+
+  /* --- 운동/독서: 여러 항목 리스트 --- */
+  const isW = kind === 'workout';
+  const skey = isW ? 'workout' : 'read';
+  const items = L[skey] || [];
+  const line = it => isW ? `
+    <div class="life-line">
+      <input class="input" data-f="n" maxlength="30" placeholder="운동 (예: 러닝)" value="${it ? esc(it.n || '') : ''}">
+      <input class="input" data-f="a" maxlength="20" placeholder="얼마나 (예: 30분)" value="${it ? esc(it.a || '') : ''}">
+      <input class="input" data-f="k" type="number" min="0" inputmode="numeric" placeholder="kcal" value="${it && it.k != null ? it.k : ''}">
+      <button type="button" class="lf-rm" data-action="life-rm" aria-label="줄 삭제">✕</button>
+    </div>` : `
+    <div class="life-line">
+      <input class="input" data-f="b" maxlength="40" placeholder="책 제목 (예: 어린왕자)" value="${it ? esc(it.b || '') : ''}">
+      <input class="input" data-f="a" maxlength="20" placeholder="분량 (예: 40~80쪽)" value="${it ? esc(it.a || '') : ''}">
+      <button type="button" class="lf-rm" data-action="life-rm" aria-label="줄 삭제">✕</button>
+    </div>`;
+  openModal(`
+    <div class="m-title">${K.emoji} ${K.name} ${dateChip}</div>
+    <div class="field"><label>${isW ? '오늘 한 운동' : '오늘 읽은 책'}</label>
+      <div id="lf-rows">${(items.length ? items : [null]).map(line).join('')}</div>
+      <button type="button" class="btn btn-sm" id="lf-add" style="margin-top:2px">＋ ${isW ? '운동' : '책'} 추가</button>
+    </div>
+    ${isW ? '<div style="font-size:.76rem;color:var(--sub);margin:-6px 0 12px">🔥 소모 칼로리(kcal)를 적으면 합계가 자동으로 표시돼요</div>' : ''}
+    <div class="m-actions">
+      ${items.length ? '<button class="btn btn-danger" id="lf-del">지우기</button>' : ''}
+      <button class="btn btn-primary" id="lf-save" style="flex:1">저장</button>
+    </div>`);
+  $('#lf-add').onclick = () => {
+    const box = $('#lf-rows');
+    box.insertAdjacentHTML('beforeend', line(null));
+    box.lastElementChild.querySelector('input').focus();
+  };
+  $('#lf-save').onclick = () => {
+    const out = [];
+    $$('#lf-rows .life-line').forEach(row => {
+      const get = f => { const i = row.querySelector(`[data-f="${f}"]`); return i ? i.value.trim() : ''; };
+      if (isW) {
+        const n = get('n'); if (!n) return;
+        const k = parseFloat(get('k'));
+        const it = { n, a: get('a') };
+        if (!isNaN(k) && k > 0) it.k = Math.round(k);
+        out.push(it);
+      } else {
+        const b = get('b'); if (!b) return;
+        out.push({ b, a: get('a') });
+      }
+    });
+    if (!out.length) { toast(isW ? '운동 이름을 입력해주세요' : '책 제목을 입력해주세요'); return; }
+    setLife(d, skey, out);
+    save(); closeModal(); render(); toast(K.done);
+  };
+  if (items.length) $('#lf-del').onclick = () => {
+    setLife(d, skey, null);
+    save(); closeModal(); render(); toast('기록을 지웠어요');
+  };
+  if (!items.length) setTimeout(() => { const i = $('#lf-rows input'); if (i) i.focus(); }, 250);
 }
 
 /* ============================================================
@@ -3153,6 +3349,10 @@ document.addEventListener('click', async e => {
       break;
     }
 
+    /* --- 라이프로그(식단·운동·독서) --- */
+    case 'life-modal': lifeModal(el.dataset.k, el.dataset.date); break;
+    case 'life-rm': el.closest('.life-line').remove(); break;
+
     /* --- 달력 --- */
     case 'cal-nav': V.calMonth = periodShift('month', V.calMonth, +el.dataset.d); render(); break;
     case 'cal-today': V.calMonth = monthKeyOf(todayStr()); V.calSel = todayStr(); render(); break;
@@ -3182,6 +3382,7 @@ document.addEventListener('click', async e => {
 
     /* --- 자산(포트폴리오) --- */
     case 'asset-cur': V.assetCur = el.dataset.k; S.settings.assetCur = el.dataset.k; save(); render(); break;
+    case 'div-month': V.divMonth = V.divMonth === +el.dataset.m ? null : +el.dataset.m; render(); break;
     case 'hold-sort': V.holdSort = el.dataset.k; render(); break;
     case 'hold-open': V.holdOpen = V.holdOpen === el.dataset.t ? null : el.dataset.t; render(); break;
     case 'new-asset-goal': goalModal(null, { mpreset: 'pf_assets' }); break;
