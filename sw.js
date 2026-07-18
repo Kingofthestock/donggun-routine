@@ -1,5 +1,5 @@
 /* 동건루틴 서비스워커 — 오프라인 지원 */
-const CACHE = 'dgr-v1.6.0';
+const CACHE = 'dgr-v1.7.0';
 const ASSETS = [
   './',
   './index.html',

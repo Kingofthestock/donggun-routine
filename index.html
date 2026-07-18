@@ -503,6 +503,18 @@ textarea.input{resize:vertical;min-height:64px}
 .life-line [data-f="a"]{flex:0 0 88px}
 .life-line [data-f="k"]{flex:0 0 68px}
 .life-line .lf-rm{flex:none;width:34px;border-radius:10px;color:var(--faint);background:var(--card2);font-size:.85rem}
+
+/* ---------- 메모장 ---------- */
+.memo-card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:13px 14px;margin-bottom:9px;cursor:pointer;border-left:3px solid transparent}
+.memo-card.pinned{border-left-color:var(--amber)}
+.memo-top{display:flex;align-items:flex-start;gap:8px}
+.memo-title{flex:1;font-weight:700;font-size:.95rem;word-break:break-word}
+.memo-pin{flex:none;width:30px;height:30px;border-radius:9px;font-size:.9rem;filter:grayscale(1);opacity:.35;margin:-4px -6px 0 0}
+.memo-pin.on{filter:none;opacity:1}
+.memo-pin:active{background:var(--card2)}
+.memo-preview{font-size:.84rem;color:var(--sub);margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.memo-foot{font-size:.72rem;color:var(--faint);margin-top:7px}
+.memo-ta{min-height:34dvh;resize:vertical;line-height:1.65}
 .tk-go{flex:none;color:var(--faint);font-size:1.15rem;align-self:center;padding:0 2px}
 .preset-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:12px}
 .preset-chips .chip{padding:9px 14px;font-size:.85rem;cursor:pointer}
@@ -580,6 +592,10 @@ textarea.input{resize:vertical;min-height:64px}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
     <span>달력</span>
   </button>
+  <button class="nav-btn" data-action="tab" data-tab="memos">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
+    <span>메모</span>
+  </button>
   <button class="nav-btn" data-action="tab" data-tab="goals">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>
     <span>목표</span>
@@ -601,6 +617,7 @@ textarea.input{resize:vertical;min-height:64px}
 <main id="main"><div class="inner">
   <section class="view" data-view="today"></section>
   <section class="view" data-view="calendar"></section>
+  <section class="view" data-view="memos"></section>
   <section class="view" data-view="goals"></section>
   <section class="view" data-view="assets"></section>
   <section class="view" data-view="stats"></section>
@@ -621,7 +638,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.6.0';
+const APP_VERSION = '1.7.0';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -703,7 +720,8 @@ const DEFAULT_DATA = () => ({
   reflections: {},
   trackers: [],
   trackerLog: {},
-  lifeLog: {}
+  lifeLog: {},
+  memos: []
 });
 let S = DEFAULT_DATA();
 
@@ -1180,6 +1198,26 @@ function lifeSummary(kind, d) {   // 목록 행에 보여줄 한 줄 요약 (없
   return r.map(x => x.b + (x.a ? ' (' + x.a + ')' : '')).join(' · ');
 }
 
+/* ---------- 메모장 ----------
+   S.memos = [{id, text, pinned, createdAt, updatedAt}] — 첫 줄이 제목 */
+const memoById = id => S.memos.find(m => m.id === id);
+const memoTitle = m => (m.text.split('\n')[0] || '').trim() || '제목 없음';
+const memoBody = m => m.text.split('\n').slice(1).join(' ').trim();
+function sortedMemos() {
+  return [...S.memos].sort((a, b) =>
+    (!!b.pinned - !!a.pinned) || (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+}
+function memoTimeLabel(iso) {
+  if (!iso) return '';
+  const dt = new Date(iso);
+  const d = fmtDate(dt), t = todayStr();
+  const hm = `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  if (d === t) return `오늘 ${hm}`;
+  if (d === addDays(t, -1)) return `어제 ${hm}`;
+  if (d.slice(0, 4) === t.slice(0, 4)) return fmtKoShort(d);
+  return `${d.slice(0, 4)}.${d.slice(5, 7)}.${d.slice(8)}`;
+}
+
 /* ---------- 뷰 상태 ---------- */
 const V = {
   tab: 'today',
@@ -1521,6 +1559,37 @@ function renderCalendar() {
   `;
   const ri = $('#refl-text');
   if (ri) ri.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveReflection(sel); } });
+}
+
+/* ============================================================
+   메모장 뷰
+   ============================================================ */
+function memoCardHTML(m) {
+  const body = memoBody(m);
+  return `<div class="memo-card ${m.pinned ? 'pinned' : ''}" data-action="edit-memo" data-id="${m.id}">
+    <div class="memo-top">
+      <div class="memo-title">${esc(memoTitle(m))}</div>
+      <button class="memo-pin ${m.pinned ? 'on' : ''}" data-action="memo-pin" data-id="${m.id}" aria-label="고정">📌</button>
+    </div>
+    ${body ? `<div class="memo-preview">${esc(body)}</div>` : ''}
+    <div class="memo-foot">${memoTimeLabel(m.updatedAt)}</div>
+  </div>`;
+}
+function renderMemos() {
+  const ms = sortedMemos();
+  $('[data-view=memos]').innerHTML = `
+    <div class="vhead">
+      <div><h1>메모</h1><div class="sub">${ms.length ? `${ms.length}개 · 첫 줄이 제목이 돼요` : '떠오르는 생각을 붙잡아두세요'}</div></div>
+      <div class="actions">
+        <button class="icon-btn" data-action="open-search" aria-label="검색">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        </button>
+      </div>
+    </div>
+    ${ms.length ? ms.map(memoCardHTML).join('') :
+      `<div class="card empty"><span class="big">✏️</span>아직 메모가 없어요<br>떠오르는 생각·아이디어·할 말을 자유롭게 적어보세요<br>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" data-action="add-memo">＋ 첫 메모 쓰기</button></div>`}
+  `;
 }
 
 /* ============================================================
@@ -2496,6 +2565,55 @@ function lifeModal(kind, d) {
 }
 
 /* ============================================================
+   모달: 메모장
+   ============================================================ */
+function memoModal(id) {
+  const m = id ? memoById(id) : null;
+  if (id && !m) return;
+  let pinned = m ? !!m.pinned : false;
+  openModal(`
+    <div class="m-title">${m ? '메모' : '새 메모'}
+      <button class="btn btn-sm ${pinned ? 'btn-primary' : ''}" id="mm-pin">📌 ${pinned ? '고정됨' : '고정'}</button></div>
+    <div class="field">
+      <textarea class="input memo-ta" id="mm-text" maxlength="5000" placeholder="첫 줄이 제목이 돼요&#10;자유롭게 적어보세요">${m ? esc(m.text) : ''}</textarea>
+      ${m ? `<div style="font-size:.74rem;color:var(--faint);margin-top:6px">만든 날 ${memoTimeLabel(m.createdAt)} · 마지막 수정 ${memoTimeLabel(m.updatedAt)}</div>` : ''}
+    </div>
+    <div class="m-actions">
+      ${m ? '<button class="btn btn-danger" id="mm-del">삭제</button>' : ''}
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn btn-primary" id="mm-save" style="flex:1">저장</button>
+    </div>
+  `);
+  const ta = $('#mm-text');
+  $('#mm-pin').onclick = function () {
+    pinned = !pinned;
+    this.className = `btn btn-sm ${pinned ? 'btn-primary' : ''}`;
+    this.textContent = `📌 ${pinned ? '고정됨' : '고정'}`;
+  };
+  $('#mm-save').onclick = () => {
+    const text = ta.value.replace(/\s+$/, '');
+    if (!text.trim()) { toast('내용을 입력해주세요'); ta.focus(); return; }
+    const now = new Date().toISOString();
+    if (m) {
+      const changed = m.text !== text || !!m.pinned !== pinned;
+      m.text = text; m.pinned = pinned;
+      if (changed) m.updatedAt = now;
+    } else {
+      S.memos.push({ id: uid(), text, pinned, createdAt: now, updatedAt: now });
+    }
+    save(); closeModal(); render(); toast(m ? '메모를 수정했어요 ✏️' : '메모를 남겼어요 ✏️');
+  };
+  if (m) $('#mm-del').onclick = async () => {
+    closeModal();
+    if (await confirmDlg('메모 삭제', `'${memoTitle(m)}' 메모를 삭제할까요?`, { danger: true, ok: '삭제' })) {
+      S.memos = S.memos.filter(x => x.id !== m.id);
+      save(); render(); toast('삭제했어요');
+    }
+  };
+  if (!m) setTimeout(() => ta.focus(), 250);
+}
+
+/* ============================================================
    모달: 목표
    ============================================================ */
 function goalModal(id, opts) {
@@ -2754,7 +2872,7 @@ function goalMetricModal(id) {
 function searchModal() {
   openModal(`
     <div class="m-title">검색</div>
-    <input class="input" id="q-in" placeholder="할 일 제목, 태그, 메모 검색">
+    <input class="input" id="q-in" placeholder="할 일 · 태그 · 메모장 검색">
     <div class="search-res" id="q-res"><div class="empty">검색어를 입력해보세요</div></div>
   `);
   const qin = $('#q-in');
@@ -2767,11 +2885,16 @@ function searchModal() {
       (t.memo || '').toLowerCase().includes(q) ||
       (t.tags || []).some(tag => tag.toLowerCase().includes(q))
     ).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 40);
-    if (!hits.length) { box.innerHTML = '<div class="empty">결과가 없어요</div>'; return; }
+    const memoHits = sortedMemos().filter(m => m.text.toLowerCase().includes(q)).slice(0, 20);
+    if (!hits.length && !memoHits.length) { box.innerHTML = '<div class="empty">결과가 없어요</div>'; return; }
     let html = '', lastDate = '';
     for (const t of hits) {
       if (t.date !== lastDate) { html += `<div class="sr-date">${fmtKo(t.date)}</div>`; lastDate = t.date; }
       html += todoHTML(t);
+    }
+    if (memoHits.length) {
+      html += `<div class="sr-date">📝 메모장 ${memoHits.length}개</div>`;
+      html += memoHits.map(memoCardHTML).join('');
     }
     box.innerHTML = html;
   });
@@ -3268,6 +3391,7 @@ document.addEventListener('click', async e => {
     case 'open-search': searchModal(); break;
     case 'fab':
       if (V.tab === 'goals') goalModal();
+      else if (V.tab === 'memos') memoModal();
       else if (V.tab === 'calendar') todoModal(null, V.calSel);
       else todoModal(null, V.date);
       break;
@@ -3352,6 +3476,16 @@ document.addEventListener('click', async e => {
     /* --- 라이프로그(식단·운동·독서) --- */
     case 'life-modal': lifeModal(el.dataset.k, el.dataset.date); break;
     case 'life-rm': el.closest('.life-line').remove(); break;
+
+    /* --- 메모장 --- */
+    case 'add-memo': memoModal(); break;
+    case 'edit-memo': memoModal(id); break;
+    case 'memo-pin': {
+      const m = memoById(id); if (!m) break;
+      m.pinned = !m.pinned; vib();
+      save(); render(); toast(m.pinned ? '메모를 고정했어요 📌' : '고정을 해제했어요');
+      break;
+    }
 
     /* --- 달력 --- */
     case 'cal-nav': V.calMonth = periodShift('month', V.calMonth, +el.dataset.d); render(); break;
@@ -3491,7 +3625,7 @@ function render() {
     v.classList.toggle('active', on);
     if (!on && v.innerHTML) v.innerHTML = '';   // 비활성 뷰를 비워 중복 id로 인한 오동작 방지
   });
-  ({ today: renderToday, calendar: renderCalendar, goals: renderGoals, assets: renderAssets, stats: renderStats, settings: renderSettings })[V.tab]();
+  ({ today: renderToday, calendar: renderCalendar, memos: renderMemos, goals: renderGoals, assets: renderAssets, stats: renderStats, settings: renderSettings })[V.tab]();
   $('#fab').classList.toggle('hide', V.tab === 'stats' || V.tab === 'settings' || V.tab === 'assets');
 }
 function applyTheme() {
