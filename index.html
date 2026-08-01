@@ -783,7 +783,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.9.0';
+const APP_VERSION = '1.9.1';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -1083,8 +1083,9 @@ const payMonthsOf = h => h.pm || PF_PAY_MONTHS[h.t] || [3, 6, 9, 12];
    ------------------------------------------------------------
    ▸ months : 「미주 월별 수익.xlsx > 투자금액」 2021.03~2024.11 월별 [연월, 총자산₩, 투자원금₩]
      그 시트의 원화는 1,270원/$ 고정 환산이라 실제 당시 환율과는 차이가 있어요(fxLegacy).
-   ▸ marks  : 엑셀 이후 시점의 증권사 앱 캡처 (그때의 실제 환율 기준)
-   ▸ divYears : 「배당금.xlsx」 실제로 입금된 배당 — 모두 세후(15% 원천징수 후) 금액
+   ▸ marks  : 엑셀 이후 시점 (그때의 실제 환율 기준). pl 이 없으면 원금을 안 남겨둔 시점.
+   ▸ divYears : 실제로 입금된 배당 — 모두 세후(15% 원천징수 후) 금액.
+     m(월별 USD 배열)이 있으면 월별·종목별 상세까지, totKrw 만 있으면 연 합계만 보여줘요.
    ▸ snaps  : 그 시점에 실제로 갖고 있던 종목 구성
    ============================================================ */
 const PF_HISTORY = {
@@ -1107,8 +1108,11 @@ const PF_HISTORY = {
     ['2024-09',117645072,92831126], ['2024-10',123142984,94808365], ['2024-11',131699778,96294802]
   ],
   marks: [
+    // pl(평가손익)이 없는 시점 = 그때 원금을 안 남겨둔 것 → 표·그래프에서 총자산만 써요
+    { ym: '2024-12', krw: 135776256, fx: 1467.39, src: '연말 잔고' },
     { ym: '2025-08', date: '2025-08-26', krw: 162400360, pl: 31830675, plPct: 24.38,
-      divKrw: 3071337, yoc: 2.33, yieldPct: 1.94, fx: 1393.95, src: '토스증권 포트폴리오 모아보기' }
+      divKrw: 3071337, yoc: 2.33, yieldPct: 1.94, fx: 1393.95, src: '토스증권 포트폴리오 모아보기' },
+    { ym: '2025-12', krw: 190227969, fx: 1437.91, src: '연말 잔고' }
   ],
   divYears: [
     { y: 2021, fx: 1150, from: 5, m: [0, 0, 0, 0, 1.6, 0.85, 3.12, 35, 5.19, 56.96, 56.66, 44.03],
@@ -1118,7 +1122,10 @@ const PF_HISTORY = {
     { y: 2023, fx: 1200, from: 1, m: [26.52, 89.78, 64.22, 63.31, 113.79, 94.60, 57.75, 100.49, 120.73, 88.36, 108.33, 175.59],
       top: [['VTI', 154.71], ['BND', 145.59], ['TSN', 99.45], ['C', 90.85], ['PEP', 86.24]] },
     { y: 2024, fx: 1200, from: 1, m: [61.65, 109.69, 151.92, 77.35, 165.19, 128.85, 94.14, 219.13, 124.14, 167.18, 213.26, 110.24],
-      top: [['SGOV', 237.03], ['HRL', 213.18], ['TSN', 201.00], ['C', 131.56], ['VTI', 112.40]] }
+      top: [['SGOV', 237.03], ['HRL', 213.18], ['TSN', 201.00], ['C', 131.56], ['VTI', 112.40]] },
+    // 2025~ 는 연 합계만 남아 있어요 (월별·종목별 내역 없음) → totKrw 로 기록
+    { y: 2025, fx: 1437.91, from: 1, totKrw: 3534416 },
+    { y: 2026, fx: 1436.60, from: 1, totKrw: 2352465, partial: true }
   ],
   snaps: [
     { key: '2021-12', label: '2021.12', title: '적립 초기 — 배당주 백화점',
@@ -2358,12 +2365,17 @@ function renderAssets() {
    ============================================================ */
 // 추이 그래프에 찍을 점들 — 월별 기록 + 캡처 시점 + 지금
 function hxSeries(pf) {
-  const pts = PF_HISTORY.months.map(([ym, krw, cost]) => ({ ym, krw, cost, x: hxMonthIdx(ym) }));
-  PF_HISTORY.marks.forEach(k => pts.push({ ym: k.ym, krw: k.krw, cost: k.krw - k.pl, x: hxMonthIdx(k.ym), mark: true, src: k.src }));
+  // 시점마다 환산 기준이 달라서(엑셀 1,270 고정 vs 그때 실제 환율) fx를 점마다 들고 다녀요
+  const pts = PF_HISTORY.months.map(([ym, krw, cost]) =>
+    ({ ym, krw, cost, x: hxMonthIdx(ym), fx: PF_HISTORY.fxLegacy }));
+  PF_HISTORY.marks.forEach(k => pts.push({
+    ym: k.ym, krw: k.krw, cost: k.pl == null ? null : k.krw - k.pl,   // pl 없으면 원금 기록 없는 시점
+    x: hxMonthIdx(k.ym), fx: k.fx, mark: true, src: k.src
+  }));
   const nowYM = pf.priceDate.slice(0, 7);
   pts.push({
     ym: nowYM, krw: pf.totalUSD * pf.fx, cost: (pf.costUSD + pf.cashUSD) * pf.fx,
-    x: hxMonthIdx(nowYM), mark: true, now: true, src: '지금'
+    x: hxMonthIdx(nowYM), fx: pf.fx, mark: true, now: true, src: '지금'
   });
   return pts;
 }
@@ -2407,9 +2419,8 @@ function assetLogHTML(pf, cur, compact, signed) {
   const hx = PF_HISTORY;
   const pts = hxSeries(pf);
   const first = pts[0], last = pts[pts.length - 1];
-  const mk = hx.marks[0];
   // 과거 기록은 원화로 남아 있어요. USD 보기일 땐 그 시점 환산율로 되돌려요.
-  const fxOf = p => p.now ? pf.fx : (p.mark ? mk.fx : hx.fxLegacy);
+  const fxOf = p => p.fx || hx.fxLegacy;
   const amt = (krw, fx) => cur === 'USD'
     ? '$' + Math.round(krw / fx).toLocaleString('en-US')
     : (Math.abs(krw) >= 1e8 ? `₩${(Math.round(Math.abs(krw) / 1e6) / 100).toLocaleString('en-US')}억`
@@ -2421,44 +2432,58 @@ function assetLogHTML(pf, cur, compact, signed) {
   const spanM = last.x - first.x;
   const heroSub = `${first.ym.replace('-', '.')} 첫 기록 ${amt(first.krw, hx.fxLegacy)} · ${Math.floor(spanM / 12)}년 ${spanM % 12}개월째`;
   // 연도별로 접어 보기 — 각 해의 마지막 기록 + 캡처 + 지금
-  const yearEnds = ['2021-12', '2022-12', '2023-12', '2024-11'].map(ym => {
+  const timeline = [
+    ['2021-12', '2021년 말'], ['2022-12', '2022년 말'], ['2023-12', '2023년 말'],
+    ['2024-12', '2024년 말'], ['2025-08', '2025.08 캡처'], ['2025-12', '2025년 말']
+  ].map(([ym, when]) => {
     const p = pts.find(x => x.ym === ym);
-    return { ...p, when: ym === '2024-11' ? '2024.11' : ym.slice(0, 4) + '년 말' };
-  }).filter(p => p.ym);
-  const timeline = [...yearEnds,
-    { ...pts.find(p => p.ym === mk.ym), when: '2025.08' },
-    { ...last, when: '지금 (' + last.ym.replace('-', '.') + ')' }];
+    return p ? { ...p, when } : null;
+  }).filter(Boolean);
+  timeline.push({ ...last, when: '지금 (' + last.ym.replace('-', '.') + ')' });
+  // 시점마다 환산 기준이 달라서, 증감액은 '보고 있는 통화'로 각각 바꾼 뒤에 빼요
+  const gainTxt = (p, prev) => {
+    if (cur !== 'USD') return sAmt(p.krw - prev.krw, fxOf(p));
+    const g = Math.round(p.krw / fxOf(p) - prev.krw / fxOf(prev));
+    return (g >= 0 ? '+$' : '-$') + Math.abs(g).toLocaleString('en-US');
+  };
   const tlRows = timeline.map((p, i) => {
     const prev = i ? timeline[i - 1] : first;   // 첫 줄은 2021.03 첫 기록과 비교
-    const gain = p.krw - prev.krw;
-    const r = pct(p.krw, p.cost), up = r >= 0;
+    const known = p.cost != null;               // 원금을 안 남겨둔 시점은 총자산만
+    const r = known ? pct(p.krw, p.cost) : 0, up = r >= 0;
     return `<div class="hx-row">
-      <div class="hx-when"><b>${p.when}</b><i>${i ? '' : first.ym.replace('-', '.') + ' 대비 '}자산 ${sAmt(gain, fxOf(p))}</i></div>
-      <div class="hx-amt"><b>${amt(p.krw, fxOf(p))}</b><i>원금 ${amt(p.cost, fxOf(p))}</i></div>
-      <div class="hx-pl"><b class="${up ? 'up' : 'down'}">${(up ? '+' : '') + r.toFixed(1)}%</b><i class="${up ? 'up' : 'down'}">${sAmt(p.krw - p.cost, fxOf(p))}</i></div>
+      <div class="hx-when"><b>${p.when}</b><i>${i ? '' : first.ym.replace('-', '.') + ' 대비 '}자산 ${gainTxt(p, prev)}</i></div>
+      <div class="hx-amt"><b>${amt(p.krw, fxOf(p))}</b><i>${known ? '원금 ' + amt(p.cost, fxOf(p)) : '원금 기록 없음'}</i></div>
+      <div class="hx-pl">${known
+        ? `<b class="${up ? 'up' : 'down'}">${(up ? '+' : '') + r.toFixed(1)}%</b><i class="${up ? 'up' : 'down'}">${sAmt(p.krw - p.cost, fxOf(p))}</i>`
+        : `<b style="color:var(--faint)">—</b>`}</div>
     </div>`;
   }).join('');
 
   /* ── 2. 실제로 받은 배당 ────────────────────── */
-  const yTot = d => d.m.reduce((a, b) => a + b, 0);
+  // 월별 내역이 있는 해는 합산, 연 합계만 아는 해는 원화를 그해 환율로 되돌려요
+  const yTot = d => d.m ? d.m.reduce((a, b) => a + b, 0) : d.totKrw / d.fx;
   const divTotUSD = hx.divYears.reduce((a, d) => a + yTot(d), 0);
   const divTotKRW = hx.divYears.reduce((a, d) => a + yTot(d) * d.fx, 0);
+  const divSpan = hx.divYears[hx.divYears.length - 1].y - hx.divYears[0].y + 1;
   const dMoney = (usd, fx) => cur === 'USD'
     ? '$' + Math.round(usd).toLocaleString('en-US')
     : '₩' + Math.round(usd * fx).toLocaleString('en-US');
   const maxYear = Math.max(...hx.divYears.map(yTot));
   const yearBars = hx.divYears.map(d => {
     const t = yTot(d), prev = hx.divYears.find(x => x.y === d.y - 1);
-    const grow = prev ? (t / yTot(prev) - 1) * 100 : null;
+    // 아직 안 끝난 해는 전년 대비를 보여주면 오해를 사요
+    const grow = prev && !d.partial ? (t / yTot(prev) - 1) * 100 : null;
+    const note = d.partial ? '진행 중'
+      : grow == null ? (d.from > 1 ? d.from + '월~' : '')
+      : (grow >= 0 ? '+' : '') + Math.round(grow) + '%';
     return `<div class="wbar-row hx-yb ${V.hxDivYear === d.y ? 'on' : ''}" data-action="hx-div-year" data-y="${d.y}">
       <span class="wname">${d.y}년</span>
       <span class="wtrack"><div style="width:${t / maxYear * 100}%;background:var(--accent)"></div></span>
       <span class="wpct">${dMoney(t, d.fx)}</span>
-      <span class="wval">${grow == null ? (d.from > 1 ? d.from + '월~' : '') : (grow >= 0 ? '+' : '') + Math.round(grow) + '%'}</span>
+      <span class="wval">${note}</span>
     </div>`;
   }).join('');
   const dy = hx.divYears.find(d => d.y === V.hxDivYear) || hx.divYears[hx.divYears.length - 1];
-  const maxM = Math.max(...dy.m, 0.0001);
   const dyTot = yTot(dy);
   // 막대 위 라벨 — 좁아서 만/천 단위로 줄여요
   const mTiny = v => {
@@ -2466,23 +2491,44 @@ function assetLogHTML(pf, cur, compact, signed) {
     const krw = v * dy.fx;
     return krw >= 1e4 ? Math.round(krw / 1e4) + '만' : Math.round(krw / 1e3) + '천';
   };
-  const divCal = dy.m.map((v, i) => `
-    <div class="dc" title="${i + 1}월">
-      <b>${v > 0 ? mTiny(v) : ''}</b>
-      <i style="height:${Math.max(3, v / maxM * 100)}%;${v === Math.max(...dy.m) ? 'background:var(--accent)' : ''}"></i>
-      <span>${i + 1}</span>
-    </div>`).join('');
-  const maxTop = dy.top[0][1];
-  const topRows = dy.top.map(([t, v]) => `
-    <div class="wbar-row">
-      <span class="wdot" style="background:${tkColor(t)}"></span>
-      <span class="wname">${esc(tkName(t))}</span>
-      <span class="wtrack"><div style="width:${v / maxTop * 100}%;background:${tkColor(t)}"></div></span>
-      <span class="wpct">${Math.round(v / dyTot * 100)}%</span>
-      <span class="wval">${dMoney(v, dy.fx)}</span>
-    </div>`).join('');
-  const last2024 = yTot(hx.divYears[hx.divYears.length - 1]);
-  const nowVsThen = pf.divAfterUSD / last2024;
+  let dyDetail;
+  if (dy.m) {
+    const maxM = Math.max(...dy.m, 0.0001);
+    const divCal = dy.m.map((v, i) => `
+      <div class="dc" title="${i + 1}월">
+        <b>${v > 0 ? mTiny(v) : ''}</b>
+        <i style="height:${Math.max(3, v / maxM * 100)}%;${v === maxM ? 'background:var(--accent)' : ''}"></i>
+        <span>${i + 1}</span>
+      </div>`).join('');
+    const maxTop = dy.top[0][1];
+    const topRows = dy.top.map(([t, v]) => `
+      <div class="wbar-row">
+        <span class="wdot" style="background:${tkColor(t)}"></span>
+        <span class="wname">${esc(tkName(t))}</span>
+        <span class="wtrack"><div style="width:${v / maxTop * 100}%;background:${tkColor(t)}"></div></span>
+        <span class="wpct">${Math.round(v / dyTot * 100)}%</span>
+        <span class="wval">${dMoney(v, dy.fx)}</span>
+      </div>`).join('');
+    dyDetail = `
+      <div class="sec-sub">${dy.y}년 월별 <span>${dMoney(dyTot, dy.fx)} · 월평균 ${dMoney(dyTot / (13 - dy.from), dy.fx)}</span></div>
+      <div class="div-cal">${divCal}</div>
+      <div class="sec-sub">${dy.y}년 배당 TOP ${dy.top.length} <span>그 해 가장 많이 준 종목</span></div>
+      <div class="wbars" style="gap:9px">${topRows}</div>`;
+  } else {
+    const months = dy.partial ? (+pf.priceDate.slice(5, 7)) : 12;
+    dyDetail = `
+      <div class="sec-sub">${dy.y}년 <span>${dy.partial ? '올해 지금까지' : '연 합계'}</span></div>
+      <div class="div-hero" style="margin-bottom:0">
+        <div class="k">${dy.partial ? `1월 ~ ${months}월 받은 배당` : '그 해 받은 배당'}</div>
+        <div class="v">${dMoney(dyTot, dy.fx)}</div>
+        <div class="s">월평균 ${dMoney(dyTot / months, dy.fx)} · 월별·종목별 내역은 남아 있지 않아 합계만 보여요</div>
+      </div>`;
+  }
+  // '지금 예상'과 견줄 기준은 마지막으로 온전히 지나간 해
+  const fullYears = hx.divYears.filter(d => !d.partial && d.from === 1);
+  const lastFull = fullYears[fullYears.length - 1] || hx.divYears[0];
+  const lastFullTot = yTot(lastFull);
+  const nowVsThen = pf.divAfterUSD / lastFullTot;
 
   /* ── 3. 포트폴리오 변천사 ───────────────────── */
   // 지금 시점을 과거 스냅샷과 같은 형태로
@@ -2542,32 +2588,29 @@ function assetLogHTML(pf, cur, compact, signed) {
       <div class="pf-stats">
         <div class="ps"><div class="k">투자원금</div><div class="v">${amt(last.cost, fxOf(last))}</div><div class="k" style="margin-top:2px">넣은 돈</div></div>
         <div class="ps"><div class="k">누적수익</div><div class="v">${sAmt(last.krw - last.cost, fxOf(last))}</div><div class="k" style="margin-top:2px">${(pct(last.krw, last.cost) >= 0 ? '+' : '') + pct(last.krw, last.cost).toFixed(1)}%</div></div>
-        <div class="ps"><div class="k">받은 배당</div><div class="v">${dMoney(divTotUSD, divTotKRW / divTotUSD)}</div><div class="k" style="margin-top:2px">2021~24 세후</div></div>
+        <div class="ps"><div class="k">받은 배당</div><div class="v">${dMoney(divTotUSD, divTotKRW / divTotUSD)}</div><div class="k" style="margin-top:2px">2021~${String(hx.divYears[hx.divYears.length - 1].y).slice(2)} 세후</div></div>
       </div>
     </div>
 
     <div class="card">
       <div class="card-title">📈 자산 추이 <span class="hint">${first.ym.replace('-', '.')} ~ 지금</span></div>
       ${hxChartSVG(pts)}
-      <div class="hx-gapnote">2024.12 ~ 2025.07 구간은 월별 기록이 없어 점선으로 이어놨어요</div>
+      <div class="hx-gapnote">2024.12부터는 월별 기록 대신 연말·캡처 시점만 있어서 점선으로 이어놨어요</div>
       <div class="sec-sub">시점별로 보면 <span>총자산 · 원금 · 누적수익</span></div>
       <div class="hx-rows">${tlRows}</div>
     </div>
 
     <div class="card">
-      <div class="card-title">💰 실제로 받은 배당 <span class="hint">2021.05 ~ 2024.12 · 세후</span></div>
+      <div class="card-title">💰 실제로 받은 배당 <span class="hint">2021.05 ~ 지금 · 세후</span></div>
       <div class="div-hero">
-        <div class="k">4년간 누적</div>
+        <div class="k">${divSpan}년간 누적</div>
         <div class="v">${dMoney(divTotUSD, divTotKRW / divTotUSD)}</div>
         <div class="s">${cur === 'USD' ? '≈ ₩' + Math.round(divTotKRW).toLocaleString('en-US') : '≈ $' + Math.round(divTotUSD).toLocaleString('en-US')} · 세금 떼고 실제 입금된 금액</div>
       </div>
       <div class="sec-sub">연도별 <span>막대를 탭하면 그 해 상세 · 오른쪽은 전년 대비</span></div>
       <div class="wbars" style="gap:9px">${yearBars}</div>
-      <div class="sec-sub">${dy.y}년 월별 <span>${dMoney(dyTot, dy.fx)} · 월평균 ${dMoney(dyTot / (13 - dy.from), dy.fx)}</span></div>
-      <div class="div-cal">${divCal}</div>
-      <div class="sec-sub">${dy.y}년 배당 TOP ${dy.top.length} <span>그 해 가장 많이 준 종목</span></div>
-      <div class="wbars" style="gap:9px">${topRows}</div>
-      <div class="hx-then-now">2024년에 받은 <b>${dMoney(last2024, 1200)}</b> → 지금 포트폴리오 예상 <b>${dMoney(pf.divAfterUSD, pf.fx)}</b>
+      ${dyDetail}
+      <div class="hx-then-now">${lastFull.y}년에 받은 <b>${dMoney(lastFullTot, lastFull.fx)}</b> → 지금 포트폴리오 예상 <b>${dMoney(pf.divAfterUSD, pf.fx)}</b>
         <i>둘 다 세후 기준 · 약 ${nowVsThen.toFixed(1)}배</i></div>
     </div>
 
@@ -2586,8 +2629,10 @@ function assetLogHTML(pf, cur, compact, signed) {
     </div>
 
     <div class="pf-note">
-      자산 추이 = 「미주 월별 수익.xlsx · 투자금액」 · 배당 = 「배당금.xlsx」 · 2025.08 = 토스증권 캡처<br>
-      2021~2024년 원화 금액은 그때 기록해둔 <b>1,270원/$ 고정 환산</b>이라 실제 당시 환율과는 차이가 있어요.<br>
+      자산 추이 = 「미주 월별 수익.xlsx · 투자금액」(2021.03~2024.11) · 2025.08 = 토스증권 캡처 · 2024·2025년 말 = 연말 잔고<br>
+      배당 = 「배당금.xlsx」(2021~2024) · 2025년부터는 연 합계만 기록돼 있어요.<br>
+      2021~2024.11 원화 금액은 그때 기록해둔 <b>1,270원/$ 고정 환산</b>이라 실제 당시 환율과는 차이가 있어요.
+      2024·2025년 말은 <b>그때 실제 환율</b>(1,467.39 · 1,437.91원/$) 기준이라, $ 보기에서 2024.11 → 2024년 말이 꺾여 보이는 건 기준 차이 때문이에요.<br>
       배당 원화는 2021년 1,150원/$, 2022~24년 1,200원/$ 기준으로 기록돼 있어요.
     </div>
   `;
