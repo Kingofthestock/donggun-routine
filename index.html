@@ -367,6 +367,46 @@ input,select,textarea{font:inherit;color:var(--text)}
 .dvgoal .dg-sub{font-size:.72rem;color:var(--sub);margin-top:6px}
 .dvgoal-new{display:block;width:100%;text-align:left;background:var(--accent-soft);color:var(--accent-dark);font-weight:700;font-size:.85rem;border-radius:12px;padding:12px 13px;margin-top:15px}
 [data-theme="dark"] .dvgoal-new{color:var(--accent)}
+/* 자산 > 기록 */
+.hx-chart{display:block;width:100%;height:auto;margin:2px 0 0;overflow:visible}
+.hx-gapnote{font-size:.68rem;color:var(--faint);text-align:center;margin-top:2px}
+.hx-rows{display:flex;flex-direction:column}
+.hx-row{display:flex;align-items:center;gap:8px;padding:10px 0}
+.hx-row+.hx-row{border-top:1px solid var(--line)}
+.hx-row>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hx-row b{font-size:.86rem;font-weight:800;white-space:nowrap}
+.hx-row i{font-style:normal;font-size:.68rem;color:var(--faint);white-space:nowrap}
+.hx-when{flex:1}
+.hx-amt{flex:none;text-align:right;min-width:92px}
+.hx-pl{flex:none;text-align:right;min-width:72px}
+.hx-row .up{color:var(--red)}
+.hx-row .down{color:var(--blue)}
+.hx-yb{cursor:pointer;border-radius:9px;padding:4px 6px}
+.hx-yb.on{background:var(--accent-soft)}
+.hx-yb .wname{width:52px;font-size:.82rem}
+.hx-yb .wpct{width:78px;font-size:.78rem}
+.hx-yb .wval{width:46px}
+.hx-then-now{background:var(--card2);border-radius:12px;padding:11px 13px;margin-top:15px;font-size:.82rem;line-height:1.6}
+.hx-then-now b{font-weight:800}
+.hx-then-now i{display:block;font-style:normal;font-size:.72rem;color:var(--accent-dark);font-weight:700;margin-top:3px}
+[data-theme="dark"] .hx-then-now i{color:var(--accent)}
+.hx-snaphead .t{font-size:.82rem;color:var(--sub);font-weight:600}
+.hx-snaphead .v{font-size:1.34rem;font-weight:800;letter-spacing:-.3px;margin-top:2px}
+.hx-snaphead .s{font-size:.7rem;color:var(--faint);margin-top:3px}
+.hx-more{font-size:.72rem;color:var(--faint);margin-top:11px;text-align:center}
+.hx-hrow .wname{width:56px}
+.hx-hrow .wpct{width:48px}
+.hx-hrow .wval{width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hx-cmp{margin-top:15px;border-top:1px solid var(--line);padding-top:13px}
+.hx-cmp-row{display:flex;gap:9px;align-items:flex-start;margin-bottom:9px}
+.hx-cmp-row i{font-style:normal;flex:none;width:96px;font-size:.72rem;color:var(--sub);font-weight:700;padding-top:3px}
+.hx-cmp-row>div{flex:1;display:flex;flex-wrap:wrap;gap:4px}
+.hx-chip{font-size:.68rem;font-weight:700;padding:3px 7px;border-radius:7px}
+.hx-chip.out{background:var(--card2);color:var(--sub);text-decoration:line-through}
+.hx-chip.in{background:var(--accent-soft);color:var(--accent-dark)}
+[data-theme="dark"] .hx-chip.in{color:var(--accent)}
+.hx-none{font-size:.72rem;color:var(--faint);padding-top:3px}
+.hx-keep{font-size:.72rem;color:var(--faint);font-weight:600}
 
 /* ---------- 오늘의 명언 ---------- */
 .quote-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:13px 16px;margin-bottom:14px;border-left:3px solid var(--amber);cursor:pointer}
@@ -638,7 +678,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.7.0';
+const APP_VERSION = '1.8.0';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -891,34 +931,36 @@ const allTags = () => [...new Set(S.todos.flatMap(t => t.tags || []))];
      (보유 종목 sh=수량, pr=현재가, ac=평단, div=주당 연배당, sec=섹터)
    ============================================================ */
 const PF_SNAPSHOT = {
-  asOf: '2026-07-22',        // 데이터 기준일
-  priceDate: '2026-07-17',   // 가격 종가일
-  fx: 1487.46,               // 환율(원/$)
+  asOf: '2026-08-01',        // 데이터 기준일
+  priceDate: '2026-07-31',   // 가격 종가일
+  fx: 1436.60,               // 환율(원/$)
   taxRate: 0.15,             // 미국 배당세(한미 조세협약)
   cashUSD: 999.14,           // 외화 예수금
   holdings: [
-    { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 346.77, ac: 155.29,   div: 0.96,  sec: '기술' },
-    { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 76,  pr: 367.01, ac: 224.4726, div: 4.20,  sec: 'ETF' },
-    { t: 'SGOV',  name: '단기 국채 ETF',    sh: 171, pr: 100.58, ac: 100.5628, div: 4.50,  sec: '채권' },
-    { t: 'ZTS',   name: '조에티스',         sh: 193, pr: 76.56,  ac: 102.6911, div: 2.12,  sec: '헬스케어' },
-    { t: 'HRL',   name: '호멜 푸즈',        sh: 443, pr: 25.39,  ac: 31.9648,  div: 1.17,  sec: '필수소비재' },
-    { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 129.36, ac: 45.873,   div: 2.40,  sec: '금융' },
-    { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 57.77,  ac: 53.9682,  div: 2.00,  sec: '필수소비재' },
-    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 129.03, ac: 102.3749, div: 2.55,  sec: '산업' },
-    { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 149.39, ac: 99.1924,  div: 1.60,  sec: '임의소비재' },
-    { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 157, pr: 33.91,  ac: 35.1858,  div: 1.55,  sec: '유틸리티' },
-    { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 137.12, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
-    { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 149.98, ac: 141.39,   div: 4.23,  sec: '필수소비재' },
-    { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 65.71,  ac: 63.7805,  div: 3.246, sec: '리츠' },
-    { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 358.24, ac: 223.3162, div: 0.84,  sec: '헬스케어' },
-    { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 30.51,  ac: 56.2913,  div: 0.92,  sec: '임의소비재' },
-    { t: 'MCO',   name: '무디스',           sh: 2,   pr: 510.86, ac: 244.83,   div: 4.12,  sec: '금융' }
+    { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 356.13, ac: 155.29,   div: 0.96,  sec: '기술' },
+    { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 76,  pr: 368.21, ac: 224.4726, div: 4.20,  sec: 'ETF' },
+    { t: 'SGOV',  name: '단기 국채 ETF',    sh: 171, pr: 100.71, ac: 100.5628, div: 4.50,  sec: '채권' },
+    { t: 'ZTS',   name: '조에티스',         sh: 193, pr: 77.29,  ac: 102.6911, div: 2.12,  sec: '헬스케어' },
+    { t: 'HRL',   name: '호멜 푸즈',        sh: 443, pr: 25.01,  ac: 31.9648,  div: 1.17,  sec: '필수소비재' },
+    { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 132.45, ac: 45.873,   div: 2.40,  sec: '금융' },
+    { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 57.96,  ac: 53.9682,  div: 2.00,  sec: '필수소비재' },
+    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 127.21, ac: 102.3749, div: 2.55,  sec: '산업' },
+    { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 143.06, ac: 99.1924,  div: 1.60,  sec: '임의소비재' },
+    { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 157, pr: 33.35,  ac: 35.1858,  div: 1.55,  sec: '유틸리티' },
+    { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 139.56, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
+    { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 144.49, ac: 141.39,   div: 4.23,  sec: '필수소비재' },
+    { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 63.87,  ac: 63.7805,  div: 3.246, sec: '리츠' },
+    { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 340.96, ac: 223.3162, div: 0.84,  sec: '헬스케어' },
+    { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 30.77,  ac: 56.2913,  div: 0.92,  sec: '임의소비재' },
+    { t: 'MCO',   name: '무디스',           sh: 2,   pr: 478.38, ac: 244.83,   div: 4.12,  sec: '금융' }
   ]
 };
 const PF_SECTOR_COLORS = {
   '기술': '#3182F6', 'ETF': '#5C7CFA', '채권': '#94A3B8', '헬스케어': '#22C55E',
   '필수소비재': '#EAB308', '금융': '#0EA5E9', '산업': '#8B5CF6', '임의소비재': '#F97316',
-  '유틸리티': '#10B981', '리츠': '#EC4899', '소재': '#A855F7'
+  '유틸리티': '#10B981', '리츠': '#EC4899', '소재': '#A855F7',
+  // 아래 3개는 과거 기록에만 나오는 분류
+  '통신': '#64748B', '현금': '#A1A1AA', '기타': '#CBD5E1'
 };
 // 종목별 배당 지급월(각 종목의 일반적인 지급 일정 기준 '예상'값).
 // PF_SNAPSHOT의 종목에 pm:[월,…] 을 직접 넣으면 그 값이 우선돼요.
@@ -930,6 +972,118 @@ const PF_PAY_MONTHS = {
   TSCO: [3, 6, 9, 12], MCO: [3, 6, 9, 12]
 };
 const payMonthsOf = h => h.pm || PF_PAY_MONTHS[h.t] || [3, 6, 9, 12];
+
+/* ============================================================
+   자산 기록 — 예전 엑셀·포트폴리오에서 옮겨온 과거 데이터
+   ------------------------------------------------------------
+   ▸ months : 「미주 월별 수익.xlsx > 투자금액」 2021.03~2024.11 월별 [연월, 총자산₩, 투자원금₩]
+     그 시트의 원화는 1,270원/$ 고정 환산이라 실제 당시 환율과는 차이가 있어요(fxLegacy).
+   ▸ marks  : 엑셀 이후 시점의 증권사 앱 캡처 (그때의 실제 환율 기준)
+   ▸ divYears : 「배당금.xlsx」 실제로 입금된 배당 — 모두 세후(15% 원천징수 후) 금액
+   ▸ snaps  : 그 시점에 실제로 갖고 있던 종목 구성
+   ============================================================ */
+const PF_HISTORY = {
+  fxLegacy: 1270,
+  months: [
+    ['2021-03',566070,560597], ['2021-04',570012,560597], ['2021-05',8348082,8355127],
+    ['2021-06',8762822,8401680], ['2021-07',23534987,22892799], ['2021-08',26321111,25226415],
+    ['2021-09',26238532,26242485], ['2021-10',27439316,26175108], ['2021-11',28136565,26791278],
+    ['2021-12',29822319,26802043], ['2022-01',29222023,26752801], ['2022-02',29253898,27701848],
+    ['2022-03',32263849,30176076], ['2022-04',36525106,34295462], ['2022-05',36035064,34556675],
+    ['2022-06',35434381,34788729], ['2022-07',38503293,34715359], ['2022-08',38722407,34913505],
+    ['2022-09',37321774,34846563], ['2022-10',42188025,36818815], ['2022-11',42925097,37962582],
+    ['2022-12',39397759,37928989], ['2023-01',44614097,42322118], ['2023-02',46411804,43274284],
+    ['2023-03',55828794,52345712], ['2023-04',61716156,55378562], ['2023-05',61376392,57365735],
+    ['2023-06',64878117,58358506], ['2023-07',66850944,59936918], ['2023-08',68634322,61919035],
+    ['2023-09',68622535,63902723], ['2023-10',66871528,63901457], ['2023-11',71078257,66093680],
+    ['2023-12',76439423,67077264], ['2024-01',81285755,69067477], ['2024-02',86505258,71537723],
+    ['2024-03',102004975,81556668], ['2024-04',104366584,83563029], ['2024-05',107700058,85541173],
+    ['2024-06',110899919,86530075], ['2024-07',115824213,88002235], ['2024-08',117260972,91359950],
+    ['2024-09',117645072,92831126], ['2024-10',123142984,94808365], ['2024-11',131699778,96294802]
+  ],
+  marks: [
+    { ym: '2025-08', date: '2025-08-26', krw: 162400360, pl: 31830675, plPct: 24.38,
+      divKrw: 3071337, yoc: 2.33, yieldPct: 1.94, fx: 1393.95, src: '토스증권 포트폴리오 모아보기' }
+  ],
+  divYears: [
+    { y: 2021, fx: 1150, from: 5, m: [0, 0, 0, 0, 1.6, 0.85, 3.12, 35, 5.19, 56.96, 56.66, 44.03],
+      top: [['LTC', 38.26], ['ABR', 30.17], ['O', 25.28], ['PEP', 19.19], ['SPY', 17.99]] },
+    { y: 2022, fx: 1200, from: 1, m: [41.20, 72.97, 29.28, 49.85, 84.58, 31.35, 56.04, 62.60, 48.54, 56.74, 64.85, 68.29],
+      top: [['LTC', 92.68], ['PEP', 79.44], ['ABR', 65.46], ['O', 63.06], ['SPY', 52.50]] },
+    { y: 2023, fx: 1200, from: 1, m: [26.52, 89.78, 64.22, 63.31, 113.79, 94.60, 57.75, 100.49, 120.73, 88.36, 108.33, 175.59],
+      top: [['VTI', 154.71], ['BND', 145.59], ['TSN', 99.45], ['C', 90.85], ['PEP', 86.24]] },
+    { y: 2024, fx: 1200, from: 1, m: [61.65, 109.69, 151.92, 77.35, 165.19, 128.85, 94.14, 219.13, 124.14, 167.18, 213.26, 110.24],
+      top: [['SGOV', 237.03], ['HRL', 213.18], ['TSN', 201.00], ['C', 131.56], ['VTI', 112.40]] }
+  ],
+  snaps: [
+    { key: '2021-12', label: '2021.12', title: '적립 초기 — 배당주 백화점',
+      src: '미주 월별 수익 · 12월보유미주', unit: 'USD', total: 24708.59, note: '미국 주식만 · 22종목',
+      holdings: [
+        ['SPY',4706], ['PEP',3565.38], ['PG',2561.6], ['HRL',2101.88],
+        ['O',1730.5], ['LTC',1630.23], ['DHI',1573.8], ['KO',1339.06],
+        ['ABR',906], ['STOR',851], ['T',671.49], ['INTC',513.1],
+        ['CRM',506.28], ['CROX',494.12], ['DIS',460.89], ['JD',411.9],
+        ['INDA',225.5], ['ORCL',179.44], ['PETS',131.9], ['IIVI',67.99],
+        ['KR',43.21], ['ONL',37.32]
+      ] },
+    { key: '2022-03', label: '2022.03', title: '현금·국내주식까지 한 계좌에',
+      src: '미주 월별 수익 · 3월보유주식', unit: 'USD', total: 31457.12, note: '현금·한국 주식 포함 · 30항목',
+      holdings: [
+        ['SPY',4443.9], ['KRW',3948.29], ['PEP',3413.76], ['PG',2411.52],
+        ['HRL',2189], ['DHI',1824.24], ['LTC',1806.14], ['O',1664.5],
+        ['KO',1393.34], ['VTI',1124.85], ['ABR',850.5], ['STOR',729.5],
+        ['INBODY',725.44], ['T',625.32], ['PMTK',576.12], ['INTC',473.9],
+        ['VTV',443.64], ['SIDIZ',439.47], ['CRM',427.44], ['DIS',415.86],
+        ['JD',368.64], ['CROX',325.8], ['INDA',219.4], ['ORCL',161.92],
+        ['PETS',138.1], ['KODEXTR',88.67], ['IIVI',68.94], ['HMCP',68.36],
+        ['KR',55.48], ['ONL',35.08]
+      ] },
+    { key: '2025-08', label: '2025.08', title: '소수 종목 집중으로 전환',
+      src: '토스증권 캡처 (2025-08-26)', unit: 'PCT', total: 162400360, fx: 1393.95,
+      note: '비중만 기록 · 19종목 + 기타',
+      holdings: [
+        ['VTI',19.3], ['GOOGL',17.9], ['HRL',9.9], ['SGOV',9.6],
+        ['DHI',6.5], ['TSN',6.2], ['C',5.8], ['SPY',5.5],
+        ['BEP',2.9], ['PEP',2.7], ['PG',2.1], ['TSCO',2],
+        ['O',1.9], ['WST',1.3], ['LTC',1.2], ['UNM',1.2],
+        ['MCO',0.9], ['AMZN',0.6], ['FMC',0.6], ['ETC',1.8]
+      ] }
+  ]
+};
+// 과거 기록에 등장하는 티커 — [표시 이름, 섹터]
+const PF_TICKER_META = {
+  SPY: ['S&P500 ETF', 'ETF'], VTI: ['미국 전체 ETF', 'ETF'], VTV: ['미국 가치주 ETF', 'ETF'],
+  INDA: ['인도 ETF', 'ETF'], KODEXTR: ['KODEX TR', 'ETF'], SPTM: ['미국 전체 ETF', 'ETF'],
+  DIA: ['다우 ETF', 'ETF'], SKYY: ['클라우드 ETF', 'ETF'], LIT: ['2차전지 ETF', 'ETF'],
+  SGOV: ['단기 국채 ETF', '채권'], BND: ['미국 채권 ETF', '채권'], SHV: ['단기 국채 ETF', '채권'],
+  BLV: ['장기 채권 ETF', '채권'],
+  PEP: ['펩시코', '필수소비재'], PG: ['프록터앤갬블', '필수소비재'], HRL: ['호멜 푸즈', '필수소비재'],
+  KO: ['코카콜라', '필수소비재'], TSN: ['타이슨 푸드', '필수소비재'], KR: ['크로거', '필수소비재'],
+  O: ['리얼티 인컴', '리츠'], LTC: ['LTC 프라퍼티스', '리츠'], ABR: ['아버 리얼티', '리츠'],
+  STOR: ['스토어 캐피털', '리츠'], ONL: ['오라이언 오피스', '리츠'],
+  DHI: ['닥터 호턴', '임의소비재'], CROX: ['크록스', '임의소비재'], DIS: ['월트 디즈니', '임의소비재'],
+  JD: ['징둥닷컴', '임의소비재'], PETS: ['펫메드', '임의소비재'], TSCO: ['트랙터 서플라이', '임의소비재'],
+  AMZN: ['아마존', '임의소비재'], DNUT: ['크리스피 크림', '임의소비재'], SIDIZ: ['시디즈', '임의소비재'],
+  HMCP: ['현대차 우선주', '임의소비재'],
+  T: ['AT&T', '통신'], VZ: ['버라이즌', '통신'],
+  GOOGL: ['알파벳 A', '기술'], INTC: ['인텔', '기술'], CRM: ['세일즈포스', '기술'],
+  ORCL: ['오라클', '기술'], IIVI: ['II-VI', '기술'],
+  C: ['씨티그룹', '금융'], MCO: ['무디스', '금융'], UNM: ['유넘 그룹', '금융'],
+  CNI: ['캐나디안 내셔널', '산업'], PMTK: ['펌텍코리아', '산업'],
+  BEP: ['브룩필드 리뉴어블', '유틸리티'], BEPC: ['브룩필드 리뉴어블', '유틸리티'],
+  ZTS: ['조에티스', '헬스케어'], WST: ['웨스트 파마', '헬스케어'], MRK: ['머크', '헬스케어'],
+  INBODY: ['인바디', '헬스케어'],
+  FMC: ['FMC', '소재'],
+  KRW: ['원화 예수금', '현금'], ETC: ['기타', '기타']
+};
+// 같은 회사인데 티커만 다른 경우 (비교할 때 같은 것으로 취급)
+const PF_TICKER_ALIAS = { BEP: 'BEPC' };
+const tkAlias = t => PF_TICKER_ALIAS[t] || t;
+const tkName = t => (PF_TICKER_META[t] || [t])[0];
+const tkSector = t => (PF_TICKER_META[t] || [, '기타'])[1];
+const tkColor = t => PF_SECTOR_COLORS[tkSector(t)] || '#94a3b8';
+// '2021-03' → 2021.03을 0으로 하는 개월 수 (추이 그래프 x축)
+const hxMonthIdx = ym => { const [y, m] = ym.split('-').map(Number); return (y - 2021) * 12 + (m - 3); };
 // 월별 예상 배당(세전 USD) — 연 배당을 지급월에 나눠 배분
 function monthlyDividendsUSD() {
   const out = Array(12).fill(0);
@@ -1228,9 +1382,12 @@ const V = {
   goalKey: { month: curKey('month'), quarter: curKey('quarter'), year: curKey('year') },
   statsRange: 'week',
   assetCur: 'KRW',                   // 자산 탭 통화 (KRW | USD)
+  assetTab: 'now',                   // 자산 탭 서브뷰 (now = 현재 | log = 기록)
   holdSort: 'weight',                // 보유 종목 정렬 (weight | plPct | yield)
   holdOpen: null,                    // 상세가 펼쳐진 보유 종목 티커
-  divMonth: new Date().getMonth() + 1 // 배당 캘린더에서 선택된 월 (null = 닫힘)
+  divMonth: new Date().getMonth() + 1, // 배당 캘린더에서 선택된 월 (null = 닫힘)
+  hxDivYear: 2024,                   // 기록 탭 — 배당 상세를 볼 연도
+  hxSnap: '2021-12'                  // 기록 탭 — 펼쳐 볼 포트폴리오 시점
 };
 
 /* ---------- 공용 UI ---------- */
@@ -1681,6 +1838,27 @@ function renderAssets() {
   const signed = usd => (usd >= 0 ? '+' : '') + compact(usd);
   const staleDays = diffDays(pf.asOf, todayStr());
 
+  // 상단 — 통화 토글 + [현재 / 기록] 서브탭
+  const head = `
+    <div class="vhead">
+      <div><h1>자산</h1><div class="sub">${V.assetTab === 'log' ? '2021년부터 남겨온 기록' : `내 포트폴리오 · ${pf.priceDate} 종가 기준`}</div></div>
+      <div class="actions">
+        <div class="seg" style="width:auto">
+          ${[['KRW', '₩'], ['USD', '$']].map(([k, l]) =>
+            `<button class="${cur === k ? 'on' : ''}" data-action="asset-cur" data-k="${k}" style="padding:7px 13px">${l}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="seg" style="margin-bottom:14px">
+      ${[['now', '현재'], ['log', '기록']].map(([k, l]) =>
+        `<button class="${V.assetTab === k ? 'on' : ''}" data-action="asset-tab" data-k="${k}">${l}</button>`).join('')}
+    </div>`;
+
+  if (V.assetTab === 'log') {
+    $('[data-view=assets]').innerHTML = head + assetLogHTML(pf, cur, compact, signed);
+    return;
+  }
+
   // 자산 목표(포트폴리오 연동) — 있으면 진행바, 없으면 만들기 유도
   const assetGoals = S.goals.filter(g => !g.done && g.metric && g.metric.link === 'assets')
     .sort((a, b) => periodRange(a.type, a.period).end.localeCompare(periodRange(b.type, b.period).end));
@@ -1820,17 +1998,7 @@ function renderAssets() {
     </div>`;
   })() : `<button class="dvgoal-new" data-action="new-div-goal">🎯 연 배당 목표 세우기 →</button>`;
 
-  $('[data-view=assets]').innerHTML = `
-    <div class="vhead">
-      <div><h1>자산</h1><div class="sub">내 포트폴리오 · ${pf.priceDate} 종가 기준</div></div>
-      <div class="actions">
-        <div class="seg" style="width:auto">
-          ${[['KRW', '₩'], ['USD', '$']].map(([k, l]) =>
-            `<button class="${cur === k ? 'on' : ''}" data-action="asset-cur" data-k="${k}" style="padding:7px 13px">${l}</button>`).join('')}
-        </div>
-      </div>
-    </div>
-
+  $('[data-view=assets]').innerHTML = head + `
     <div class="pf-hero">
       <div class="pf-label">총 자산 (주식 + 예수금)</div>
       <div class="pf-total">${M(pf.totalUSD)}</div>
@@ -1882,6 +2050,246 @@ function renderAssets() {
       ${staleDays >= 7 ? `<span style="color:var(--amber);font-weight:700">📅 데이터가 ${staleDays}일 지났어요 — 최신 수치로 갱신해 주세요</span><br>` : ''}
       데이터 기준 ${pf.asOf} (가격 ${pf.priceDate} 종가) · 환율 ${pf.fx.toLocaleString('en-US')}원/$<br>
       수치를 갱신하려면 코드의 <b>PF_SNAPSHOT</b>에 최신 포트폴리오 데이터를 넣어주세요.
+    </div>
+  `;
+}
+
+/* ============================================================
+   자산 > 기록 — 과거에 얼마였고 · 뭘 갖고 있었고 · 배당은 얼마 받았나
+   ============================================================ */
+// 추이 그래프에 찍을 점들 — 월별 기록 + 캡처 시점 + 지금
+function hxSeries(pf) {
+  const pts = PF_HISTORY.months.map(([ym, krw, cost]) => ({ ym, krw, cost, x: hxMonthIdx(ym) }));
+  PF_HISTORY.marks.forEach(k => pts.push({ ym: k.ym, krw: k.krw, cost: k.krw - k.pl, x: hxMonthIdx(k.ym), mark: true, src: k.src }));
+  const nowYM = pf.priceDate.slice(0, 7);
+  pts.push({
+    ym: nowYM, krw: pf.totalUSD * pf.fx, cost: (pf.costUSD + pf.cashUSD) * pf.fx,
+    x: hxMonthIdx(nowYM), mark: true, now: true, src: '지금'
+  });
+  return pts;
+}
+// 자산 추이 SVG — 원화 기준(실선 = 기록 구간, 점선 = 기록이 비는 구간)
+function hxChartSVG(pts) {
+  const W = 320, H = 168, x0 = 8, x1 = 312, y0 = 12, y1 = 124;
+  const maxX = pts[pts.length - 1].x || 1;
+  const peak = Math.max(...pts.map(p => p.krw));
+  const step = Math.pow(10, Math.floor(Math.log10(peak))) / 2;   // 눈금 간격 — 자릿수의 절반
+  const top = Math.ceil(peak / step) * step;
+  const X = x => x0 + x / maxX * (x1 - x0);
+  const Y = v => y1 - v / top * (y1 - y0);
+  const line = ps => ps.map((p, i) => `${i ? 'L' : 'M'}${X(p.x).toFixed(1)} ${Y(p.krw).toFixed(1)}`).join(' ');
+  const costLine = ps => ps.map((p, i) => `${i ? 'L' : 'M'}${X(p.x).toFixed(1)} ${Y(p.cost).toFixed(1)}`).join(' ');
+  const solid = pts.filter(p => !p.mark);                         // 엑셀에 월별로 남아 있는 구간
+  const gapFrom = solid[solid.length - 1];
+  const gapPts = [gapFrom, ...pts.filter(p => p.mark)];
+  const eok = v => (Math.round(v / 1e7) / 10) + '억';
+  const grid = [top, top / 2].map(v =>
+    `<line x1="${x0}" y1="${Y(v).toFixed(1)}" x2="${x1}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
+     <text x="${x0 + 2}" y="${(Y(v) - 3).toFixed(1)}" font-size="7.5" fill="var(--faint)">${eok(v)}</text>`).join('');
+  const yearMarks = [2022, 2023, 2024, 2025, 2026].map(y => {
+    const gx = X(hxMonthIdx(y + '-01'));
+    return `<line x1="${gx.toFixed(1)}" y1="${y0}" x2="${gx.toFixed(1)}" y2="${y1}" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 3"/>
+      <text x="${gx.toFixed(1)}" y="${H - 22}" font-size="8" fill="var(--faint)" text-anchor="middle">'${String(y).slice(2)}</text>`;
+  }).join('');
+  const dots = pts.filter(p => p.mark).map(p =>
+    `<circle cx="${X(p.x).toFixed(1)}" cy="${Y(p.krw).toFixed(1)}" r="3.4" fill="var(--accent)" stroke="var(--card)" stroke-width="1.6"/>`).join('');
+  const area = `${line(solid)} L${X(gapFrom.x).toFixed(1)} ${y1} L${X(solid[0].x).toFixed(1)} ${y1} Z`;
+  return `<svg class="hx-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="2021년 3월부터 지금까지의 자산 추이">
+    ${grid}${yearMarks}
+    <path d="${area}" fill="var(--accent)" opacity=".10"/>
+    <path d="${costLine(solid)}" fill="none" stroke="var(--faint)" stroke-width="1.4" stroke-dasharray="3 2.5" opacity=".8"/>
+    <path d="${line(solid)}" fill="none" stroke="var(--accent)" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="${line(gapPts)}" fill="none" stroke="var(--accent)" stroke-width="2.1" stroke-dasharray="4 3" opacity=".65"/>
+    ${dots}
+    <text x="${x0}" y="${H - 6}" font-size="7.5" fill="var(--faint)">— 총자산  ---- 투자원금  ●= 캡처·현재</text>
+  </svg>`;
+}
+function assetLogHTML(pf, cur, compact, signed) {
+  const hx = PF_HISTORY;
+  const pts = hxSeries(pf);
+  const first = pts[0], last = pts[pts.length - 1];
+  const mk = hx.marks[0];
+  // 과거 기록은 원화로 남아 있어요. USD 보기일 땐 그 시점 환산율로 되돌려요.
+  const fxOf = p => p.now ? pf.fx : (p.mark ? mk.fx : hx.fxLegacy);
+  const amt = (krw, fx) => cur === 'USD'
+    ? '$' + Math.round(krw / fx).toLocaleString('en-US')
+    : (Math.abs(krw) >= 1e8 ? `₩${(Math.round(Math.abs(krw) / 1e6) / 100).toLocaleString('en-US')}억`
+      : `₩${Math.round(Math.abs(krw) / 1e4).toLocaleString('en-US')}만`);
+  const sAmt = (krw, fx) => (krw >= 0 ? '+' : '-') + amt(Math.abs(krw), fx);
+  const pct = (a, c) => c > 0 ? (a - c) / c * 100 : 0;
+
+  /* ── 1. 자산 추이 ───────────────────────────── */
+  const spanM = last.x - first.x;
+  const heroSub = `${first.ym.replace('-', '.')} 첫 기록 ${amt(first.krw, hx.fxLegacy)} · ${Math.floor(spanM / 12)}년 ${spanM % 12}개월째`;
+  // 연도별로 접어 보기 — 각 해의 마지막 기록 + 캡처 + 지금
+  const yearEnds = ['2021-12', '2022-12', '2023-12', '2024-11'].map(ym => {
+    const p = pts.find(x => x.ym === ym);
+    return { ...p, when: ym === '2024-11' ? '2024.11' : ym.slice(0, 4) + '년 말' };
+  }).filter(p => p.ym);
+  const timeline = [...yearEnds,
+    { ...pts.find(p => p.ym === mk.ym), when: '2025.08' },
+    { ...last, when: '지금 (' + last.ym.replace('-', '.') + ')' }];
+  const tlRows = timeline.map((p, i) => {
+    const prev = i ? timeline[i - 1] : first;   // 첫 줄은 2021.03 첫 기록과 비교
+    const gain = p.krw - prev.krw;
+    const r = pct(p.krw, p.cost), up = r >= 0;
+    return `<div class="hx-row">
+      <div class="hx-when"><b>${p.when}</b><i>${i ? '' : first.ym.replace('-', '.') + ' 대비 '}자산 ${sAmt(gain, fxOf(p))}</i></div>
+      <div class="hx-amt"><b>${amt(p.krw, fxOf(p))}</b><i>원금 ${amt(p.cost, fxOf(p))}</i></div>
+      <div class="hx-pl"><b class="${up ? 'up' : 'down'}">${(up ? '+' : '') + r.toFixed(1)}%</b><i class="${up ? 'up' : 'down'}">${sAmt(p.krw - p.cost, fxOf(p))}</i></div>
+    </div>`;
+  }).join('');
+
+  /* ── 2. 실제로 받은 배당 ────────────────────── */
+  const yTot = d => d.m.reduce((a, b) => a + b, 0);
+  const divTotUSD = hx.divYears.reduce((a, d) => a + yTot(d), 0);
+  const divTotKRW = hx.divYears.reduce((a, d) => a + yTot(d) * d.fx, 0);
+  const dMoney = (usd, fx) => cur === 'USD'
+    ? '$' + Math.round(usd).toLocaleString('en-US')
+    : '₩' + Math.round(usd * fx).toLocaleString('en-US');
+  const maxYear = Math.max(...hx.divYears.map(yTot));
+  const yearBars = hx.divYears.map(d => {
+    const t = yTot(d), prev = hx.divYears.find(x => x.y === d.y - 1);
+    const grow = prev ? (t / yTot(prev) - 1) * 100 : null;
+    return `<div class="wbar-row hx-yb ${V.hxDivYear === d.y ? 'on' : ''}" data-action="hx-div-year" data-y="${d.y}">
+      <span class="wname">${d.y}년</span>
+      <span class="wtrack"><div style="width:${t / maxYear * 100}%;background:var(--accent)"></div></span>
+      <span class="wpct">${dMoney(t, d.fx)}</span>
+      <span class="wval">${grow == null ? (d.from > 1 ? d.from + '월~' : '') : (grow >= 0 ? '+' : '') + Math.round(grow) + '%'}</span>
+    </div>`;
+  }).join('');
+  const dy = hx.divYears.find(d => d.y === V.hxDivYear) || hx.divYears[hx.divYears.length - 1];
+  const maxM = Math.max(...dy.m, 0.0001);
+  const dyTot = yTot(dy);
+  // 막대 위 라벨 — 좁아서 만/천 단위로 줄여요
+  const mTiny = v => {
+    if (cur === 'USD') return '$' + Math.round(v);
+    const krw = v * dy.fx;
+    return krw >= 1e4 ? Math.round(krw / 1e4) + '만' : Math.round(krw / 1e3) + '천';
+  };
+  const divCal = dy.m.map((v, i) => `
+    <div class="dc" title="${i + 1}월">
+      <b>${v > 0 ? mTiny(v) : ''}</b>
+      <i style="height:${Math.max(3, v / maxM * 100)}%;${v === Math.max(...dy.m) ? 'background:var(--accent)' : ''}"></i>
+      <span>${i + 1}</span>
+    </div>`).join('');
+  const maxTop = dy.top[0][1];
+  const topRows = dy.top.map(([t, v]) => `
+    <div class="wbar-row">
+      <span class="wdot" style="background:${tkColor(t)}"></span>
+      <span class="wname">${esc(tkName(t))}</span>
+      <span class="wtrack"><div style="width:${v / maxTop * 100}%;background:${tkColor(t)}"></div></span>
+      <span class="wpct">${Math.round(v / dyTot * 100)}%</span>
+      <span class="wval">${dMoney(v, dy.fx)}</span>
+    </div>`).join('');
+  const last2024 = yTot(hx.divYears[hx.divYears.length - 1]);
+  const nowVsThen = pf.divAfterUSD / last2024;
+
+  /* ── 3. 포트폴리오 변천사 ───────────────────── */
+  // 지금 시점을 과거 스냅샷과 같은 형태로
+  const nowSnap = {
+    key: 'now', label: '지금', title: `${pf.priceDate} 종가 기준`,
+    src: 'PF_SNAPSHOT', unit: 'USD', total: pf.stockUSD, note: `미국 주식 ${pf.holdings.length}종목`,
+    holdings: pf.holdings.map(h => [h.t, h.value])
+  };
+  const allSnaps = [...hx.snaps, nowSnap];
+  const snap = allSnaps.find(s => s.key === V.hxSnap) || allSnaps[0];
+  const snapSeg = allSnaps.map(s =>
+    `<button class="${snap.key === s.key ? 'on' : ''}" data-action="hx-snap" data-k="${s.key}">${esc(s.label)}</button>`).join('');
+  // 비중 계산 — PCT 스냅샷은 값 자체가 %
+  const sSum = snap.holdings.reduce((a, [, v]) => a + v, 0);
+  const sRows = snap.holdings.map(([t, v]) => ({ t, w: v / sSum * 100, v }));
+  const snapTotal = snap.unit === 'PCT'
+    ? (cur === 'USD' ? '$' + Math.round(snap.total / snap.fx).toLocaleString('en-US') : '₩' + snap.total.toLocaleString('en-US'))
+    : (cur === 'USD' ? '$' + Math.round(snap.total).toLocaleString('en-US')
+      : '₩' + Math.round(snap.total * (snap.key === 'now' ? pf.fx : hx.fxLegacy)).toLocaleString('en-US'));
+  // 종목 시트와 월별 자산 시트는 종가 시점이 달라 금액이 조금 어긋나요
+  const snapFoot = snap.key === 'now' ? '<br>예수금 제외 · 주식 평가금액만'
+    : snap.unit === 'USD' ? '<br>추이 그래프의 같은 시점 금액과 종가일이 달라 조금 차이 나요' : '';
+  // 섹터 구성 막대
+  const secMap = {};
+  sRows.forEach(r => { secMap[tkSector(r.t)] = (secMap[tkSector(r.t)] || 0) + r.w; });
+  const snapStack = Object.entries(secMap).sort((a, b) => b[1] - a[1])
+    .map(([s, w]) => `<span style="width:${w}%;background:${PF_SECTOR_COLORS[s] || '#94a3b8'}" title="${esc(s)} ${w.toFixed(1)}%"></span>`).join('');
+  const snapRows = sRows.slice(0, 10).map(r => `
+    <div class="wbar-row hx-hrow">
+      <span class="wdot" style="background:${tkColor(r.t)}"></span>
+      <span class="wname">${esc(r.t === 'ETC' ? '기타' : r.t)}</span>
+      <span class="wtrack"><div style="width:${r.w / sRows[0].w * 100}%;background:${tkColor(r.t)}"></div></span>
+      <span class="wpct">${r.w.toFixed(1)}%</span>
+      <span class="wval">${esc(tkName(r.t))}</span>
+    </div>`).join('');
+  const tail = sRows.length > 10 ? `<div class="hx-more">그 외 ${sRows.length - 10}개 · 합쳐서 ${sRows.slice(10).reduce((a, r) => a + r.w, 0).toFixed(1)}%</div>` : '';
+  // 지금과 비교 — 그때만 있던 종목 / 그 뒤에 담은 종목
+  const nowSet = new Set(pf.holdings.map(h => tkAlias(h.t)));
+  const thenSet = new Set(sRows.map(r => tkAlias(r.t)).filter(t => t !== 'ETC' && t !== 'KRW'));
+  let compare = '';
+  if (snap.key !== 'now') {
+    const gone = [...thenSet].filter(t => !nowSet.has(t));
+    const added = [...nowSet].filter(t => !thenSet.has(t));
+    const chip = (t, cls) => `<span class="hx-chip ${cls}">${esc(t)}</span>`;
+    compare = `<div class="hx-cmp">
+      <div class="hx-cmp-row"><i>정리한 종목 ${gone.length}</i><div>${gone.length ? gone.map(t => chip(t, 'out')).join('') : '<span class="hx-none">없어요</span>'}</div></div>
+      <div class="hx-cmp-row"><i>그 뒤 새로 담음 ${added.length}</i><div>${added.length ? added.map(t => chip(t, 'in')).join('') : '<span class="hx-none">없어요</span>'}</div></div>
+      <div class="hx-keep">계속 들고 있는 종목 ${[...thenSet].filter(t => nowSet.has(t)).length}개</div>
+    </div>`;
+  }
+
+  return `
+    <div class="pf-hero">
+      <div class="pf-label">${first.ym.replace('-', '.')} → ${last.ym.replace('-', '.')} · 총자산</div>
+      <div class="pf-total">${amt(last.krw, fxOf(last))}</div>
+      <div class="pf-secondary">${heroSub}</div>
+      <div class="pf-stats">
+        <div class="ps"><div class="k">투자원금</div><div class="v">${amt(last.cost, fxOf(last))}</div><div class="k" style="margin-top:2px">넣은 돈</div></div>
+        <div class="ps"><div class="k">누적수익</div><div class="v">${sAmt(last.krw - last.cost, fxOf(last))}</div><div class="k" style="margin-top:2px">${(pct(last.krw, last.cost) >= 0 ? '+' : '') + pct(last.krw, last.cost).toFixed(1)}%</div></div>
+        <div class="ps"><div class="k">받은 배당</div><div class="v">${dMoney(divTotUSD, divTotKRW / divTotUSD)}</div><div class="k" style="margin-top:2px">2021~24 세후</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📈 자산 추이 <span class="hint">${first.ym.replace('-', '.')} ~ 지금</span></div>
+      ${hxChartSVG(pts)}
+      <div class="hx-gapnote">2024.12 ~ 2025.07 구간은 월별 기록이 없어 점선으로 이어놨어요</div>
+      <div class="sec-sub">시점별로 보면 <span>총자산 · 원금 · 누적수익</span></div>
+      <div class="hx-rows">${tlRows}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💰 실제로 받은 배당 <span class="hint">2021.05 ~ 2024.12 · 세후</span></div>
+      <div class="div-hero">
+        <div class="k">4년간 누적</div>
+        <div class="v">${dMoney(divTotUSD, divTotKRW / divTotUSD)}</div>
+        <div class="s">${cur === 'USD' ? '≈ ₩' + Math.round(divTotKRW).toLocaleString('en-US') : '≈ $' + Math.round(divTotUSD).toLocaleString('en-US')} · 세금 떼고 실제 입금된 금액</div>
+      </div>
+      <div class="sec-sub">연도별 <span>막대를 탭하면 그 해 상세 · 오른쪽은 전년 대비</span></div>
+      <div class="wbars" style="gap:9px">${yearBars}</div>
+      <div class="sec-sub">${dy.y}년 월별 <span>${dMoney(dyTot, dy.fx)} · 월평균 ${dMoney(dyTot / (13 - dy.from), dy.fx)}</span></div>
+      <div class="div-cal">${divCal}</div>
+      <div class="sec-sub">${dy.y}년 배당 TOP ${dy.top.length} <span>그 해 가장 많이 준 종목</span></div>
+      <div class="wbars" style="gap:9px">${topRows}</div>
+      <div class="hx-then-now">2024년에 받은 <b>${dMoney(last2024, 1200)}</b> → 지금 포트폴리오 예상 <b>${dMoney(pf.divAfterUSD, pf.fx)}</b>
+        <i>둘 다 세후 기준 · 약 ${nowVsThen.toFixed(1)}배</i></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗂 포트폴리오 변천사 <span class="hint">${allSnaps.length}개 시점</span></div>
+      <div class="seg" style="margin-bottom:13px">${snapSeg}</div>
+      <div class="hx-snaphead">
+        <div class="t">${esc(snap.title)}</div>
+        <div class="v">${snapTotal}</div>
+        <div class="s">${esc(snap.note)} · 출처 ${esc(snap.src)}${snapFoot}</div>
+      </div>
+      <div class="pf-stack" style="margin-top:12px">${snapStack}</div>
+      <div class="wbars">${snapRows}</div>
+      ${tail}
+      ${compare}
+    </div>
+
+    <div class="pf-note">
+      자산 추이 = 「미주 월별 수익.xlsx · 투자금액」 · 배당 = 「배당금.xlsx」 · 2025.08 = 토스증권 캡처<br>
+      2021~2024년 원화 금액은 그때 기록해둔 <b>1,270원/$ 고정 환산</b>이라 실제 당시 환율과는 차이가 있어요.<br>
+      배당 원화는 2021년 1,150원/$, 2022~24년 1,200원/$ 기준으로 기록돼 있어요.
     </div>
   `;
 }
@@ -3521,6 +3929,9 @@ document.addEventListener('click', async e => {
     case 'hold-open': V.holdOpen = V.holdOpen === el.dataset.t ? null : el.dataset.t; render(); break;
     case 'new-asset-goal': goalModal(null, { mpreset: 'pf_assets' }); break;
     case 'new-div-goal': goalModal(null, { mpreset: 'pf_div' }); break;
+    case 'asset-tab': V.assetTab = el.dataset.k; render(); break;
+    case 'hx-div-year': V.hxDivYear = +el.dataset.y; render(); break;
+    case 'hx-snap': V.hxSnap = el.dataset.k; render(); break;
 
     /* --- 통계/공유 --- */
     case 'stats-range': V.statsRange = el.dataset.k; render(); break;
