@@ -783,7 +783,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.9.1';
+const APP_VERSION = '1.9.2';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -2379,6 +2379,65 @@ function hxSeries(pf) {
   });
   return pts;
 }
+/* 지금까지 쌓인 배당 — 받을 때마다 더해 올라가는 누적선
+   월별 내역이 있는 해(~2024)는 실선, 연 합계만 아는 해(2025~)는 점선 + 점 */
+const dyUpto = d => d.partial ? (+PF_SNAPSHOT.priceDate.slice(5, 7)) : 12;
+function hxDivSeries() {
+  const dIdx = (y, m) => (y - 2021) * 12 + (m - 1);
+  const pts = [];
+  let u = 0, k = 0;
+  PF_HISTORY.divYears.forEach(d => {
+    if (d.m) {
+      d.m.forEach((v, i) => {
+        u += v; k += v * d.fx;
+        pts.push({ x: dIdx(d.y, i + 1), u, k, y: d.y, mo: i + 1 });
+      });
+    } else {
+      u += d.totKrw / d.fx; k += d.totKrw;
+      pts.push({ x: dIdx(d.y, dyUpto(d)), u, k, y: d.y, mo: dyUpto(d), mark: true });
+    }
+  });
+  return pts;
+}
+function hxDivChartSVG(cur) {
+  const pts = hxDivSeries();
+  if (pts.length < 2) return '';
+  const W = 320, H = 152, x0 = 8, x1 = 312, y0 = 12, y1 = 112;
+  const val = p => cur === 'USD' ? p.u : p.k;
+  const maxX = pts[pts.length - 1].x || 1;
+  const peak = Math.max(...pts.map(val));
+  const step = Math.pow(10, Math.floor(Math.log10(peak))) / 2;   // 눈금 간격 — 자릿수의 절반
+  const top = Math.ceil(peak / step) * step;
+  const X = x => x0 + x / maxX * (x1 - x0);
+  const Y = v => y1 - v / top * (y1 - y0);
+  const line = ps => ps.map((p, i) => `${i ? 'L' : 'M'}${X(p.x).toFixed(1)} ${Y(val(p)).toFixed(1)}`).join(' ');
+  const lab = v => cur === 'USD'
+    ? '$' + Math.round(v).toLocaleString('en-US')
+    : (v >= 1e8 ? (Math.round(v / 1e6) / 100) + '억' : Math.round(v / 1e4).toLocaleString('en-US') + '만');
+  const solid = pts.filter(p => !p.mark);
+  const rest = pts.filter(p => p.mark);
+  const gapPts = solid.length ? [solid[solid.length - 1], ...rest] : rest;
+  const grid = [top, top / 2].map(v =>
+    `<line x1="${x0}" y1="${Y(v).toFixed(1)}" x2="${x1}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
+     <text x="${x0 + 2}" y="${(Y(v) - 3).toFixed(1)}" font-size="7.5" fill="var(--faint)">${lab(v)}</text>`).join('');
+  const yearMarks = [2022, 2023, 2024, 2025, 2026].map(y => {
+    const gx = X((y - 2021) * 12);
+    return `<line x1="${gx.toFixed(1)}" y1="${y0}" x2="${gx.toFixed(1)}" y2="${y1}" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 3"/>
+      <text x="${gx.toFixed(1)}" y="${H - 20}" font-size="8" fill="var(--faint)" text-anchor="middle">'${String(y).slice(2)}</text>`;
+  }).join('');
+  const dots = rest.map(p =>
+    `<circle cx="${X(p.x).toFixed(1)}" cy="${Y(val(p)).toFixed(1)}" r="3.4" fill="var(--violet)" stroke="var(--card)" stroke-width="1.6"/>`).join('');
+  const area = solid.length
+    ? `${line(solid)} L${X(solid[solid.length - 1].x).toFixed(1)} ${y1} L${X(solid[0].x).toFixed(1)} ${y1} Z` : '';
+  return `<svg class="hx-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="2021년부터 지금까지 쌓인 누적 배당">
+    ${grid}${yearMarks}
+    ${area ? `<path d="${area}" fill="var(--violet)" opacity=".10"/>` : ''}
+    <path d="${line(solid)}" fill="none" stroke="var(--violet)" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="${line(gapPts)}" fill="none" stroke="var(--violet)" stroke-width="2.1" stroke-dasharray="4 3" opacity=".65"/>
+    ${dots}
+    <text x="${x0}" y="${H - 5}" font-size="7.5" fill="var(--faint)">— 쌓인 배당(세후)  ---- 연 합계만 아는 구간  ●= 연 기록</text>
+  </svg>`;
+}
 // 자산 추이 SVG — 원화 기준(실선 = 기록 구간, 점선 = 기록이 비는 구간)
 function hxChartSVG(pts) {
   const W = 320, H = 168, x0 = 8, x1 = 312, y0 = 12, y1 = 124;
@@ -2440,22 +2499,33 @@ function assetLogHTML(pf, cur, compact, signed) {
     return p ? { ...p, when } : null;
   }).filter(Boolean);
   timeline.push({ ...last, when: '지금 (' + last.ym.replace('-', '.') + ')' });
-  // 시점마다 환산 기준이 달라서, 증감액은 '보고 있는 통화'로 각각 바꾼 뒤에 빼요
-  const gainTxt = (p, prev) => {
-    if (cur !== 'USD') return sAmt(p.krw - prev.krw, fxOf(p));
-    const g = Math.round(p.krw / fxOf(p) - prev.krw / fxOf(prev));
-    return (g >= 0 ? '+$' : '-$') + Math.abs(g).toLocaleString('en-US');
-  };
+  // 시점 사이가 몇 달인지 — 성장률을 읽을 때 기준이 돼요
+  const spanTxt = n => n >= 12 ? `${Math.floor(n / 12)}년${n % 12 ? ' ' + (n % 12) + '개월' : ''}` : `${n}개월`;
+  let crossNote = false;   // 환산 기준이 바뀌는 줄이 있으면 표 아래에 설명을 붙여요
+  // 시점마다 환산 기준이 달라서(엑셀 1,270 고정 vs 실제 환율), 보고 있는 통화로 각각 바꾼 뒤에 비교해요
+  const inCur = p => cur === 'USD' ? p.krw / fxOf(p) : p.krw;
   const tlRows = timeline.map((p, i) => {
-    const prev = i ? timeline[i - 1] : first;   // 첫 줄은 2021.03 첫 기록과 비교
     const known = p.cost != null;               // 원금을 안 남겨둔 시점은 총자산만
-    const r = known ? pct(p.krw, p.cost) : 0, up = r >= 0;
+    let right;
+    if (!i) {
+      // 첫 줄은 ₩57만에서 시작해 성장률이 몇 천 %가 나와요 — 숫자로는 의미가 없어서 시작점으로만
+      right = `<b style="color:var(--faint)">시작</b><i>${first.ym.replace('-', '.')} ${amt(first.krw, fxOf(first))}에서</i>`;
+    } else {
+      const prev = timeline[i - 1];
+      const a = inCur(prev), g = inCur(p) - a, up = g >= 0;
+      const gr = a > 0 ? g / a * 100 : 0;
+      const gAmt = cur === 'USD'
+        ? (up ? '+$' : '-$') + Math.abs(Math.round(g)).toLocaleString('en-US')
+        : sAmt(g, fxOf(p));
+      // 1,270 고정 환산 구간에서 실제 환율 구간으로 넘어가는 한 줄은 환율 차이가 성장률에 섞여요
+      const crossed = cur !== 'USD' && (fxOf(prev) === hx.fxLegacy) !== (fxOf(p) === hx.fxLegacy);
+      crossNote = crossNote || crossed;
+      right = `<b class="${up ? 'up' : 'down'}">${(up ? '+' : '') + gr.toFixed(1)}%${crossed ? '<sup>*</sup>' : ''}</b><i class="${up ? 'up' : 'down'}">${gAmt}</i>`;
+    }
     return `<div class="hx-row">
-      <div class="hx-when"><b>${p.when}</b><i>${i ? '' : first.ym.replace('-', '.') + ' 대비 '}자산 ${gainTxt(p, prev)}</i></div>
+      <div class="hx-when"><b>${p.when}</b><i>${i ? spanTxt(p.x - timeline[i - 1].x) + ' 만에' : '첫 기록'}</i></div>
       <div class="hx-amt"><b>${amt(p.krw, fxOf(p))}</b><i>${known ? '원금 ' + amt(p.cost, fxOf(p)) : '원금 기록 없음'}</i></div>
-      <div class="hx-pl">${known
-        ? `<b class="${up ? 'up' : 'down'}">${(up ? '+' : '') + r.toFixed(1)}%</b><i class="${up ? 'up' : 'down'}">${sAmt(p.krw - p.cost, fxOf(p))}</i>`
-        : `<b style="color:var(--faint)">—</b>`}</div>
+      <div class="hx-pl">${right}</div>
     </div>`;
   }).join('');
 
@@ -2515,7 +2585,7 @@ function assetLogHTML(pf, cur, compact, signed) {
       <div class="sec-sub">${dy.y}년 배당 TOP ${dy.top.length} <span>그 해 가장 많이 준 종목</span></div>
       <div class="wbars" style="gap:9px">${topRows}</div>`;
   } else {
-    const months = dy.partial ? (+pf.priceDate.slice(5, 7)) : 12;
+    const months = dyUpto(dy);
     dyDetail = `
       <div class="sec-sub">${dy.y}년 <span>${dy.partial ? '올해 지금까지' : '연 합계'}</span></div>
       <div class="div-hero" style="margin-bottom:0">
@@ -2596,8 +2666,11 @@ function assetLogHTML(pf, cur, compact, signed) {
       <div class="card-title">📈 자산 추이 <span class="hint">${first.ym.replace('-', '.')} ~ 지금</span></div>
       ${hxChartSVG(pts)}
       <div class="hx-gapnote">2024.12부터는 월별 기록 대신 연말·캡처 시점만 있어서 점선으로 이어놨어요</div>
-      <div class="sec-sub">시점별로 보면 <span>총자산 · 원금 · 누적수익</span></div>
+      <div class="sec-sub">시점별로 보면 <span>총자산 · 원금 · 직전 시점 대비 성장률</span></div>
       <div class="hx-rows">${tlRows}</div>
+      ${crossNote ? `<div class="hx-gapnote" style="text-align:left;margin-top:9px">
+        * 이 줄은 1,270원/$ 고정 환산 구간에서 실제 환율 구간으로 넘어가요 — 환율이 오른 만큼(약 15%)이 성장률에 같이 잡혀 있어요.
+        $ 보기로 바꾸면 환율을 뺀 성장률을 볼 수 있어요.</div>` : ''}
     </div>
 
     <div class="card">
@@ -2607,6 +2680,9 @@ function assetLogHTML(pf, cur, compact, signed) {
         <div class="v">${dMoney(divTotUSD, divTotKRW / divTotUSD)}</div>
         <div class="s">${cur === 'USD' ? '≈ ₩' + Math.round(divTotKRW).toLocaleString('en-US') : '≈ $' + Math.round(divTotUSD).toLocaleString('en-US')} · 세금 떼고 실제 입금된 금액</div>
       </div>
+      <div class="sec-sub">쌓여온 배당 <span>받을 때마다 더해진 누적선</span></div>
+      ${hxDivChartSVG(cur)}
+      <div class="hx-gapnote">2025년부터는 연 합계만 있어서 그 구간은 점선이에요</div>
       <div class="sec-sub">연도별 <span>막대를 탭하면 그 해 상세 · 오른쪽은 전년 대비</span></div>
       <div class="wbars" style="gap:9px">${yearBars}</div>
       ${dyDetail}
