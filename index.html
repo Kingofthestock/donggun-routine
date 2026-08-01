@@ -783,7 +783,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.9.2';
+const APP_VERSION = '1.9.3';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -2380,7 +2380,7 @@ function hxSeries(pf) {
   return pts;
 }
 /* 지금까지 쌓인 배당 — 받을 때마다 더해 올라가는 누적선
-   월별 내역이 있는 해(~2024)는 실선, 연 합계만 아는 해(2025~)는 점선 + 점 */
+   월별 내역이 있는 해(~2024)는 월마다 꺾이고, 연 합계만 아는 해(2025~)는 점으로 표시 */
 const dyUpto = d => d.partial ? (+PF_SNAPSHOT.priceDate.slice(5, 7)) : 12;
 function hxDivSeries() {
   const dIdx = (y, m) => (y - 2021) * 12 + (m - 1);
@@ -2414,9 +2414,7 @@ function hxDivChartSVG(cur) {
   const lab = v => cur === 'USD'
     ? '$' + Math.round(v).toLocaleString('en-US')
     : (v >= 1e8 ? (Math.round(v / 1e6) / 100) + '억' : Math.round(v / 1e4).toLocaleString('en-US') + '만');
-  const solid = pts.filter(p => !p.mark);
   const rest = pts.filter(p => p.mark);
-  const gapPts = solid.length ? [solid[solid.length - 1], ...rest] : rest;
   const grid = [top, top / 2].map(v =>
     `<line x1="${x0}" y1="${Y(v).toFixed(1)}" x2="${x1}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
      <text x="${x0 + 2}" y="${(Y(v) - 3).toFixed(1)}" font-size="7.5" fill="var(--faint)">${lab(v)}</text>`).join('');
@@ -2427,15 +2425,14 @@ function hxDivChartSVG(cur) {
   }).join('');
   const dots = rest.map(p =>
     `<circle cx="${X(p.x).toFixed(1)}" cy="${Y(val(p)).toFixed(1)}" r="3.4" fill="var(--violet)" stroke="var(--card)" stroke-width="1.6"/>`).join('');
-  const area = solid.length
-    ? `${line(solid)} L${X(solid[solid.length - 1].x).toFixed(1)} ${y1} L${X(solid[0].x).toFixed(1)} ${y1} Z` : '';
+  // 누적선은 처음부터 끝까지 한 줄 — 연 합계만 아는 구간은 점으로만 표시해요
+  const area = `${line(pts)} L${X(pts[pts.length - 1].x).toFixed(1)} ${y1} L${X(pts[0].x).toFixed(1)} ${y1} Z`;
   return `<svg class="hx-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="2021년부터 지금까지 쌓인 누적 배당">
     ${grid}${yearMarks}
-    ${area ? `<path d="${area}" fill="var(--violet)" opacity=".10"/>` : ''}
-    <path d="${line(solid)}" fill="none" stroke="var(--violet)" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round"/>
-    <path d="${line(gapPts)}" fill="none" stroke="var(--violet)" stroke-width="2.1" stroke-dasharray="4 3" opacity=".65"/>
+    <path d="${area}" fill="var(--violet)" opacity=".10"/>
+    <path d="${line(pts)}" fill="none" stroke="var(--violet)" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round"/>
     ${dots}
-    <text x="${x0}" y="${H - 5}" font-size="7.5" fill="var(--faint)">— 쌓인 배당(세후)  ---- 연 합계만 아는 구간  ●= 연 기록</text>
+    <text x="${x0}" y="${H - 5}" font-size="7.5" fill="var(--faint)">— 쌓인 배당(세후)  ●= 연 합계만 기록된 해</text>
   </svg>`;
 }
 // 자산 추이 SVG — 원화 기준(실선 = 기록 구간, 점선 = 기록이 비는 구간)
@@ -2682,7 +2679,7 @@ function assetLogHTML(pf, cur, compact, signed) {
       </div>
       <div class="sec-sub">쌓여온 배당 <span>받을 때마다 더해진 누적선</span></div>
       ${hxDivChartSVG(cur)}
-      <div class="hx-gapnote">2025년부터는 연 합계만 있어서 그 구간은 점선이에요</div>
+      <div class="hx-gapnote">2025년부터는 월별 내역 없이 연 합계만 있어서 ● 로만 찍혀 있어요</div>
       <div class="sec-sub">연도별 <span>막대를 탭하면 그 해 상세 · 오른쪽은 전년 대비</span></div>
       <div class="wbars" style="gap:9px">${yearBars}</div>
       ${dyDetail}
