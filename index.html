@@ -497,6 +497,58 @@ input,select,textarea{font:inherit;color:var(--text)}
 .quote-card .q-txt{font-size:.87rem;line-height:1.65;word-break:keep-all}
 .quote-card .q-author{margin-top:5px;font-size:.74rem;color:var(--faint);font-weight:700;text-align:right}
 
+/* ---------- 오늘의 영어 ---------- */
+.en-card{border-left:3px solid var(--violet)}
+.en-list{display:flex;flex-direction:column;margin-top:-4px}
+.en-w{display:block;width:100%;text-align:left;padding:8px 2px;border-top:1px solid var(--line)}
+.en-w:first-child{border-top:none}
+.en-top{display:flex;align-items:baseline;gap:7px}
+.en-top b{font-size:.94rem;font-weight:800}
+.en-top i{font-style:normal;font-size:.66rem;color:var(--faint);font-weight:700;flex:none}
+.en-top span{flex:1;text-align:right;font-size:.82rem;color:var(--sub);font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.en-ex{display:none;padding:8px 0 2px;font-size:.79rem;line-height:1.65;color:var(--faint)}
+.en-w.open .en-ex{display:block}
+.en-ex em{font-style:normal;display:block;color:var(--sub);font-weight:600;margin-bottom:2px}
+.en-ph{margin-top:12px;padding:12px 13px;border-radius:12px;background:var(--card2)}
+.en-ph .ep-e{font-size:.9rem;font-weight:700;line-height:1.55;word-break:break-word}
+.en-ph .ep-k{margin-top:4px;font-size:.83rem;color:var(--sub)}
+.en-ph .ep-n{margin-top:7px;font-size:.72rem;color:var(--faint);line-height:1.55}
+
+/* ---------- 오늘의 칼로리 (섭취 vs 소비) ---------- */
+.kcal-nums{display:flex;gap:8px}
+.kcal-b{flex:1;text-align:center;padding:9px 4px;border-radius:12px;background:var(--card2)}
+.kcal-b b{display:block;font-size:1rem;font-weight:800}
+.kcal-b span{font-size:.67rem;color:var(--faint);font-weight:700}
+.kcal-b.net b{color:var(--accent-dark)}
+[data-theme="dark"] .kcal-b.net b{color:var(--accent)}
+.kcal-b.net.over b,[data-theme="dark"] .kcal-b.net.over b{color:var(--red)}
+.kcal-note{margin-top:9px;font-size:.7rem;color:var(--faint);line-height:1.55}
+
+/* ---------- 식단 칼로리 자동 계산 ---------- */
+.meal-line{display:flex;gap:7px}
+.meal-line .lf-meal{flex:1;min-width:0}
+.meal-line .lf-kcal{flex:0 0 78px;text-align:right}
+.mk-hint{margin-top:5px;font-size:.72rem;color:var(--faint);line-height:1.7}
+.mk-hint .miss{color:var(--amber);font-weight:700}
+.mk-add{margin-left:4px;padding:2px 8px;border-radius:99px;background:var(--card2);color:var(--sub);font-size:.68rem;font-weight:800}
+.mk-total{text-align:right;font-size:.88rem;font-weight:800;margin:-4px 0 14px}
+.mk-total span{font-size:.74rem;color:var(--faint);font-weight:600}
+
+/* ---------- 애플워치·피트니스 가져오기 ---------- */
+.fit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
+.fit-grid .field{margin-bottom:0}
+.fit-btns{display:flex;gap:8px;margin-bottom:12px}
+.fit-btns .btn{flex:1;min-width:0}
+.guide-ol{font-size:.85rem;color:var(--sub);line-height:1.9;word-break:keep-all}
+.guide-ol b{color:var(--text)}
+.guide-ol .step{margin-top:13px}
+.guide-pre{
+  background:var(--card2);border-radius:11px;padding:11px 12px;margin:9px 0;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.74rem;line-height:1.75;white-space:pre-wrap;word-break:break-all;color:var(--text);
+}
+
 /* ---------- 주간 리포트 ---------- */
 .wr-line{font-size:.85rem;color:var(--sub);padding:9px 2px;line-height:1.6}
 .wr-line+.wr-line{border-top:1px solid var(--line)}
@@ -626,6 +678,8 @@ textarea.input{resize:vertical;min-height:64px}
 .life-line .input{flex:1;min-width:0}
 .life-line [data-f="a"]{flex:0 0 88px}
 .life-line [data-f="k"]{flex:0 0 68px}
+#fit-rows .life-line [data-f="a"]{flex:0 0 54px}
+#fit-rows .life-line [data-f="k"]{flex:0 0 62px}
 .life-line .lf-rm{flex:none;width:34px;border-radius:10px;color:var(--faint);background:var(--card2);font-size:.85rem}
 
 /* ---------- 메모장 ---------- */
@@ -726,6 +780,14 @@ textarea.input{resize:vertical;min-height:64px}
   max-width:88vw;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 되돌리기 버튼이 붙은 토스트 — 눌러야 하니 클릭을 받아요 */
+#toast.has-undo{display:inline-flex;align-items:center;gap:12px;padding:8px 8px 8px 20px}
+#toast.show.has-undo{pointer-events:auto}
+#toast .t-msg{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#toast .t-undo{
+  flex:none;background:none;border:1.5px solid currentColor;color:inherit;
+  font:inherit;font-weight:800;padding:5px 13px;border-radius:99px;cursor:pointer;
+}
 </style>
 </head>
 <body>
@@ -786,7 +848,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.9.6';
+const APP_VERSION = '1.11.0';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -869,36 +931,71 @@ const DEFAULT_DATA = () => ({
   trackers: [],
   trackerLog: {},
   lifeLog: {},
-  memos: []
+  memos: [],
+  trash: [],
+  foodDB: []          // 기본 표에 없어서 직접 등록한 음식 [{n, k, u}]
 });
 let S = DEFAULT_DATA();
 
-function load() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (raw) { S = Object.assign(DEFAULT_DATA(), JSON.parse(raw)); return; }
-  } catch (e) {
-    try {
-      const bak = localStorage.getItem(LS_KEY + '_bak');
-      if (bak) { S = Object.assign(DEFAULT_DATA(), JSON.parse(bak)); toast('백업 데이터에서 복구했어요'); return; }
-    } catch (e2) {}
+/* 저장된 데이터에 '새로 생긴 기본값'을 채워 넣어요.
+   최상위만 합치면(Object.assign) settings·meta가 통째로 교체돼서
+   나중에 추가한 하위 항목이 기존 사용자에게 전달되지 않아요. */
+function fillDefaults(saved, defaults) {
+  if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return saved;
+  for (const k of Object.keys(defaults)) {
+    const dv = defaults[k];
+    if (!(k in saved) || saved[k] == null) saved[k] = dv;
+    else if (dv && typeof dv === 'object' && !Array.isArray(dv)) fillDefaults(saved[k], dv);
   }
+  return saved;
+}
+function parseSaved(raw) {
+  const d = JSON.parse(raw);
+  if (!d || typeof d !== 'object' || Array.isArray(d)) throw new Error('bad shape');
+  return fillDefaults(d, DEFAULT_DATA());
+}
+function load() {
+  const raw = (() => { try { return localStorage.getItem(LS_KEY); } catch (e) { return null; } })();
+  if (raw) {
+    try { S = parseSaved(raw); return; } catch (e) {}
+  }
+  // 본 데이터가 깨졌거나 아예 사라진 경우 모두 보조 백업을 시도해요
+  try {
+    const bak = localStorage.getItem(LS_KEY + '_bak');
+    if (bak) {
+      S = parseSaved(bak);
+      setTimeout(() => toast('백업 데이터에서 복구했어요'), 1400);
+      return;
+    }
+  } catch (e) {}
   S = DEFAULT_DATA();
 }
 function save() {
+  // 오늘 첫 저장이면 '덮어쓰기 전' 상태를 미리 챙겨둬요
+  let bakDue = false, prev = null;
+  try {
+    bakDue = localStorage.getItem(LS_KEY + '_bakday') !== todayStr();
+    if (bakDue) prev = localStorage.getItem(LS_KEY);
+  } catch (e) { bakDue = false; }
   try {
     if (!applyingRemote) S.meta.updatedAt = new Date().toISOString();
-    const raw = JSON.stringify(S);
-    // 하루 1회, 덮어쓰기 전 상태를 보조 백업으로 보관
-    const bakDay = localStorage.getItem(LS_KEY + '_bakday');
-    if (bakDay !== todayStr()) {
-      const prev = localStorage.getItem(LS_KEY);
-      if (prev) localStorage.setItem(LS_KEY + '_bak', prev);
-      localStorage.setItem(LS_KEY + '_bakday', todayStr());
-    }
-    localStorage.setItem(LS_KEY, raw);
+    // 본 저장이 항상 먼저 — 보조 백업(용량 2배) 때문에 본 저장이 실패하면 안 돼요
+    localStorage.setItem(LS_KEY, JSON.stringify(S));
     queuePush();
-  } catch (e) { toast('⚠️ 저장 공간이 부족해요'); }
+  } catch (e) {
+    toast('⚠️ 저장 공간이 부족해요 — 백업 내보내기로 지켜주세요');
+    return;
+  }
+  if (bakDue) dailyBackup(prev);
+}
+// 하루 1회 보조 백업. 실패해도 본 저장에는 영향이 없어요.
+function dailyBackup(prev) {
+  try {
+    localStorage.setItem(LS_KEY + '_bakday', todayStr());   // 먼저 찍어서 실패 시 재시도 폭주를 막아요
+    if (prev) localStorage.setItem(LS_KEY + '_bak', prev);
+  } catch (e) {
+    try { localStorage.removeItem(LS_KEY + '_bak'); } catch (e2) {}   // 반쪽 백업은 지워요
+  }
 }
 
 /* ---------- 조회/통계 ---------- */
@@ -945,7 +1042,10 @@ function rCurStreak(r) {
   return n;
 }
 function rBestStreak(r) {
-  const dates = Object.keys(S.routineLog).filter(d => isRDone(r.id, d)).sort();
+  // 시작일 이전 기록과, 나중에 요일을 바꿔서 '예정일이 아니게 된' 날은 세지 않아요
+  const limit = r.startDate || '2000-01-01';
+  const dates = Object.keys(S.routineLog)
+    .filter(d => d >= limit && r.days.includes(dow(d)) && isRDone(r.id, d)).sort();
   if (!dates.length) return 0;
   let best = 0, cur = 0, prev = null;
   for (const d of dates) {
@@ -1409,6 +1509,446 @@ const QUOTES = [
 ];
 const dailyQuote = d => QUOTES[((diffDays('2000-01-01', d) % QUOTES.length) + QUOTES.length) % QUOTES.length];
 
+/* ---------- 오늘의 영어 ----------
+   고등학교~토익 사이 난이도. 10개씩 묶어 하루치가 되고, 묶음마다 주제가 있어요.
+   총 300개 = 30일에 한 바퀴 — 한 달에 한 번씩 자연스럽게 복습돼요.
+   w 단어 / p 품사 / k 뜻 / e 예문 / t 예문 해석 */
+const EN_WORDS = [
+  /* 1. 일과 성취 */
+  { w: 'accomplish', p: 'v.', k: '해내다, 성취하다', e: 'She accomplished the task on time.', t: '그녀는 그 일을 제때 해냈다.' },
+  { w: 'achieve', p: 'v.', k: '이루다, 달성하다', e: 'We achieved our sales goal.', t: '우리는 매출 목표를 달성했다.' },
+  { w: 'accurate', p: 'a.', k: '정확한', e: 'His report was accurate.', t: '그의 보고서는 정확했다.' },
+  { w: 'assign', p: 'v.', k: '배정하다, 맡기다', e: 'The manager assigned me a new task.', t: '부장이 내게 새 업무를 맡겼다.' },
+  { w: 'complete', p: 'v./a.', k: '완료하다; 완전한', e: 'Please complete the form.', t: '양식을 빠짐없이 작성해 주세요.' },
+  { w: 'efficient', p: 'a.', k: '효율적인', e: 'This method is more efficient.', t: '이 방법이 더 효율적이다.' },
+  { w: 'productive', p: 'a.', k: '생산적인', e: 'It was a productive morning.', t: '생산적인 아침이었다.' },
+  { w: 'deadline', p: 'n.', k: '마감일', e: 'The deadline is next Friday.', t: '마감은 다음 주 금요일이다.' },
+  { w: 'progress', p: 'n.', k: '진척, 진전', e: 'We made steady progress.', t: '우리는 꾸준히 진전을 이뤘다.' },
+  { w: 'reliable', p: 'a.', k: '믿을 만한', e: 'He is a reliable worker.', t: '그는 믿을 만한 직원이다.' },
+  /* 2. 회의와 소통 */
+  { w: 'agenda', p: 'n.', k: '안건, 의제', e: 'Let us review the agenda.', t: '안건을 검토해 봅시다.' },
+  { w: 'attend', p: 'v.', k: '참석하다', e: 'I will attend the meeting.', t: '저는 그 회의에 참석하겠습니다.' },
+  { w: 'clarify', p: 'v.', k: '명확히 하다', e: 'Could you clarify that point?', t: '그 부분을 명확히 해 주시겠어요?' },
+  { w: 'discuss', p: 'v.', k: '논의하다', e: 'We discussed the budget.', t: '우리는 예산을 논의했다.' },
+  { w: 'inform', p: 'v.', k: '알리다', e: 'Please inform me of any change.', t: '변경이 있으면 알려 주세요.' },
+  { w: 'mention', p: 'v.', k: '언급하다', e: 'He mentioned your name.', t: '그가 당신 이름을 언급했다.' },
+  { w: 'remind', p: 'v.', k: '상기시키다', e: 'Remind me to call him.', t: '그에게 전화하라고 알려 줘.' },
+  { w: 'respond', p: 'v.', k: '답하다, 반응하다', e: 'She responded to my email.', t: '그녀가 내 메일에 답했다.' },
+  { w: 'summarize', p: 'v.', k: '요약하다', e: 'Let me summarize the results.', t: '결과를 요약해 보겠습니다.' },
+  { w: 'translate', p: 'v.', k: '번역하다', e: 'Can you translate this sentence?', t: '이 문장을 번역해 줄 수 있어?' },
+  /* 3. 계획과 일정 */
+  { w: 'arrange', p: 'v.', k: '준비하다, 잡다', e: 'I arranged a meeting for Monday.', t: '월요일에 회의를 잡았다.' },
+  { w: 'confirm', p: 'v.', k: '확정하다, 확인해 주다', e: 'Please confirm your booking.', t: '예약을 확정해 주세요.' },
+  { w: 'delay', p: 'n./v.', k: '지연; 미루다', e: 'The flight was delayed.', t: '항공편이 지연되었다.' },
+  { w: 'estimate', p: 'v./n.', k: '추정하다; 견적', e: 'We estimate two weeks.', t: '우리는 2주 정도로 봅니다.' },
+  { w: 'postpone', p: 'v.', k: '연기하다', e: 'They postponed the event.', t: '그들은 행사를 연기했다.' },
+  { w: 'prepare', p: 'v.', k: '준비하다', e: 'I prepared the documents.', t: '나는 서류를 준비했다.' },
+  { w: 'schedule', p: 'n./v.', k: '일정; 일정을 잡다', e: 'The schedule is tight.', t: '일정이 빠듯하다.' },
+  { w: 'upcoming', p: 'a.', k: '다가오는', e: 'The upcoming trip is next month.', t: '다가오는 여행은 다음 달이다.' },
+  { w: 'available', p: 'a.', k: '시간이 되는, 이용 가능한', e: 'Are you available at three?', t: '3시에 시간 되세요?' },
+  { w: 'ahead', p: 'ad.', k: '앞으로, 미리', e: 'We finished ahead of schedule.', t: '우리는 예정보다 일찍 끝냈다.' },
+  /* 4. 돈과 예산 */
+  { w: 'afford', p: 'v.', k: '여유가 되다', e: 'I cannot afford a new car.', t: '새 차를 살 여유가 없다.' },
+  { w: 'budget', p: 'n.', k: '예산', e: 'The budget is limited.', t: '예산이 한정되어 있다.' },
+  { w: 'expense', p: 'n.', k: '비용, 지출', e: 'Travel expenses are covered.', t: '출장 비용은 지원된다.' },
+  { w: 'income', p: 'n.', k: '수입, 소득', e: 'His income doubled.', t: '그의 수입이 두 배가 되었다.' },
+  { w: 'invest', p: 'v.', k: '투자하다', e: 'She invests in stocks.', t: '그녀는 주식에 투자한다.' },
+  { w: 'profit', p: 'n.', k: '이익', e: 'The company made a profit.', t: '그 회사는 이익을 냈다.' },
+  { w: 'refund', p: 'n./v.', k: '환불(하다)', e: 'I asked for a refund.', t: '나는 환불을 요청했다.' },
+  { w: 'discount', p: 'n.', k: '할인', e: 'They offer a ten percent discount.', t: '그들은 10% 할인을 해 준다.' },
+  { w: 'charge', p: 'v./n.', k: '청구하다; 요금', e: 'They charged me twice.', t: '그들은 내게 두 번 청구했다.' },
+  { w: 'save', p: 'v.', k: '저축하다, 아끼다', e: 'I save part of my salary.', t: '나는 월급의 일부를 저축한다.' },
+  /* 5. 회사와 조직 */
+  { w: 'colleague', p: 'n.', k: '동료', e: 'My colleague helped me.', t: '동료가 나를 도와줬다.' },
+  { w: 'department', p: 'n.', k: '부서', e: 'She works in the sales department.', t: '그녀는 영업부에서 일한다.' },
+  { w: 'employee', p: 'n.', k: '직원', e: 'The company hired ten employees.', t: '그 회사는 직원 열 명을 채용했다.' },
+  { w: 'hire', p: 'v.', k: '고용하다', e: 'They hired a new designer.', t: '그들은 새 디자이너를 고용했다.' },
+  { w: 'manage', p: 'v.', k: '관리하다, 해내다', e: 'He manages a small team.', t: '그는 작은 팀을 관리한다.' },
+  { w: 'promote', p: 'v.', k: '승진시키다, 홍보하다', e: 'She was promoted last year.', t: '그녀는 작년에 승진했다.' },
+  { w: 'resign', p: 'v.', k: '사직하다', e: 'He resigned from his post.', t: '그는 자리에서 물러났다.' },
+  { w: 'staff', p: 'n.', k: '직원(전체)', e: 'The staff are very kind.', t: '직원들이 아주 친절하다.' },
+  { w: 'position', p: 'n.', k: '직위, 자리', e: 'He applied for the position.', t: '그는 그 자리에 지원했다.' },
+  { w: 'retire', p: 'v.', k: '은퇴하다', e: 'My father retired at sixty.', t: '아버지는 예순에 은퇴하셨다.' },
+  /* 6. 계약과 규칙 */
+  { w: 'agreement', p: 'n.', k: '합의, 계약', e: 'We reached an agreement.', t: '우리는 합의에 이르렀다.' },
+  { w: 'approve', p: 'v.', k: '승인하다', e: 'The board approved the plan.', t: '이사회가 그 계획을 승인했다.' },
+  { w: 'contract', p: 'n.', k: '계약(서)', e: 'Please sign the contract.', t: '계약서에 서명해 주세요.' },
+  { w: 'forbid', p: 'v.', k: '금지하다', e: 'Smoking is forbidden here.', t: '이곳은 흡연 금지다.' },
+  { w: 'obey', p: 'v.', k: '따르다, 지키다', e: 'Drivers must obey the rules.', t: '운전자는 규칙을 지켜야 한다.' },
+  { w: 'permit', p: 'v./n.', k: '허가하다; 허가증', e: 'Parking is not permitted.', t: '주차는 허용되지 않는다.' },
+  { w: 'policy', p: 'n.', k: '방침, 정책', e: 'Our return policy is simple.', t: '우리 반품 정책은 간단하다.' },
+  { w: 'require', p: 'v.', k: '요구하다, 필요로 하다', e: 'This job requires patience.', t: '이 일은 인내가 필요하다.' },
+  { w: 'responsible', p: 'a.', k: '책임이 있는', e: 'You are responsible for this.', t: '이건 당신 책임이다.' },
+  { w: 'violate', p: 'v.', k: '위반하다', e: 'He violated the agreement.', t: '그는 합의를 위반했다.' },
+  /* 7. 문제와 해결 */
+  { w: 'issue', p: 'n.', k: '문제, 사안', e: 'We solved the issue quickly.', t: '우리는 문제를 빠르게 해결했다.' },
+  { w: 'cause', p: 'n./v.', k: '원인; 일으키다', e: 'Heavy rain caused the delay.', t: '폭우가 지연을 일으켰다.' },
+  { w: 'complain', p: 'v.', k: '불평하다', e: 'Customers complained about noise.', t: '고객들이 소음에 불평했다.' },
+  { w: 'handle', p: 'v.', k: '다루다, 처리하다', e: 'She handled the situation well.', t: '그녀는 상황을 잘 처리했다.' },
+  { w: 'prevent', p: 'v.', k: '막다, 예방하다', e: 'Exercise prevents many diseases.', t: '운동은 많은 병을 예방한다.' },
+  { w: 'replace', p: 'v.', k: '교체하다', e: 'We replaced the old parts.', t: '우리는 낡은 부품을 교체했다.' },
+  { w: 'solve', p: 'v.', k: '해결하다', e: 'He solved the problem alone.', t: '그는 혼자 문제를 해결했다.' },
+  { w: 'struggle', p: 'v./n.', k: '애쓰다; 고투', e: 'I struggled with the math.', t: '나는 그 수학 문제로 애를 먹었다.' },
+  { w: 'avoid', p: 'v.', k: '피하다', e: 'Try to avoid rush hour.', t: '혼잡 시간대를 피하도록 해라.' },
+  { w: 'adjust', p: 'v.', k: '조정하다, 적응하다', e: 'We adjusted the plan slightly.', t: '우리는 계획을 조금 조정했다.' },
+  /* 8. 감정과 태도 */
+  { w: 'anxious', p: 'a.', k: '불안한', e: 'She felt anxious before the test.', t: '그녀는 시험 전에 불안했다.' },
+  { w: 'confident', p: 'a.', k: '자신 있는', e: 'He is confident about the result.', t: '그는 결과를 자신한다.' },
+  { w: 'disappointed', p: 'a.', k: '실망한', e: 'I was disappointed with the movie.', t: '나는 그 영화에 실망했다.' },
+  { w: 'eager', p: 'a.', k: '몹시 하고 싶어 하는', e: 'They were eager to start.', t: '그들은 어서 시작하고 싶어 했다.' },
+  { w: 'grateful', p: 'a.', k: '감사하는', e: 'I am grateful for your help.', t: '도와주셔서 감사합니다.' },
+  { w: 'nervous', p: 'a.', k: '긴장한', e: 'Do not be nervous.', t: '긴장하지 마세요.' },
+  { w: 'proud', p: 'a.', k: '자랑스러운', e: 'She is proud of her son.', t: '그녀는 아들을 자랑스러워한다.' },
+  { w: 'satisfied', p: 'a.', k: '만족한', e: 'Customers were satisfied.', t: '고객들은 만족했다.' },
+  { w: 'upset', p: 'a.', k: '속상한, 화난', e: 'He got upset at the news.', t: '그는 그 소식에 속상해했다.' },
+  { w: 'relieved', p: 'a.', k: '안도한', e: 'I felt relieved after the call.', t: '통화 후에 마음이 놓였다.' },
+  /* 9. 성격과 사람 */
+  { w: 'generous', p: 'a.', k: '너그러운, 후한', e: 'He is generous with his time.', t: '그는 시간을 아끼지 않고 내준다.' },
+  { w: 'honest', p: 'a.', k: '정직한', e: 'Be honest with yourself.', t: '자신에게 정직해라.' },
+  { w: 'humble', p: 'a.', k: '겸손한', e: 'She stayed humble after winning.', t: '그녀는 우승 후에도 겸손했다.' },
+  { w: 'patient', p: 'a.', k: '인내심 있는', e: 'Teachers must be patient.', t: '교사는 인내심이 있어야 한다.' },
+  { w: 'polite', p: 'a.', k: '예의 바른', e: 'He gave a polite answer.', t: '그는 예의 바르게 답했다.' },
+  { w: 'selfish', p: 'a.', k: '이기적인', e: 'That was a selfish choice.', t: '그건 이기적인 선택이었다.' },
+  { w: 'stubborn', p: 'a.', k: '고집 센', e: 'My brother is stubborn.', t: '내 동생은 고집이 세다.' },
+  { w: 'sincere', p: 'a.', k: '진심 어린', e: 'Please accept my sincere apology.', t: '진심 어린 사과를 받아 주세요.' },
+  { w: 'curious', p: 'a.', k: '호기심 많은', e: 'Children are naturally curious.', t: '아이들은 원래 호기심이 많다.' },
+  { w: 'mature', p: 'a.', k: '성숙한', e: 'She is mature for her age.', t: '그녀는 나이에 비해 성숙하다.' },
+  /* 10. 배움과 지식 */
+  { w: 'concentrate', p: 'v.', k: '집중하다', e: 'I cannot concentrate here.', t: '여기서는 집중이 안 된다.' },
+  { w: 'explain', p: 'v.', k: '설명하다', e: 'Let me explain it again.', t: '다시 설명해 드릴게요.' },
+  { w: 'improve', p: 'v.', k: '나아지다, 향상시키다', e: 'My English is improving.', t: '내 영어가 늘고 있다.' },
+  { w: 'memorize', p: 'v.', k: '암기하다', e: 'Try to memorize ten words a day.', t: '하루에 열 단어를 외워 봐라.' },
+  { w: 'practice', p: 'n./v.', k: '연습(하다)', e: 'Practice makes perfect.', t: '연습이 완벽을 만든다.' },
+  { w: 'review', p: 'v./n.', k: '복습하다; 검토', e: 'Review your notes tonight.', t: '오늘 밤 필기를 복습해라.' },
+  { w: 'knowledge', p: 'n.', k: '지식', e: 'Knowledge grows when shared.', t: '지식은 나눌수록 자란다.' },
+  { w: 'lecture', p: 'n.', k: '강의', e: 'The lecture was interesting.', t: '그 강의는 흥미로웠다.' },
+  { w: 'assignment', p: 'n.', k: '과제', e: 'The assignment is due tomorrow.', t: '과제는 내일까지다.' },
+  { w: 'graduate', p: 'v.', k: '졸업하다', e: 'He graduated last spring.', t: '그는 지난봄에 졸업했다.' },
+  /* 11. 건강과 몸 */
+  { w: 'breathe', p: 'v.', k: '숨 쉬다', e: 'Breathe slowly and relax.', t: '천천히 숨 쉬고 긴장을 풀어라.' },
+  { w: 'exhausted', p: 'a.', k: '몹시 지친', e: 'I was exhausted after work.', t: '퇴근 후 몹시 지쳤다.' },
+  { w: 'injury', p: 'n.', k: '부상', e: 'He recovered from the injury.', t: '그는 부상에서 회복했다.' },
+  { w: 'recover', p: 'v.', k: '회복하다', e: 'She recovered in a week.', t: '그녀는 일주일 만에 회복했다.' },
+  { w: 'symptom', p: 'n.', k: '증상', e: 'The symptoms disappeared.', t: '증상이 사라졌다.' },
+  { w: 'treatment', p: 'n.', k: '치료', e: 'The treatment worked well.', t: '치료가 잘 들었다.' },
+  { w: 'muscle', p: 'n.', k: '근육', e: 'Lifting weights builds muscle.', t: '웨이트는 근육을 키운다.' },
+  { w: 'prescription', p: 'n.', k: '처방전', e: 'The doctor wrote a prescription.', t: '의사가 처방전을 써 줬다.' },
+  { w: 'appetite', p: 'n.', k: '식욕', e: 'I have lost my appetite.', t: '입맛이 없다.' },
+  { w: 'endurance', p: 'n.', k: '지구력', e: 'Running improves endurance.', t: '달리기는 지구력을 길러 준다.' },
+  /* 12. 음식과 식사 */
+  { w: 'ingredient', p: 'n.', k: '재료', e: 'Fresh ingredients matter most.', t: '신선한 재료가 가장 중요하다.' },
+  { w: 'nutrition', p: 'n.', k: '영양', e: 'Good nutrition keeps you strong.', t: '좋은 영양이 몸을 튼튼하게 한다.' },
+  { w: 'recipe', p: 'n.', k: '조리법', e: 'This recipe is easy.', t: '이 조리법은 쉽다.' },
+  { w: 'reserve', p: 'v.', k: '예약하다', e: 'I reserved a table for two.', t: '2인 자리를 예약했다.' },
+  { w: 'serve', p: 'v.', k: '제공하다, 내다', e: 'They serve breakfast until ten.', t: '그들은 10시까지 아침을 낸다.' },
+  { w: 'taste', p: 'n./v.', k: '맛; 맛이 나다', e: 'The soup tastes salty.', t: '국이 짜다.' },
+  { w: 'portion', p: 'n.', k: '1인분, 몫', e: 'The portion was too large.', t: '양이 너무 많았다.' },
+  { w: 'vegetarian', p: 'n./a.', k: '채식주의자(의)', e: 'She became a vegetarian.', t: '그녀는 채식주의자가 되었다.' },
+  { w: 'beverage', p: 'n.', k: '음료', e: 'Beverages are free here.', t: '여기는 음료가 무료다.' },
+  { w: 'swallow', p: 'v.', k: '삼키다', e: 'Chew well before you swallow.', t: '삼키기 전에 잘 씹어라.' },
+  /* 13. 여행과 이동 */
+  { w: 'board', p: 'v.', k: '탑승하다', e: 'We boarded the plane early.', t: '우리는 일찍 비행기에 탔다.' },
+  { w: 'departure', p: 'n.', k: '출발', e: 'The departure was delayed.', t: '출발이 지연되었다.' },
+  { w: 'destination', p: 'n.', k: '목적지', e: 'We reached our destination.', t: '우리는 목적지에 도착했다.' },
+  { w: 'luggage', p: 'n.', k: '짐, 수하물', e: 'My luggage is missing.', t: '내 짐이 없어졌다.' },
+  { w: 'passenger', p: 'n.', k: '승객', e: 'The passenger looked tired.', t: '그 승객은 피곤해 보였다.' },
+  { w: 'reservation', p: 'n.', k: '예약', e: 'I made a reservation online.', t: '온라인으로 예약했다.' },
+  { w: 'fare', p: 'n.', k: '교통 요금', e: 'The bus fare went up.', t: '버스 요금이 올랐다.' },
+  { w: 'abroad', p: 'ad.', k: '해외로, 해외에서', e: 'He studied abroad for a year.', t: '그는 1년간 해외에서 공부했다.' },
+  { w: 'transfer', p: 'v.', k: '갈아타다, 옮기다', e: 'We transferred at Seoul Station.', t: '우리는 서울역에서 갈아탔다.' },
+  { w: 'souvenir', p: 'n.', k: '기념품', e: 'I bought a small souvenir.', t: '작은 기념품을 샀다.' },
+  /* 14. 집과 생활 */
+  { w: 'appliance', p: 'n.', k: '가전제품', e: 'The kitchen appliances are new.', t: '주방 가전이 새것이다.' },
+  { w: 'furniture', p: 'n.', k: '가구', e: 'We moved the furniture.', t: '우리는 가구를 옮겼다.' },
+  { w: 'laundry', p: 'n.', k: '빨래', e: 'I do laundry on Sundays.', t: '나는 일요일에 빨래를 한다.' },
+  { w: 'neighbor', p: 'n.', k: '이웃', e: 'My neighbor is very quiet.', t: '내 이웃은 아주 조용하다.' },
+  { w: 'rent', p: 'n./v.', k: '집세; 빌리다', e: 'The rent is due today.', t: '오늘이 집세 내는 날이다.' },
+  { w: 'repair', p: 'v./n.', k: '수리(하다)', e: 'The roof needs repair.', t: '지붕을 수리해야 한다.' },
+  { w: 'tidy', p: 'a./v.', k: '정돈된; 정리하다', e: 'Keep your desk tidy.', t: '책상을 깔끔하게 유지해라.' },
+  { w: 'chore', p: 'n.', k: '집안일', e: 'Doing chores takes time.', t: '집안일은 시간이 걸린다.' },
+  { w: 'garbage', p: 'n.', k: '쓰레기', e: 'Take out the garbage.', t: '쓰레기를 내다 버려라.' },
+  { w: 'lease', p: 'n.', k: '임대차 계약', e: 'Our lease ends in June.', t: '우리 임대 계약은 6월에 끝난다.' },
+  /* 15. 쇼핑과 소비 */
+  { w: 'purchase', p: 'v./n.', k: '구매(하다)', e: 'I purchased it online.', t: '나는 그것을 온라인으로 샀다.' },
+  { w: 'receipt', p: 'n.', k: '영수증', e: 'Keep your receipt.', t: '영수증을 보관하세요.' },
+  { w: 'exchange', p: 'v./n.', k: '교환(하다)', e: 'Can I exchange this shirt?', t: '이 셔츠를 교환할 수 있나요?' },
+  { w: 'warranty', p: 'n.', k: '품질 보증(서)', e: 'The warranty lasts two years.', t: '보증 기간은 2년이다.' },
+  { w: 'deliver', p: 'v.', k: '배달하다', e: 'They deliver within a day.', t: '그들은 하루 안에 배달한다.' },
+  { w: 'brand', p: 'n.', k: '상표, 브랜드', e: 'I trust this brand.', t: '나는 이 브랜드를 신뢰한다.' },
+  { w: 'quality', p: 'n.', k: '품질', e: 'The quality is excellent.', t: '품질이 훌륭하다.' },
+  { w: 'bargain', p: 'n.', k: '싸게 산 물건', e: 'This coat was a bargain.', t: '이 코트는 아주 싸게 산 거다.' },
+  { w: 'spend', p: 'v.', k: '(돈·시간을) 쓰다', e: 'I spent too much money.', t: '나는 돈을 너무 많이 썼다.' },
+  { w: 'item', p: 'n.', k: '물품, 항목', e: 'Each item is priced.', t: '각 물품에 가격이 붙어 있다.' },
+  /* 16. 자연과 환경 */
+  { w: 'environment', p: 'n.', k: '환경', e: 'We must protect the environment.', t: '우리는 환경을 지켜야 한다.' },
+  { w: 'pollution', p: 'n.', k: '오염', e: 'Air pollution is getting worse.', t: '대기 오염이 심해지고 있다.' },
+  { w: 'recycle', p: 'v.', k: '재활용하다', e: 'Please recycle plastic bottles.', t: '플라스틱 병은 재활용해 주세요.' },
+  { w: 'resource', p: 'n.', k: '자원', e: 'Water is a limited resource.', t: '물은 한정된 자원이다.' },
+  { w: 'species', p: 'n.', k: '종(생물)', e: 'Many species are in danger.', t: '많은 종이 위기에 처해 있다.' },
+  { w: 'waste', p: 'n./v.', k: '낭비(하다)', e: 'Do not waste food.', t: '음식을 낭비하지 마라.' },
+  { w: 'forest', p: 'n.', k: '숲', e: 'The forest was quiet.', t: '숲은 고요했다.' },
+  { w: 'climate', p: 'n.', k: '기후', e: 'The climate is changing fast.', t: '기후가 빠르게 변하고 있다.' },
+  { w: 'energy', p: 'n.', k: '에너지, 기운', e: 'Solar energy is clean.', t: '태양 에너지는 깨끗하다.' },
+  { w: 'preserve', p: 'v.', k: '보존하다', e: 'We should preserve old buildings.', t: '오래된 건물을 보존해야 한다.' },
+  /* 17. 날씨와 계절 */
+  { w: 'forecast', p: 'n./v.', k: '예보(하다)', e: 'The forecast says rain.', t: '예보에 비가 온다고 한다.' },
+  { w: 'humid', p: 'a.', k: '습한', e: 'Summers here are humid.', t: '이곳 여름은 습하다.' },
+  { w: 'freeze', p: 'v.', k: '얼다, 얼리다', e: 'The lake freezes in winter.', t: '겨울에 그 호수는 언다.' },
+  { w: 'shower', p: 'n.', k: '소나기', e: 'We got caught in a shower.', t: '우리는 소나기를 만났다.' },
+  { w: 'breeze', p: 'n.', k: '산들바람', e: 'A cool breeze came in.', t: '시원한 바람이 들어왔다.' },
+  { w: 'severe', p: 'a.', k: '심한, 혹독한', e: 'Severe weather is expected.', t: '궂은 날씨가 예상된다.' },
+  { w: 'temperature', p: 'n.', k: '기온, 온도', e: 'The temperature dropped fast.', t: '기온이 빠르게 떨어졌다.' },
+  { w: 'flood', p: 'n.', k: '홍수', e: 'The flood damaged the road.', t: '홍수가 도로를 망가뜨렸다.' },
+  { w: 'drought', p: 'n.', k: '가뭄', e: 'The drought lasted for months.', t: '가뭄이 몇 달 이어졌다.' },
+  { w: 'sunset', p: 'n.', k: '일몰, 노을', e: 'We watched the sunset.', t: '우리는 일몰을 봤다.' },
+  /* 18. 시간과 변화 */
+  { w: 'eventually', p: 'ad.', k: '결국', e: 'He eventually agreed.', t: '그는 결국 동의했다.' },
+  { w: 'frequently', p: 'ad.', k: '자주', e: 'She frequently works late.', t: '그녀는 자주 늦게까지 일한다.' },
+  { w: 'gradually', p: 'ad.', k: '점차', e: 'Prices rose gradually.', t: '가격이 점차 올랐다.' },
+  { w: 'immediately', p: 'ad.', k: '즉시', e: 'Call me immediately.', t: '즉시 전화해라.' },
+  { w: 'recently', p: 'ad.', k: '최근에', e: 'I recently moved here.', t: '나는 최근에 이사 왔다.' },
+  { w: 'temporary', p: 'a.', k: '일시적인', e: 'This is a temporary job.', t: '이건 임시직이다.' },
+  { w: 'permanent', p: 'a.', k: '영구적인', e: 'He got a permanent contract.', t: '그는 정규 계약을 맺었다.' },
+  { w: 'constant', p: 'a.', k: '끊임없는', e: 'There was constant noise.', t: '끊임없는 소음이 있었다.' },
+  { w: 'occasion', p: 'n.', k: '때, 경우, 행사', e: 'We met on several occasions.', t: '우리는 여러 번 만났다.' },
+  { w: 'shift', p: 'n./v.', k: '변화; 옮기다', e: 'There was a shift in mood.', t: '분위기에 변화가 있었다.' },
+  /* 19. 크기와 수량 */
+  { w: 'amount', p: 'n.', k: '양, 액수', e: 'We collected a large amount of data.', t: '우리는 많은 양의 자료를 모았다.' },
+  { w: 'approximately', p: 'ad.', k: '대략', e: 'It takes approximately an hour.', t: '대략 한 시간 걸린다.' },
+  { w: 'entire', p: 'a.', k: '전체의', e: 'He read the entire book.', t: '그는 책 전체를 읽었다.' },
+  { w: 'majority', p: 'n.', k: '대다수', e: 'The majority agreed.', t: '대다수가 동의했다.' },
+  { w: 'minor', p: 'a.', k: '사소한, 작은', e: 'It was a minor mistake.', t: '사소한 실수였다.' },
+  { w: 'plenty', p: 'n.', k: '충분한 양', e: 'We have plenty of time.', t: '시간은 충분하다.' },
+  { w: 'reduce', p: 'v.', k: '줄이다', e: 'Reduce your sugar intake.', t: '설탕 섭취를 줄여라.' },
+  { w: 'increase', p: 'v./n.', k: '늘다; 증가', e: 'Sales increased sharply.', t: '매출이 급격히 늘었다.' },
+  { w: 'weigh', p: 'v.', k: '무게가 나가다', e: 'The box weighs ten kilos.', t: '그 상자는 10킬로그램이다.' },
+  { w: 'rate', p: 'n.', k: '비율, 속도', e: 'The success rate is high.', t: '성공률이 높다.' },
+  /* 20. 비교와 판단 */
+  { w: 'compare', p: 'v.', k: '비교하다', e: 'Compare the two plans.', t: '두 계획을 비교해 봐라.' },
+  { w: 'consider', p: 'v.', k: '고려하다', e: 'Please consider my offer.', t: '제 제안을 고려해 주세요.' },
+  { w: 'decide', p: 'v.', k: '결정하다', e: 'We decided to wait.', t: '우리는 기다리기로 했다.' },
+  { w: 'judge', p: 'v./n.', k: '판단하다; 판사', e: 'Do not judge too quickly.', t: '너무 빨리 판단하지 마라.' },
+  { w: 'prefer', p: 'v.', k: '선호하다', e: 'I prefer tea to coffee.', t: '나는 커피보다 차를 좋아한다.' },
+  { w: 'similar', p: 'a.', k: '비슷한', e: 'Their ideas were similar.', t: '그들의 생각은 비슷했다.' },
+  { w: 'opposite', p: 'a./n.', k: '반대의; 반대', e: 'He said the opposite.', t: '그는 반대로 말했다.' },
+  { w: 'obvious', p: 'a.', k: '분명한', e: 'The answer is obvious.', t: '답은 분명하다.' },
+  { w: 'likely', p: 'a.', k: '~할 것 같은', e: 'Rain is likely tonight.', t: '오늘 밤 비가 올 것 같다.' },
+  { w: 'evaluate', p: 'v.', k: '평가하다', e: 'We evaluate results monthly.', t: '우리는 매달 결과를 평가한다.' },
+  /* 21. 원인과 결과 */
+  { w: 'affect', p: 'v.', k: '영향을 미치다', e: 'Sleep affects your mood.', t: '잠은 기분에 영향을 준다.' },
+  { w: 'effect', p: 'n.', k: '영향, 효과', e: 'The medicine had no effect.', t: '그 약은 효과가 없었다.' },
+  { w: 'consequence', p: 'n.', k: '결과', e: 'Every choice has consequences.', t: '모든 선택에는 결과가 따른다.' },
+  { w: 'depend', p: 'v.', k: '~에 달려 있다, 의존하다', e: 'It depends on the weather.', t: '그건 날씨에 달려 있다.' },
+  { w: 'lead', p: 'v.', k: '이끌다, 이어지다', e: 'Hard work leads to success.', t: '노력은 성공으로 이어진다.' },
+  { w: 'result', p: 'n./v.', k: '결과; 결과로 생기다', e: 'The result was surprising.', t: '결과는 놀라웠다.' },
+  { w: 'influence', p: 'n./v.', k: '영향(을 주다)', e: 'His words influenced me.', t: '그의 말이 내게 영향을 줬다.' },
+  { w: 'therefore', p: 'ad.', k: '그러므로', e: 'It rained; therefore we stayed home.', t: '비가 왔고, 그래서 우리는 집에 있었다.' },
+  { w: 'although', p: 'c.', k: '비록 ~일지라도', e: 'Although tired, he kept going.', t: '피곤했지만 그는 계속했다.' },
+  { w: 'despite', p: 'prep.', k: '~에도 불구하고', e: 'Despite the rain, we went out.', t: '비가 왔는데도 우리는 나갔다.' },
+  /* 22. 동의와 반대 */
+  { w: 'accept', p: 'v.', k: '받아들이다', e: 'She accepted the offer.', t: '그녀는 그 제안을 받아들였다.' },
+  { w: 'admit', p: 'v.', k: '인정하다', e: 'He admitted his mistake.', t: '그는 자기 실수를 인정했다.' },
+  { w: 'deny', p: 'v.', k: '부인하다', e: 'She denied the rumor.', t: '그녀는 그 소문을 부인했다.' },
+  { w: 'disagree', p: 'v.', k: '동의하지 않다', e: 'I respectfully disagree.', t: '저는 정중히 반대합니다.' },
+  { w: 'insist', p: 'v.', k: '주장하다, 고집하다', e: 'He insisted on paying.', t: '그는 자기가 계산하겠다고 고집했다.' },
+  { w: 'object', p: 'v.', k: '반대하다', e: 'Nobody objected to the plan.', t: '아무도 그 계획에 반대하지 않았다.' },
+  { w: 'persuade', p: 'v.', k: '설득하다', e: 'She persuaded me to join.', t: '그녀가 나를 설득해 합류시켰다.' },
+  { w: 'support', p: 'v./n.', k: '지지하다; 지원', e: 'We support your decision.', t: '우리는 당신의 결정을 지지한다.' },
+  { w: 'oppose', p: 'v.', k: '반대하다', e: 'Many opposed the new rule.', t: '많은 사람이 새 규칙에 반대했다.' },
+  { w: 'compromise', p: 'n./v.', k: '타협(하다)', e: 'Both sides made a compromise.', t: '양측이 타협했다.' },
+  /* 23. 요청과 제안 */
+  { w: 'request', p: 'n./v.', k: '요청(하다)', e: 'Your request was approved.', t: '당신의 요청이 승인되었다.' },
+  { w: 'suggest', p: 'v.', k: '제안하다', e: 'I suggest we start now.', t: '지금 시작할 것을 제안합니다.' },
+  { w: 'offer', p: 'v./n.', k: '제안하다; 제안', e: 'They offered me a job.', t: '그들은 내게 일자리를 제안했다.' },
+  { w: 'allow', p: 'v.', k: '허락하다', e: 'Allow me to help you.', t: '제가 돕게 해 주세요.' },
+  { w: 'refuse', p: 'v.', k: '거절하다', e: 'He refused the invitation.', t: '그는 초대를 거절했다.' },
+  { w: 'recommend', p: 'v.', k: '추천하다', e: 'I recommend this book.', t: '이 책을 추천합니다.' },
+  { w: 'apologize', p: 'v.', k: '사과하다', e: 'She apologized for the delay.', t: '그녀는 늦은 것을 사과했다.' },
+  { w: 'appreciate', p: 'v.', k: '감사하다, 진가를 알다', e: 'I appreciate your patience.', t: '기다려 주셔서 감사합니다.' },
+  { w: 'volunteer', p: 'v./n.', k: '자원하다; 자원봉사자', e: 'He volunteered to drive.', t: '그가 운전하겠다고 나섰다.' },
+  { w: 'favor', p: 'n.', k: '부탁, 호의', e: 'Can I ask you a favor?', t: '부탁 하나 해도 될까요?' },
+  /* 24. 기술과 도구 */
+  { w: 'device', p: 'n.', k: '기기, 장치', e: 'This device is waterproof.', t: '이 기기는 방수다.' },
+  { w: 'install', p: 'v.', k: '설치하다', e: 'Install the app first.', t: '앱을 먼저 설치해라.' },
+  { w: 'update', p: 'n./v.', k: '갱신(하다)', e: 'The update fixed the bug.', t: '업데이트가 그 오류를 고쳤다.' },
+  { w: 'connect', p: 'v.', k: '연결하다', e: 'Connect the cable here.', t: '여기에 케이블을 연결해라.' },
+  { w: 'function', p: 'n./v.', k: '기능; 작동하다', e: 'This function saves time.', t: '이 기능은 시간을 아껴 준다.' },
+  { w: 'automatic', p: 'a.', k: '자동의', e: 'The backup is automatic.', t: '백업은 자동이다.' },
+  { w: 'battery', p: 'n.', k: '배터리', e: 'My battery is almost dead.', t: '배터리가 거의 다 됐다.' },
+  { w: 'setting', p: 'n.', k: '설정', e: 'Change it in the settings.', t: '설정에서 바꾸세요.' },
+  { w: 'feature', p: 'n.', k: '기능, 특징', e: 'My favorite feature is search.', t: '내가 좋아하는 기능은 검색이다.' },
+  { w: 'upgrade', p: 'v./n.', k: '개선하다; 향상', e: 'We upgraded the system.', t: '우리는 시스템을 개선했다.' },
+  /* 25. 정보와 자료 */
+  { w: 'data', p: 'n.', k: '자료, 데이터', e: 'The data shows a clear trend.', t: '자료가 뚜렷한 흐름을 보여 준다.' },
+  { w: 'evidence', p: 'n.', k: '증거', e: 'There is no evidence yet.', t: '아직 증거가 없다.' },
+  { w: 'source', p: 'n.', k: '출처, 원천', e: 'Check your sources.', t: '출처를 확인해라.' },
+  { w: 'record', p: 'n./v.', k: '기록(하다)', e: 'I record my weight daily.', t: '나는 매일 체중을 기록한다.' },
+  { w: 'report', p: 'n./v.', k: '보고서; 보고하다', e: 'Send me the report today.', t: '오늘 보고서를 보내 주세요.' },
+  { w: 'statistics', p: 'n.', k: '통계', e: 'The statistics are reliable.', t: '그 통계는 믿을 만하다.' },
+  { w: 'survey', p: 'n./v.', k: '설문 조사(하다)', e: 'We ran a customer survey.', t: '우리는 고객 설문을 진행했다.' },
+  { w: 'analyze', p: 'v.', k: '분석하다', e: 'Let us analyze the numbers.', t: '수치를 분석해 봅시다.' },
+  { w: 'detail', p: 'n.', k: '세부 사항', e: 'Please check the details.', t: '세부 사항을 확인해 주세요.' },
+  { w: 'summary', p: 'n.', k: '요약', e: 'Write a short summary.', t: '짧은 요약을 써라.' },
+  /* 26. 법과 사회 */
+  { w: 'citizen', p: 'n.', k: '시민', e: 'Every citizen has rights.', t: '모든 시민은 권리를 가진다.' },
+  { w: 'crime', p: 'n.', k: '범죄', e: 'Crime rates have fallen.', t: '범죄율이 떨어졌다.' },
+  { w: 'justice', p: 'n.', k: '정의, 사법', e: 'They fought for justice.', t: '그들은 정의를 위해 싸웠다.' },
+  { w: 'law', p: 'n.', k: '법', e: 'The law was changed last year.', t: '그 법은 작년에 바뀌었다.' },
+  { w: 'punish', p: 'v.', k: '처벌하다', e: 'He was punished fairly.', t: '그는 정당하게 처벌받았다.' },
+  { w: 'witness', p: 'n./v.', k: '목격자; 목격하다', e: 'A witness came forward.', t: '목격자가 나섰다.' },
+  { w: 'vote', p: 'v./n.', k: '투표(하다)', e: 'I voted this morning.', t: '나는 오늘 아침 투표했다.' },
+  { w: 'society', p: 'n.', k: '사회', e: 'Society changes slowly.', t: '사회는 천천히 변한다.' },
+  { w: 'equal', p: 'a.', k: '동등한', e: 'Everyone deserves equal treatment.', t: '모두가 동등한 대우를 받아야 한다.' },
+  { w: 'charity', p: 'n.', k: '자선(단체)', e: 'She donates to charity.', t: '그녀는 자선 단체에 기부한다.' },
+  /* 27. 예술과 문화 */
+  { w: 'audience', p: 'n.', k: '관객, 청중', e: 'The audience clapped loudly.', t: '관객이 크게 박수 쳤다.' },
+  { w: 'exhibition', p: 'n.', k: '전시(회)', e: 'The exhibition opens on Friday.', t: '전시는 금요일에 시작한다.' },
+  { w: 'perform', p: 'v.', k: '공연하다, 수행하다', e: 'They performed beautifully.', t: '그들은 아름답게 공연했다.' },
+  { w: 'tradition', p: 'n.', k: '전통', e: 'It is a family tradition.', t: '그건 집안 전통이다.' },
+  { w: 'novel', p: 'n.', k: '소설', e: 'I finished the novel last night.', t: '어젯밤 그 소설을 다 읽었다.' },
+  { w: 'author', p: 'n.', k: '작가', e: 'The author signed my book.', t: '작가가 내 책에 사인해 줬다.' },
+  { w: 'describe', p: 'v.', k: '묘사하다', e: 'Describe what you saw.', t: '본 것을 설명해 봐라.' },
+  { w: 'express', p: 'v.', k: '표현하다', e: 'Art expresses feeling.', t: '예술은 감정을 표현한다.' },
+  { w: 'creative', p: 'a.', k: '창의적인', e: 'She has a creative mind.', t: '그녀는 창의적인 사고를 한다.' },
+  { w: 'imagine', p: 'v.', k: '상상하다', e: 'Imagine a quiet beach.', t: '조용한 해변을 상상해 봐라.' },
+  /* 28. 스포츠와 경쟁 */
+  { w: 'compete', p: 'v.', k: '경쟁하다', e: 'They compete every season.', t: '그들은 매 시즌 경쟁한다.' },
+  { w: 'opponent', p: 'n.', k: '상대, 적수', e: 'His opponent was stronger.', t: '그의 상대가 더 강했다.' },
+  { w: 'defeat', p: 'v./n.', k: '이기다; 패배', e: 'We defeated the champions.', t: '우리는 챔피언을 이겼다.' },
+  { w: 'coach', p: 'n./v.', k: '감독; 지도하다', e: 'The coach gave good advice.', t: '코치가 좋은 조언을 해 줬다.' },
+  { w: 'score', p: 'n./v.', k: '점수; 득점하다', e: 'He scored in the last minute.', t: '그는 마지막 순간에 득점했다.' },
+  { w: 'champion', p: 'n.', k: '챔피언, 우승자', e: 'She became champion twice.', t: '그녀는 두 번 우승했다.' },
+  { w: 'effort', p: 'n.', k: '노력', e: 'Your effort will pay off.', t: '네 노력은 보답받을 것이다.' },
+  { w: 'train', p: 'v.', k: '훈련하다', e: 'He trains every morning.', t: '그는 매일 아침 훈련한다.' },
+  { w: 'attempt', p: 'n./v.', k: '시도(하다)', e: 'His first attempt failed.', t: '그의 첫 시도는 실패했다.' },
+  { w: 'teammate', p: 'n.', k: '팀 동료', e: 'My teammates supported me.', t: '팀 동료들이 나를 응원했다.' },
+  /* 29. 위험과 안전 */
+  { w: 'danger', p: 'n.', k: '위험', e: 'The danger has passed.', t: '위험은 지나갔다.' },
+  { w: 'emergency', p: 'n.', k: '비상사태', e: 'Call this number in an emergency.', t: '비상시엔 이 번호로 전화하세요.' },
+  { w: 'protect', p: 'v.', k: '보호하다', e: 'Helmets protect your head.', t: '헬멧은 머리를 보호한다.' },
+  { w: 'risk', p: 'n./v.', k: '위험(을 무릅쓰다)', e: 'It is not worth the risk.', t: '위험을 무릅쓸 만한 일이 아니다.' },
+  { w: 'warn', p: 'v.', k: '경고하다', e: 'They warned us about the ice.', t: '그들은 빙판을 조심하라고 알려 줬다.' },
+  { w: 'escape', p: 'v./n.', k: '탈출하다; 탈출', e: 'Everyone escaped safely.', t: '모두 무사히 빠져나왔다.' },
+  { w: 'rescue', p: 'v./n.', k: '구조하다; 구조', e: 'Firefighters rescued the cat.', t: '소방관들이 고양이를 구조했다.' },
+  { w: 'caution', p: 'n.', k: '주의, 조심', e: 'Please proceed with caution.', t: '조심해서 진행해 주세요.' },
+  { w: 'damage', p: 'n./v.', k: '손상(시키다)', e: 'The storm caused damage.', t: '폭풍이 피해를 입혔다.' },
+  { w: 'secure', p: 'a./v.', k: '안전한; 확보하다', e: 'Keep your password secure.', t: '비밀번호를 안전하게 보관해라.' },
+  /* 30. 성장과 도전 */
+  { w: 'challenge', p: 'n./v.', k: '도전(하다)', e: 'I welcome the challenge.', t: '나는 그 도전을 반긴다.' },
+  { w: 'overcome', p: 'v.', k: '극복하다', e: 'She overcame her fear.', t: '그녀는 두려움을 극복했다.' },
+  { w: 'opportunity', p: 'n.', k: '기회', e: 'This is a rare opportunity.', t: '이건 드문 기회다.' },
+  { w: 'ambition', p: 'n.', k: '야망, 포부', e: 'His ambition drives him.', t: '그의 포부가 그를 이끈다.' },
+  { w: 'determined', p: 'a.', k: '단단히 결심한', e: 'He was determined to finish.', t: '그는 끝내겠다고 굳게 마음먹었다.' },
+  { w: 'fail', p: 'v.', k: '실패하다', e: 'Do not be afraid to fail.', t: '실패를 두려워하지 마라.' },
+  { w: 'succeed', p: 'v.', k: '성공하다', e: 'She succeeded after many tries.', t: '그녀는 여러 번 시도 끝에 성공했다.' },
+  { w: 'potential', p: 'n./a.', k: '잠재력; 잠재적인', e: 'He has great potential.', t: '그는 큰 잠재력이 있다.' },
+  { w: 'strength', p: 'n.', k: '힘, 강점', e: 'Know your own strengths.', t: '자신의 강점을 알아라.' },
+  { w: 'persist', p: 'v.', k: '끈질기게 계속하다', e: 'Persist and you will improve.', t: '계속하면 나아질 것이다.' }
+];
+
+/* 오늘의 표현 — 하루 한 줄. e 문장 / k 해석 / n 짚어 볼 점 */
+const EN_PHRASES = [
+  { e: "Let me get back to you on that.", k: '그건 확인하고 다시 알려 드릴게요.', n: 'get back to ~ : 나중에 다시 연락하다' },
+  { e: "It is up to you.", k: '당신이 정하시면 돼요.', n: 'up to you : 네 결정에 달렸다' },
+  { e: "Let's call it a day.", k: '오늘은 여기까지 하죠.', n: 'call it a day : 하루 일을 마치다' },
+  { e: "I am running late.", k: '조금 늦을 것 같아요.', n: 'running late : 예정보다 늦어지는 중' },
+  { e: "That makes sense.", k: '그 말이 이해가 되네요.', n: 'make sense : 말이 되다, 이치에 맞다' },
+  { e: "Keep me posted.", k: '진행 상황 계속 알려 주세요.', n: 'keep ~ posted : 소식을 계속 전하다' },
+  { e: "I will keep that in mind.", k: '명심할게요.', n: 'keep in mind : 기억해 두다' },
+  { e: "Take your time.", k: '천천히 하세요.', n: '재촉하지 않겠다는 뜻의 인사말' },
+  { e: "It slipped my mind.", k: '깜빡했어요.', n: 'slip one’s mind : 잊어버리다' },
+  { e: "I am on my way.", k: '지금 가는 중이에요.', n: 'on one’s way : 가는 길인' },
+  { e: "Let's touch base next week.", k: '다음 주에 다시 얘기해요.', n: 'touch base : 간단히 상황을 나누다' },
+  { e: "That is easier said than done.", k: '말이야 쉽죠.', n: '말과 실행의 차이를 짚는 표현' },
+  { e: "I could not agree more.", k: '전적으로 동의해요.', n: '부정형이지만 최고의 동의' },
+  { e: "Let me sleep on it.", k: '하룻밤 생각해 볼게요.', n: 'sleep on it : 결정을 하루 미루다' },
+  { e: "It is not a big deal.", k: '별일 아니에요.', n: 'big deal : 큰일, 대단한 일' },
+  { e: "I am swamped today.", k: '오늘 일이 산더미예요.', n: 'swamped : 일에 파묻힌' },
+  { e: "Long story short, we made it.", k: '요약하자면, 우리가 해냈어요.', n: 'long story short : 간단히 말하면' },
+  { e: "Better late than never.", k: '늦더라도 안 하는 것보단 낫죠.', n: '시작을 미룬 자신에게 하는 말' },
+  { e: "Let's play it by ear.", k: '상황 봐서 정하죠.', n: 'play it by ear : 융통성 있게 대처하다' },
+  { e: "I am looking forward to it.", k: '기대하고 있어요.', n: 'look forward to + 명사/-ing' },
+  { e: "It is worth a try.", k: '한번 해 볼 만해요.', n: 'worth + -ing / 명사' },
+  { e: "Do not take it personally.", k: '기분 나쁘게 받아들이지 마세요.', n: 'take ~ personally : 개인적 공격으로 여기다' },
+  { e: "I owe you one.", k: '신세 졌어요.', n: 'owe : 빚지다' },
+  { e: "That is a good point.", k: '좋은 지적이에요.', n: '회의에서 가장 자주 쓰는 맞장구' },
+  { e: "Let's get down to business.", k: '본론으로 들어갑시다.', n: 'get down to ~ : ~에 본격 착수하다' },
+  { e: "I am all ears.", k: '귀 기울여 듣고 있어요.', n: 'all ears : 온통 귀가 된' },
+  { e: "That rings a bell.", k: '어디서 들어 본 것 같아요.', n: 'ring a bell : 어렴풋이 기억나다' },
+  { e: "Give it a shot.", k: '한번 해 보세요.', n: 'give it a shot/try : 시도하다' },
+  { e: "I am off today.", k: '오늘은 쉬는 날이에요.', n: 'be off : 근무가 없는' },
+  { e: "Let's split the bill.", k: '각자 계산하죠.', n: 'split the bill : 나눠 내다' },
+  { e: "It is on me.", k: '제가 낼게요.', n: 'on me : 내가 부담하는' },
+  { e: "I got carried away.", k: '너무 몰입해 버렸어요.', n: 'get carried away : 도가 지나치다' },
+  { e: "Keep up the good work.", k: '지금처럼 잘해 주세요.', n: 'keep up : 계속 유지하다' },
+  { e: "It is out of my hands.", k: '제 손을 떠났어요.', n: '내 권한 밖이라는 뜻' },
+  { e: "Let me walk you through it.", k: '차근차근 설명해 드릴게요.', n: 'walk through : 단계별로 안내하다' },
+  { e: "That is beside the point.", k: '그건 요점에서 벗어났어요.', n: 'beside the point : 논점과 무관한' },
+  { e: "I will look into it.", k: '제가 알아보겠습니다.', n: 'look into : 조사하다, 살펴보다' },
+  { e: "We are on the same page.", k: '우리 생각이 같네요.', n: 'on the same page : 이해가 일치한' },
+  { e: "It is a win-win.", k: '서로에게 좋은 일이죠.', n: '양쪽 다 이득인 상황' },
+  { e: "Let's wrap it up.", k: '마무리하죠.', n: 'wrap up : 끝내다, 마무리하다' },
+  { e: "I am tied up right now.", k: '지금은 도저히 시간이 안 나요.', n: 'tied up : 바빠서 묶여 있는' },
+  { e: "Sooner or later, it will pay off.", k: '언젠가는 결실을 맺을 거예요.', n: 'pay off : 성과로 돌아오다' },
+  { e: "Let's stick to the plan.", k: '계획대로 갑시다.', n: 'stick to : 고수하다' },
+  { e: "I am not following you.", k: '무슨 말인지 잘 모르겠어요.', n: 'follow : (말을) 알아듣다' },
+  { e: "Could you fill me in?", k: '상황을 알려 주시겠어요?', n: 'fill ~ in : 빠진 정보를 채워 주다' },
+  { e: "That is still up in the air.", k: '그건 아직 미정이에요.', n: 'up in the air : 정해지지 않은' },
+  { e: "I will take care of it.", k: '제가 처리할게요.', n: 'take care of : 맡아서 해결하다' },
+  { e: "It is right around the corner.", k: '이제 코앞이에요.', n: '시간·거리 모두에 씀' },
+  { e: "Let's cut to the chase.", k: '요점만 말하죠.', n: 'cut to the chase : 본론으로 바로 가다' },
+  { e: "I am counting on you.", k: '당신만 믿어요.', n: 'count on : 의지하다, 믿다' },
+  { e: "That was a close call.", k: '아슬아슬했어요.', n: 'close call : 위기를 간신히 넘김' },
+  { e: "Let me put it this way.", k: '이렇게 말해 볼게요.', n: '설명을 바꿔 시작할 때' },
+  { e: "I am with you on that.", k: '그 점은 저도 같은 생각이에요.', n: 'be with someone : 의견을 같이하다' },
+  { e: "Do not get me wrong.", k: '오해하지는 마세요.', n: '반대 의견을 부드럽게 꺼낼 때' },
+  { e: "It is only a matter of time.", k: '시간문제일 뿐이에요.', n: 'a matter of time : 시간문제' },
+  { e: "Let's touch on that later.", k: '그건 나중에 다루죠.', n: 'touch on : 잠깐 언급하다' },
+  { e: "I ran out of time.", k: '시간이 모자랐어요.', n: 'run out of : 다 떨어지다' },
+  { e: "That is exactly what I meant.", k: '제 말이 바로 그거예요.', n: 'mean : 의도하다, 뜻하다' },
+  { e: "Can I take a rain check?", k: '다음 기회로 미뤄도 될까요?', n: 'rain check : 다음을 기약하는 약속' },
+  { e: "I am getting the hang of it.", k: '이제 감이 잡혀요.', n: 'get the hang of : 요령을 익히다' },
+  { e: "It is worth every penny.", k: '값어치를 톡톡히 해요.', n: 'penny : 아주 적은 돈' },
+  { e: "Let's keep it simple.", k: '간단하게 갑시다.', n: '복잡하게 만들지 말자는 뜻' },
+  { e: "I have mixed feelings about it.", k: '마음이 좀 복잡해요.', n: 'mixed feelings : 엇갈리는 감정' },
+  { e: "That went better than expected.", k: '생각보다 잘 됐네요.', n: 'than expected : 예상보다' },
+  { e: "Let's go over it once more.", k: '한 번 더 훑어보죠.', n: 'go over : 검토하다' },
+  { e: "I am behind schedule.", k: '일정이 밀렸어요.', n: 'behind schedule ↔ ahead of schedule' },
+  { e: "It is second nature to me.", k: '저한테는 몸에 뱄어요.', n: 'second nature : 습관이 된 것' },
+  { e: "Let's break it down.", k: '잘게 나눠서 봅시다.', n: 'break down : 세분하다, 분해하다' },
+  { e: "I will make it up to you.", k: '꼭 보답할게요.', n: 'make it up to ~ : 만회하다' },
+  { e: "That is out of the question.", k: '그건 있을 수 없는 일이에요.', n: 'out of the question : 논의 대상도 아닌' },
+  { e: "Let's meet halfway.", k: '서로 조금씩 양보하죠.', n: 'meet halfway : 절충하다' },
+  { e: "I am still on the fence.", k: '아직 결정을 못 했어요.', n: 'on the fence : 담장 위, 결정 못 한' },
+  { e: "It grew on me.", k: '갈수록 좋아졌어요.', n: 'grow on someone : 점점 마음에 들다' },
+  { e: "Let's not jump to conclusions.", k: '성급히 결론 내리지 맙시다.', n: 'jump to conclusions : 속단하다' },
+  { e: "I will get the ball rolling.", k: '제가 먼저 시작할게요.', n: 'get the ball rolling : 일을 굴리기 시작하다' },
+  { e: "It is a piece of cake.", k: '아주 쉬운 일이에요.', n: 'piece of cake : 식은 죽 먹기' },
+  { e: "Let's hit the road.", k: '이제 출발합시다.', n: 'hit the road : 길을 나서다' },
+  { e: "I am worn out.", k: '완전히 지쳤어요.', n: 'worn out : 기진맥진한' },
+  { e: "That is the whole point.", k: '그게 바로 핵심이에요.', n: 'the whole point : 요점 전부' },
+  { e: "Let's keep in touch.", k: '계속 연락해요.', n: 'keep in touch : 연락을 유지하다' },
+  { e: "I am short on time.", k: '시간이 빠듯해요.', n: 'short on ~ : ~이 부족한' },
+  { e: "It pays to be patient.", k: '참는 게 결국 이득이에요.', n: 'it pays to ~ : ~하면 득이 된다' },
+  { e: "Let me set the record straight.", k: '사실관계를 바로잡을게요.', n: 'set the record straight : 오해를 바로잡다' },
+  { e: "I take that back.", k: '그 말 취소할게요.', n: 'take back : 한 말을 철회하다' },
+  { e: "That is a bit of a stretch.", k: '그건 좀 억지스러워요.', n: 'a stretch : 무리한 해석' },
+  { e: "Let's put it on hold.", k: '잠시 보류하죠.', n: 'on hold : 보류된 상태' },
+  { e: "I am dying to try it.", k: '정말 해 보고 싶어요.', n: 'be dying to ~ : 몹시 ~하고 싶다' },
+  { e: "It came out of nowhere.", k: '난데없이 일어났어요.', n: 'out of nowhere : 갑자기' },
+  { e: "Let's give it another go.", k: '한 번 더 해 봅시다.', n: 'give it a go : 시도해 보다' },
+  { e: "One step at a time.", k: '한 번에 한 걸음씩.', n: '조급할 때 스스로에게 하는 말' }
+];
+
+// 그날의 영어 — 단어 10개(300개 = 30일 주기) + 표현 1개
+function dailyEnglish(d) {
+  const n = diffDays('2000-01-01', d);
+  const wi = ((n * 10) % EN_WORDS.length + EN_WORDS.length) % EN_WORDS.length;
+  const words = Array.from({ length: 10 }, (_, i) => EN_WORDS[(wi + i) % EN_WORDS.length]);
+  const phrase = EN_PHRASES[((n % EN_PHRASES.length) + EN_PHRASES.length) % EN_PHRASES.length];
+  return { words, phrase, set: Math.floor(wi / 10) + 1, sets: Math.ceil(EN_WORDS.length / 10) };
+}
+
 /* ---------- 기록(트래커) ---------- */
 const TRACKER_PRESETS = {
   weight:  { name: '체중',     emoji: '⚖️', type: 'number', unit: 'kg' },
@@ -1444,15 +1984,266 @@ function lastTrackerEntry(tk) {
 }
 const trackerDayCount = tk => Object.keys(S.trackerLog).filter(d => S.trackerLog[d][tk.id] !== undefined).length;
 
-/* ---------- 라이프로그(식단·운동·독서) ----------
-   S.lifeLog[날짜] = { meal:{b,l,d,s}, workout:[{n,a,k}], read:[{b,a}] } */
+/* ---------- 음식 칼로리 표 ----------
+   n 이름 / k 1회 제공량 기준 kcal / u 기준량 / al 다른 이름(오타·줄임말)
+   1회 제공량 기준의 어림값이에요. 정확한 수치가 필요하면 직접 입력하면 됩니다.
+   내가 자주 먹는데 목록에 없는 음식은 S.foodDB에 등록해 두면 다음부터 자동으로 잡혀요. */
+const FOOD_DB = [
+  /* 밥·죽 */
+  { n: '밥', k: 300, u: '1공기', al: ['공기밥', '쌀밥', '흰밥', '흰쌀밥'] },
+  { n: '현미밥', k: 320, u: '1공기' }, { n: '잡곡밥', k: 320, u: '1공기' },
+  { n: '김밥', k: 480, u: '1줄' }, { n: '참치김밥', k: 540, u: '1줄' }, { n: '치즈김밥', k: 560, u: '1줄' },
+  { n: '비빔밥', k: 600, u: '1그릇' }, { n: '볶음밥', k: 650, u: '1그릇' },
+  { n: '김치볶음밥', k: 620, u: '1그릇' }, { n: '새우볶음밥', k: 630, u: '1그릇' },
+  { n: '오므라이스', k: 700, u: '1그릇' }, { n: '카레라이스', k: 700, u: '1그릇', al: ['카레', '카레밥'] },
+  { n: '제육덮밥', k: 750, u: '1그릇' }, { n: '불고기덮밥', k: 720, u: '1그릇' },
+  { n: '회덮밥', k: 600, u: '1그릇' }, { n: '규동', k: 700, u: '1그릇', al: ['소고기덮밥'] },
+  { n: '덮밥', k: 700, u: '1그릇' }, { n: '초밥', k: 480, u: '1인분', al: ['스시'] },
+  { n: '유부초밥', k: 400, u: '1인분' }, { n: '주먹밥', k: 220, u: '1개' },
+  { n: '죽', k: 250, u: '1그릇' }, { n: '전복죽', k: 350, u: '1그릇' },
+  { n: '누룽지', k: 200, u: '1그릇' }, { n: '컵밥', k: 500, u: '1개' },
+  /* 국·찌개·탕 */
+  { n: '된장찌개', k: 250, u: '1인분' }, { n: '김치찌개', k: 450, u: '1인분', al: ['김치찌게'] },
+  { n: '순두부찌개', k: 400, u: '1인분' }, { n: '부대찌개', k: 600, u: '1인분' },
+  { n: '청국장', k: 300, u: '1인분' }, { n: '미역국', k: 120, u: '1그릇' },
+  { n: '콩나물국', k: 80, u: '1그릇' }, { n: '북엇국', k: 150, u: '1그릇' },
+  { n: '육개장', k: 450, u: '1그릇' }, { n: '갈비탕', k: 550, u: '1그릇' },
+  { n: '삼계탕', k: 900, u: '1그릇' }, { n: '설렁탕', k: 500, u: '1그릇' },
+  { n: '곰탕', k: 480, u: '1그릇' }, { n: '감자탕', k: 700, u: '1인분' },
+  { n: '추어탕', k: 450, u: '1그릇' }, { n: '매운탕', k: 400, u: '1인분' },
+  { n: '순대국', k: 550, u: '1그릇', al: ['순댓국'] }, { n: '뼈해장국', k: 600, u: '1그릇' },
+  { n: '콩나물국밥', k: 450, u: '1그릇' }, { n: '떡국', k: 550, u: '1그릇' },
+  { n: '만둣국', k: 500, u: '1그릇' }, { n: '칼국수', k: 550, u: '1그릇' },
+  { n: '수제비', k: 500, u: '1그릇' },
+  /* 면 */
+  { n: '라면', k: 500, u: '1봉' }, { n: '짜파게티', k: 600, u: '1봉' },
+  { n: '비빔면', k: 550, u: '1봉' }, { n: '컵라면', k: 350, u: '1개' },
+  { n: '국수', k: 400, u: '1그릇' }, { n: '잔치국수', k: 450, u: '1그릇' },
+  { n: '냉면', k: 550, u: '1그릇' }, { n: '물냉면', k: 550, u: '1그릇' },
+  { n: '비빔냉면', k: 600, u: '1그릇' }, { n: '막국수', k: 500, u: '1그릇' },
+  { n: '짜장면', k: 700, u: '1그릇', al: ['자장면'] }, { n: '짬뽕', k: 750, u: '1그릇' },
+  { n: '우동', k: 450, u: '1그릇' }, { n: '소바', k: 400, u: '1그릇' },
+  { n: '파스타', k: 650, u: '1접시' }, { n: '크림파스타', k: 800, u: '1접시' },
+  { n: '토마토파스타', k: 600, u: '1접시' }, { n: '스파게티', k: 650, u: '1접시' },
+  { n: '쫄면', k: 600, u: '1그릇' }, { n: '콩국수', k: 600, u: '1그릇' },
+  { n: '볶음우동', k: 650, u: '1접시' }, { n: '라멘', k: 600, u: '1그릇' },
+  /* 고기·구이 */
+  { n: '삼겹살', k: 500, u: '150g' }, { n: '목살', k: 400, u: '150g' },
+  { n: '소고기', k: 350, u: '150g' }, { n: '등심', k: 400, u: '150g' },
+  { n: '불고기', k: 400, u: '1인분' }, { n: '갈비', k: 500, u: '1인분' },
+  { n: '돼지갈비', k: 550, u: '1인분' }, { n: '닭갈비', k: 600, u: '1인분' },
+  { n: '제육볶음', k: 550, u: '1인분' }, { n: '탕수육', k: 800, u: '1인분' },
+  { n: '돈까스', k: 900, u: '1인분', al: ['돈가스'] }, { n: '치즈돈까스', k: 1000, u: '1인분' },
+  { n: '생선까스', k: 600, u: '1인분' }, { n: '닭가슴살', k: 110, u: '100g' },
+  { n: '닭다리', k: 200, u: '1개' }, { n: '스테이크', k: 600, u: '200g' },
+  { n: '함박스테이크', k: 550, u: '1개' }, { n: '소시지', k: 100, u: '1개' },
+  { n: '베이컨', k: 90, u: '2줄' }, { n: '계란후라이', k: 100, u: '1개', al: ['계란프라이', '달걀후라이'] },
+  { n: '삶은계란', k: 80, u: '1개', al: ['삶은달걀', '계란'] }, { n: '계란찜', k: 150, u: '1그릇' },
+  { n: '스크램블에그', k: 180, u: '1접시' }, { n: '족발', k: 600, u: '1인분' },
+  { n: '보쌈', k: 550, u: '1인분' },
+  /* 해산물 */
+  { n: '고등어구이', k: 350, u: '1마리' }, { n: '갈치구이', k: 300, u: '1토막' },
+  { n: '삼치구이', k: 320, u: '1토막' }, { n: '연어', k: 250, u: '150g' },
+  { n: '회', k: 250, u: '1인분' }, { n: '광어회', k: 200, u: '1인분' },
+  { n: '연어초밥', k: 60, u: '1개' }, { n: '새우', k: 10, u: '1마리' },
+  { n: '새우튀김', k: 80, u: '1개' }, { n: '오징어볶음', k: 400, u: '1인분' },
+  { n: '조개탕', k: 150, u: '1그릇' }, { n: '굴', k: 60, u: '100g' },
+  { n: '낙지볶음', k: 450, u: '1인분' }, { n: '문어숙회', k: 180, u: '1인분' },
+  { n: '참치캔', k: 200, u: '1캔', al: ['참치'] },
+  /* 분식 */
+  { n: '떡볶이', k: 500, u: '1인분' }, { n: '로제떡볶이', k: 700, u: '1인분' },
+  { n: '라볶이', k: 650, u: '1인분' }, { n: '순대', k: 400, u: '1인분' },
+  { n: '튀김', k: 120, u: '1개' }, { n: '오뎅', k: 50, u: '1꼬치', al: ['어묵'] },
+  { n: '만두', k: 60, u: '1개' }, { n: '군만두', k: 380, u: '1인분' },
+  { n: '찐만두', k: 320, u: '1인분' }, { n: '김말이', k: 130, u: '1개' },
+  { n: '핫도그', k: 300, u: '1개' }, { n: '토스트', k: 350, u: '1개' },
+  { n: '계란빵', k: 250, u: '1개' }, { n: '붕어빵', k: 130, u: '1개' },
+  { n: '호떡', k: 230, u: '1개' }, { n: '와플', k: 300, u: '1개' },
+  { n: '타코야키', k: 300, u: '1인분' },
+  /* 치킨·피자·패스트푸드 */
+  { n: '치킨', k: 1600, u: '1마리', al: ['후라이드치킨', '프라이드치킨'] },
+  { n: '양념치킨', k: 1900, u: '1마리' }, { n: '간장치킨', k: 1750, u: '1마리' },
+  { n: '치킨한조각', k: 250, u: '1조각' }, { n: '피자', k: 300, u: '1조각' },
+  { n: '햄버거', k: 550, u: '1개', al: ['버거'] }, { n: '치즈버거', k: 600, u: '1개' },
+  { n: '불고기버거', k: 500, u: '1개' }, { n: '빅맥', k: 560, u: '1개' },
+  { n: '감자튀김', k: 320, u: '1인분', al: ['프렌치프라이', '후렌치후라이'] },
+  { n: '너겟', k: 250, u: '4조각', al: ['치킨너겟'] }, { n: '핫윙', k: 400, u: '1인분' },
+  { n: '샌드위치', k: 350, u: '1개' }, { n: '서브웨이', k: 400, u: '1개' },
+  { n: '부리토', k: 600, u: '1개' }, { n: '타코', k: 250, u: '1개' },
+  { n: '케밥', k: 550, u: '1개' },
+  /* 빵·디저트 */
+  { n: '식빵', k: 100, u: '1장' }, { n: '크로와상', k: 300, u: '1개', al: ['크루아상'] },
+  { n: '베이글', k: 280, u: '1개' }, { n: '바게트', k: 250, u: '1/3개' },
+  { n: '단팥빵', k: 300, u: '1개' }, { n: '소보로빵', k: 320, u: '1개' },
+  { n: '크림빵', k: 350, u: '1개' }, { n: '마늘빵', k: 200, u: '1조각' },
+  { n: '도넛', k: 250, u: '1개' }, { n: '케이크', k: 350, u: '1조각' },
+  { n: '치즈케이크', k: 400, u: '1조각' }, { n: '마카롱', k: 100, u: '1개' },
+  { n: '쿠키', k: 60, u: '1개' }, { n: '브라우니', k: 250, u: '1조각' },
+  { n: '머핀', k: 350, u: '1개' }, { n: '티라미수', k: 400, u: '1조각' },
+  { n: '빙수', k: 600, u: '1그릇' }, { n: '아이스크림', k: 250, u: '1개' },
+  { n: '초콜릿', k: 250, u: '50g', al: ['초코렛'] }, { n: '젤리', k: 150, u: '1봉' },
+  { n: '사탕', k: 20, u: '1개' }, { n: '과자', k: 300, u: '1봉' },
+  { n: '감자칩', k: 300, u: '1봉' }, { n: '초코파이', k: 170, u: '1개' },
+  { n: '빼빼로', k: 250, u: '1갑' }, { n: '떡', k: 200, u: '1개' },
+  /* 음료 */
+  { n: '물', k: 0, u: '1잔' }, { n: '아메리카노', k: 10, u: '1잔' },
+  { n: '카페라떼', k: 180, u: '1잔', al: ['라떼'] }, { n: '카푸치노', k: 130, u: '1잔' },
+  { n: '바닐라라떼', k: 250, u: '1잔' }, { n: '카라멜마끼아또', k: 250, u: '1잔' },
+  { n: '프라푸치노', k: 400, u: '1잔' }, { n: '콜라', k: 140, u: '1캔' },
+  { n: '사이다', k: 130, u: '1캔' }, { n: '제로콜라', k: 0, u: '1캔' },
+  { n: '오렌지주스', k: 110, u: '1잔' }, { n: '사과주스', k: 120, u: '1잔' },
+  { n: '우유', k: 130, u: '200ml' }, { n: '두유', k: 130, u: '190ml' },
+  { n: '요구르트', k: 80, u: '1병' }, { n: '요거트', k: 120, u: '1개' },
+  { n: '스무디', k: 250, u: '1잔' }, { n: '밀크티', k: 300, u: '1잔' },
+  { n: '녹차', k: 0, u: '1잔' }, { n: '이온음료', k: 130, u: '1병' },
+  { n: '에너지드링크', k: 160, u: '1캔' }, { n: '식혜', k: 200, u: '1캔' },
+  { n: '아이스티', k: 90, u: '1잔' },
+  /* 술 */
+  { n: '맥주', k: 200, u: '500ml' }, { n: '소주', k: 400, u: '1병' },
+  { n: '막걸리', k: 300, u: '1병' }, { n: '와인', k: 125, u: '1잔' },
+  { n: '위스키', k: 70, u: '1잔' }, { n: '하이볼', k: 180, u: '1잔' },
+  { n: '사케', k: 200, u: '1병' },
+  /* 과일·채소 */
+  { n: '사과', k: 100, u: '1개' }, { n: '바나나', k: 90, u: '1개' },
+  { n: '오렌지', k: 70, u: '1개' }, { n: '귤', k: 40, u: '1개' },
+  { n: '포도', k: 60, u: '100g' }, { n: '딸기', k: 30, u: '100g' },
+  { n: '수박', k: 50, u: '1조각' }, { n: '참외', k: 60, u: '1개' },
+  { n: '복숭아', k: 60, u: '1개' }, { n: '배', k: 130, u: '1개' },
+  { n: '키위', k: 50, u: '1개' }, { n: '블루베리', k: 60, u: '100g' },
+  { n: '망고', k: 100, u: '1개' }, { n: '파인애플', k: 50, u: '100g' },
+  { n: '토마토', k: 20, u: '1개' }, { n: '방울토마토', k: 20, u: '10개' },
+  { n: '아보카도', k: 240, u: '1개' }, { n: '샐러드', k: 150, u: '1접시' },
+  { n: '시저샐러드', k: 350, u: '1접시' }, { n: '오이', k: 15, u: '1개' },
+  { n: '당근', k: 30, u: '1개' }, { n: '고구마', k: 130, u: '1개' },
+  { n: '감자', k: 100, u: '1개' }, { n: '옥수수', k: 130, u: '1개' },
+  { n: '브로콜리', k: 30, u: '100g' },
+  /* 반찬·기타 */
+  { n: '김치', k: 15, u: '1접시' }, { n: '계란말이', k: 250, u: '1접시' },
+  { n: '두부', k: 150, u: '반모' }, { n: '순두부', k: 100, u: '1봉' },
+  { n: '김', k: 10, u: '1봉' }, { n: '멸치볶음', k: 80, u: '1접시' },
+  { n: '어묵볶음', k: 120, u: '1접시' }, { n: '잡채', k: 350, u: '1접시' },
+  { n: '김치전', k: 400, u: '1장' }, { n: '파전', k: 500, u: '1장' },
+  { n: '해물파전', k: 550, u: '1장' }, { n: '감자전', k: 350, u: '1장' },
+  { n: '부침개', k: 400, u: '1장', al: ['전'] }, { n: '나물', k: 50, u: '1접시' },
+  { n: '콩나물무침', k: 40, u: '1접시' }, { n: '시금치나물', k: 50, u: '1접시' },
+  { n: '마요네즈', k: 100, u: '1스푼' }, { n: '케첩', k: 20, u: '1스푼' },
+  { n: '참기름', k: 45, u: '1스푼' }, { n: '버터', k: 75, u: '1스푼' },
+  { n: '치즈', k: 70, u: '1장' }, { n: '견과류', k: 180, u: '30g' },
+  { n: '아몬드', k: 170, u: '30g' }, { n: '땅콩', k: 180, u: '30g' },
+  { n: '프로틴', k: 120, u: '1스쿱', al: ['단백질보충제'] }, { n: '단백질쉐이크', k: 150, u: '1잔' },
+  { n: '시리얼', k: 200, u: '1그릇' }, { n: '오트밀', k: 150, u: '1그릇' },
+  { n: '그래놀라', k: 250, u: '1그릇' }
+];
+
+/* 수량 파싱 — '2개', '두 공기', '1.5인분', '반 공기', '200g' 을 알아들어요 */
+const KO_NUM = { 반: 0.5, 한: 1, 두: 2, 세: 3, 네: 4, 다섯: 5, 여섯: 6, 일곱: 7, 여덟: 8, 아홉: 9, 열: 10 };
+const QTY_UNIT_RE = /(\d+(?:\.\d+)?|반|한|두|세|네|다섯|여섯|일곱|여덟|아홉|열)\s*(개|인분|공기|그릇|잔|컵|조각|장|쪽|줄|캔|병|봉지|봉|판|마리|스푼|큰술|모|팩|통|접시|알|꼬치|스쿱|갑|토막)\s*$/;
+const AMT_RE = /(\d+(?:\.\d+)?)\s*(kg|g|ml|l)\s*$/i;
+function splitQty(raw) {
+  let s = String(raw).trim(), qty = 1, amt = null;
+  let m = s.match(AMT_RE);
+  if (m) {
+    let v = parseFloat(m[1]);
+    const u = m[2].toLowerCase();
+    if (u === 'kg' || u === 'l') v *= 1000;
+    amt = v;
+    s = s.slice(0, m.index).trim();
+  } else if ((m = s.match(QTY_UNIT_RE))) {
+    qty = KO_NUM[m[1]] != null ? KO_NUM[m[1]] : parseFloat(m[1]);
+    s = s.slice(0, m.index).trim();
+  } else if ((m = s.match(/[x×*]?\s*(\d+(?:\.\d+)?)\s*$/)) && s.slice(0, m.index).trim().length >= 2) {
+    qty = parseFloat(m[1]);
+    s = s.slice(0, m.index).trim();
+  }
+  return { name: s, qty: qty > 0 ? qty : 1, amt };
+}
+const foodNorm = s => String(s ?? '').toLowerCase().replace(/[\s·,()\-_]/g, '');
+const myFoods = () => (S.foodDB || []).map(f => ({ n: f.n, k: f.k, u: f.u || '1인분', my: true }));
+// 이름(과 별칭)이 딱 맞는 것 — '김치 찌개'처럼 띄어 써도 붙여서 비교해요
+function findFoodExact(name) {
+  const q = foodNorm(name);
+  if (!q) return null;
+  for (const f of [...myFoods(), ...FOOD_DB]) {
+    if (foodNorm(f.n) === q) return f;
+    if (f.al && f.al.some(a => foodNorm(a) === q)) return f;
+  }
+  return null;
+}
+// 딱 맞는 게 없으면 가장 긴 부분 일치로 — '레드와인' → '와인', '비빔밥곱빼기' → '비빔밥'
+function findFood(name) {
+  const q = foodNorm(name);
+  if (!q) return null;
+  const ex = findFoodExact(name);
+  if (ex) return ex;
+  let best = null;
+  for (const f of [...myFoods(), ...FOOD_DB]) {
+    for (const c of [f.n, ...(f.al || [])].map(foodNorm)) {
+      if (c.length < 2) continue;
+      if (q.includes(c) || (q.length >= 2 && c.includes(q))) {
+        if (!best || c.length > best.len) best = { f, len: c.length };
+      }
+    }
+  }
+  return best ? best.f : null;
+}
+function pushFood(f, qty, amt, out) {
+  let mult = qty;
+  if (amt != null) {   // 200g 처럼 무게로 적었으면 기준량(100g 등)으로 환산
+    const base = (String(f.u).match(/(\d+)\s*(?:g|ml)/i) || [])[1];
+    mult = base ? amt / +base : 1;
+  }
+  const k = Math.round(f.k * mult);
+  out.kcal += k;
+  out.hits.push({ n: f.n, k, my: !!f.my });
+}
+function matchFoodPiece(raw, out) {
+  const { name, qty, amt } = splitQty(raw);
+  const f = findFood(name || raw);
+  if (!f) return false;
+  pushFood(f, qty, amt, out);
+  return true;
+}
+/* '계란후라이 2개, 우유' → { kcal, hits[], miss[] }
+   한 조각을 볼 때 ① 이름이 딱 맞나 ② 띄어쓰기로 나누면 둘 이상 맞나 ③ 부분 일치 순으로 봐요.
+   ①이 먼저라서 '김치 찌개'가 '김치'+'찌개'로 쪼개지지 않고, ②가 있어서 '계란후라이 우유'는 둘 다 잡혀요. */
+function estimateKcal(text) {
+  const out = { kcal: 0, hits: [], miss: [] };
+  if (!text) return out;
+  String(text).split(/[,،、·+/\n]+/).map(s => s.trim()).filter(Boolean).forEach(tok => {
+    const { name, qty, amt } = splitQty(tok);
+    const exact = findFoodExact(name || tok);
+    if (exact) { pushFood(exact, qty, amt, out); return; }
+
+    const parts = tok.split(/\s+/).filter(Boolean);
+    if (parts.length > 1) {
+      const trial = { kcal: 0, hits: [], miss: [] };
+      let ok = 0;
+      parts.forEach(p => { if (matchFoodPiece(p, trial)) ok++; });
+      if (ok >= 2) { out.kcal += trial.kcal; out.hits.push(...trial.hits); return; }
+    }
+    if (matchFoodPiece(tok, out)) return;
+    if (parts.length > 1) {
+      const before = out.hits.length;
+      parts.forEach(p => matchFoodPiece(p, out));
+      if (out.hits.length > before) return;
+    }
+    out.miss.push(name || tok);
+  });
+  out.kcal = Math.round(out.kcal);
+  return out;
+}
+
+/* ---------- 라이프로그(식단·운동·독서·활동) ----------
+   S.lifeLog[날짜] = { meal:{b,l,d,s, kc:{b,l,d,s}}, workout:[{n,a,k}], read:[{b,a}],
+                       fit:{act,rest,ex,stand,steps,wk:[{n,min,kcal}],at,src} } */
 const LIFE_MEALS = [['b', '아침'], ['l', '점심'], ['d', '저녁'], ['s', '간식']];
 const LIFE_KINDS = {
   meal:    { emoji: '🍽️', name: '식단', hint: '오늘 뭘 먹었나요?',    done: '식단을 기록했어요 🍽️' },
   workout: { emoji: '💪', name: '운동', hint: '뭘 얼마나 했나요?',    done: '운동을 기록했어요 💪' },
-  read:    { emoji: '📖', name: '독서', hint: '어떤 책을 읽었나요?',  done: '독서를 기록했어요 📖' }
+  read:    { emoji: '📖', name: '독서', hint: '어떤 책을 읽었나요?',  done: '독서를 기록했어요 📖' },
+  fit:     { emoji: '⌚', name: '활동', hint: '애플워치 기록을 가져와요', done: '활동을 기록했어요 ⌚' }
 };
-const LIFE_ORDER = ['meal', 'workout', 'read'];
+const LIFE_ORDER = ['meal', 'workout', 'read', 'fit'];
 const lifeOf = d => S.lifeLog[d] || {};
 function setLife(d, key, val) {
   const day = S.lifeLog[d] || (S.lifeLog[d] = {});
@@ -1460,6 +2251,29 @@ function setLife(d, key, val) {
   if (!Object.keys(day).length) delete S.lifeLog[d];
 }
 const lifeKcal = w => (w || []).reduce((a, x) => a + (+x.k || 0), 0);
+/* 섭취 칼로리 합계 — 저장된 값(kc)이 있으면 그걸 쓰고, 없으면 적어 둔 음식으로 어림해요.
+   덕분에 예전에 남긴 식단 기록도 다시 열어 볼 필요 없이 칼로리가 보여요.
+   kc[k] === 0 은 '일부러 비워 둔 끼니'라는 뜻이라 어림 계산을 하지 않습니다. */
+const mealKcal = m => !m ? 0 : LIFE_MEALS.reduce((a, [k]) => {
+  if (!m[k]) return a;
+  const saved = (m.kc || {})[k];
+  return a + (saved != null ? (+saved || 0) : estimateKcal(m[k]).kcal);
+}, 0);
+const hasFit = f => !!f && !!(f.act || f.rest || f.ex || f.stand || f.steps || (f.wk && f.wk.length));
+const fitDayCount = () => Object.keys(S.lifeLog).filter(d => hasFit(S.lifeLog[d].fit)).length;
+/* 그날의 에너지 한눈에 — 섭취(식단) vs 소비(활동/운동)
+   애플워치 활동 에너지는 운동까지 포함한 값이라, 워치 기록이 있으면 그걸 우선 씁니다. */
+function dayEnergy(d) {
+  const L = lifeOf(d), f = L.fit || null;
+  const eaten = mealKcal(L.meal);
+  const manual = lifeKcal(L.workout);
+  const act = f && f.act ? +f.act : manual;
+  const rest = f && f.rest ? +f.rest : 0;
+  return {
+    eaten, act, rest, burn: act + rest, net: eaten - (act + rest),
+    fromWatch: !!(f && f.act), has: eaten > 0 || act > 0 || rest > 0
+  };
+}
 function lifeSummary(kind, d) {   // 목록 행에 보여줄 한 줄 요약 (없으면 null)
   const L = lifeOf(d);
   if (kind === 'meal') {
@@ -1469,6 +2283,15 @@ function lifeSummary(kind, d) {   // 목록 행에 보여줄 한 줄 요약 (없
   if (kind === 'workout') {
     const w = L.workout; if (!w || !w.length) return null;
     return w.map(x => x.n + (x.a ? ' ' + x.a : '')).join(' · ');
+  }
+  if (kind === 'fit') {
+    const f = L.fit; if (!hasFit(f)) return null;
+    const parts = [];
+    if (f.act) parts.push(`활동 ${fmtNum(f.act)}kcal`);
+    if (f.ex) parts.push(`운동 ${fmtNum(f.ex)}분`);
+    if (f.steps) parts.push(`${(+f.steps).toLocaleString()}걸음`);
+    if (f.wk && f.wk.length) parts.push(f.wk.map(x => x.n).filter(Boolean).join(', '));
+    return parts.join(' · ');
   }
   const r = L.read; if (!r || !r.length) return null;
   return r.map(x => x.b + (x.a ? ' (' + x.a + ')' : '')).join(' · ');
@@ -1522,26 +2345,74 @@ const V = {
 };
 
 /* ---------- 공용 UI ---------- */
-let toastTimer = null;
-function toast(msg) {
+let toastTimer = null, toastUndo = null;
+// toast('지웠어요', { undo: fn }) 처럼 부르면 6초간 '되돌리기' 버튼이 함께 떠요
+function toast(msg, opts) {
   const t = $('#toast');
-  t.textContent = msg;
+  const undo = opts && opts.undo;
+  toastUndo = undo || null;
+  if (undo) {
+    t.innerHTML = `<span class="t-msg"></span><button class="t-undo" data-action="toast-undo">되돌리기</button>`;
+    t.querySelector('.t-msg').textContent = msg;
+    t.classList.add('has-undo');
+  } else {
+    t.textContent = msg;
+    t.classList.remove('has-undo');
+  }
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  toastTimer = setTimeout(hideToast, undo ? 6000 : 2200);
 }
-function openModal(html) {
+function hideToast() {
+  const t = $('#toast');
+  t.classList.remove('show', 'has-undo');
+  toastUndo = null;
+}
+
+let modalDismiss = null, modalPrevFocus = null;
+// onDismiss: 배경 클릭·Esc처럼 '버튼을 누르지 않고' 닫혔을 때 불려요.
+// 이게 없으면 await confirmDlg(...) 같은 코드가 영원히 기다린 채 멈춥니다.
+function openModal(html, onDismiss) {
   const root = $('#modal-root');
-  root.innerHTML = `<div class="overlay" data-action="close-modal"></div><div class="sheet"><div class="grip"></div>${html}</div>`;
+  const pending = modalDismiss;                          // 이전 모달이 대기 중이면 먼저 정리
+  modalDismiss = onDismiss || null;
+  if (!root.classList.contains('open')) modalPrevFocus = document.activeElement;
+  root.innerHTML = `<div class="overlay" data-action="close-modal"></div>` +
+    `<div class="sheet" role="dialog" aria-modal="true" tabindex="-1"><div class="grip"></div>${html}</div>`;
   root.classList.add('open');
   document.body.style.overflow = 'hidden';
+  const sheet = root.querySelector('.sheet');
+  if (sheet) sheet.focus({ preventScroll: true });
+  if (pending) pending();
 }
 function closeModal() {
   const root = $('#modal-root');
+  const dismiss = modalDismiss;
+  modalDismiss = null;
   root.classList.remove('open');
   root.innerHTML = '';
   document.body.style.overflow = '';
+  const back = modalPrevFocus;
+  modalPrevFocus = null;
+  if (back && back.focus && document.contains(back)) { try { back.focus({ preventScroll: true }); } catch (e) {} }
+  if (dismiss) dismiss();
 }
+const FOCUSABLE = 'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+document.addEventListener('keydown', e => {
+  const root = $('#modal-root');
+  if (!root.classList.contains('open')) return;
+  if (e.key === 'Escape') { e.preventDefault(); closeModal(); return; }
+  if (e.key !== 'Tab') return;
+  // 모달 안에서 Tab이 뒤 화면으로 빠져나가지 않게
+  const items = [...root.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null);
+  if (!items.length) return;
+  const first = items[0], last = items[items.length - 1];
+  if (e.shiftKey && (document.activeElement === first || !root.contains(document.activeElement))) {
+    e.preventDefault(); last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault(); first.focus();
+  }
+});
 function confirmDlg(title, msg, { danger = false, ok = '확인' } = {}) {
   return new Promise(res => {
     openModal(`
@@ -1550,10 +2421,108 @@ function confirmDlg(title, msg, { danger = false, ok = '확인' } = {}) {
       <div class="m-actions">
         <button class="btn" id="cf-no">취소</button>
         <button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" id="cf-ok" style="flex:1">${esc(ok)}</button>
-      </div>`);
-    $('#cf-no').onclick = () => { closeModal(); res(false); };
-    $('#cf-ok').onclick = () => { closeModal(); res(true); };
+      </div>`, () => res(false));                        // 배경 클릭·Esc = 취소
+    const done = v => { modalDismiss = null; closeModal(); res(v); };
+    $('#cf-no').onclick = () => done(false);
+    $('#cf-ok').onclick = () => done(true);
   });
+}
+
+/* ---------- 되돌리기 · 휴지통 ---------- */
+const TRASH_KEEP_DAYS = 30, TRASH_MAX = 100;
+const TRASH_TYPE = { todo: '할 일', memo: '메모', routine: '루틴', tracker: '기록 항목', goal: '목표' };
+
+// 삭제 직전 상태를 떠 놓았다가 '되돌리기'에서 그대로 되돌려요
+function snapshotOf(keys) {
+  const snap = {};
+  for (const k of [...keys, 'trash']) snap[k] = JSON.parse(JSON.stringify(S[k] ?? null));
+  return snap;
+}
+function restoreSnapshot(snap) {
+  for (const k of Object.keys(snap)) if (snap[k] !== null) S[k] = snap[k];
+  save(); render();
+}
+function trashPush(type, data) {
+  if (!Array.isArray(S.trash)) S.trash = [];
+  S.trash.unshift({ id: uid(), type, deletedAt: new Date().toISOString(), data });
+  if (S.trash.length > TRASH_MAX) S.trash.length = TRASH_MAX;
+}
+// 삭제 → 휴지통 보관 → 6초간 되돌리기 토스트
+function deleteWithUndo({ keys, type, data, del, msg }) {
+  const snap = snapshotOf(keys);
+  const keep = JSON.parse(JSON.stringify(data));         // 삭제 전에 미리 복사해 둬요
+  del();
+  trashPush(type, keep);
+  save(); render();
+  toast(msg, { undo: () => { restoreSnapshot(snap); toast('되돌렸어요 ↩️'); } });
+}
+// 30일 지난 항목 정리 (앱 시작 시 1회)
+function trashSweep() {
+  if (!Array.isArray(S.trash) || !S.trash.length) return;
+  const cut = addDays(todayStr(), -TRASH_KEEP_DAYS);
+  const before = S.trash.length;
+  S.trash = S.trash.filter(x => (x.deletedAt || '').slice(0, 10) >= cut);
+  if (S.trash.length > TRASH_MAX) S.trash.length = TRASH_MAX;
+  if (S.trash.length !== before) save();
+}
+function trashTitle(e) {
+  const it = (e.data || {}).item || {};
+  return it.title || it.name || (e.type === 'memo' && it.text ? memoTitle(it) : '') || '(제목 없음)';
+}
+function trashRestore(id) {
+  const i = (S.trash || []).findIndex(x => x.id === id);
+  if (i < 0) return;
+  const e = S.trash[i], d = e.data || {}, it = d.item;
+  if (!it) { S.trash.splice(i, 1); save(); render(); return; }
+  switch (e.type) {
+    case 'todo':
+      if (!S.todos.some(x => x.id === it.id)) S.todos.push(it);
+      break;
+    case 'memo':
+      if (!S.memos.some(x => x.id === it.id)) S.memos.push(it);
+      break;
+    case 'routine':
+      if (!S.routines.some(x => x.id === it.id)) S.routines.push(it);
+      for (const dt of (d.logDates || [])) {
+        const arr = S.routineLog[dt] || (S.routineLog[dt] = []);
+        if (!arr.includes(it.id)) arr.push(it.id);
+      }
+      break;
+    case 'tracker':
+      if (!S.trackers.some(x => x.id === it.id)) S.trackers.push(it);
+      for (const [dt, v] of Object.entries(d.log || {})) {
+        (S.trackerLog[dt] || (S.trackerLog[dt] = {}))[it.id] = v;
+      }
+      break;
+    case 'goal':
+      if (!S.goals.some(x => x.id === it.id)) S.goals.push(it);
+      for (const tid of (d.todoIds || [])) {
+        const t = S.todos.find(x => x.id === tid);
+        if (t && !t.goalId) t.goalId = it.id;
+      }
+      break;
+  }
+  S.trash.splice(i, 1);
+  save(); render();
+  toast('복원했어요 ♻️');
+}
+function trashModal() {
+  const list = S.trash || [];
+  openModal(`
+    <div class="m-title">🗑️ 휴지통</div>
+    <p style="color:var(--sub);font-size:.86rem;margin:-6px 0 12px">삭제한 항목을 ${TRASH_KEEP_DAYS}일간 보관해요. 최대 ${TRASH_MAX}개까지 남고, 오래된 것부터 사라져요.</p>
+    ${!list.length ? '<div class="empty">휴지통이 비어 있어요</div>' : `
+      <div class="search-res">${list.map(e => `
+        <div class="set-row">
+          <div><div class="sl">${TRASH_TYPE[e.type] || '항목'} · ${esc(trashTitle(e))}</div>
+            <div class="sd">${(e.deletedAt || '').slice(0, 10)} 삭제</div></div>
+          <button class="btn btn-sm" data-action="trash-restore" data-id="${e.id}">복원</button>
+        </div>`).join('')}</div>
+      <div class="m-actions" style="margin-top:14px">
+        <button class="btn" data-action="close-modal">닫기</button>
+        <button class="btn btn-danger" data-action="trash-empty" style="flex:1">휴지통 비우기</button>
+      </div>`}
+  `);
 }
 
 /* ---------- 렌더 공통 조각 ---------- */
@@ -1626,7 +2595,10 @@ function trackerRowHTML(tk, d) {
 function lifeRowHTML(kind, d) {
   const K = LIFE_KINDS[kind];
   const sum = lifeSummary(kind, d);
-  const kcal = kind === 'workout' ? lifeKcal(lifeOf(d).workout) : 0;
+  const L = lifeOf(d);
+  const kcal = kind === 'workout' ? lifeKcal(L.workout)
+    : kind === 'meal' ? mealKcal(L.meal)
+    : kind === 'fit' ? ((L.fit && +L.fit.act) || 0) : 0;
   const shown = sum && sum.length > 34 ? sum.slice(0, 34) + '…' : sum;
   return `<div class="item tracker life" data-action="life-modal" data-k="${kind}" data-date="${d}">
     <span class="tk-emoji">${K.emoji}</span>
@@ -1634,10 +2606,30 @@ function lifeRowHTML(kind, d) {
       <div class="item-title">${K.name}</div>
       <div class="item-meta">
         ${sum ? `<span class="chip accent">${esc(shown)}</span>` : `<span class="chip">${K.hint} — 눌러서 기록</span>`}
-        ${kcal > 0 ? `<span class="chip red">🔥 ${fmtNum(kcal)} kcal</span>` : ''}
+        ${kcal > 0 ? `<span class="chip red">${kind === 'meal' ? '🍚' : '🔥'} ${fmtNum(kcal)} kcal</span>` : ''}
       </div>
     </div>
     <span class="tk-go">›</span>
+  </div>`;
+}
+// 섭취 vs 소비 한 장 — 기록이 하나도 없으면 아예 안 보여요
+function energyCardHTML(d) {
+  const en = dayEnergy(d);
+  if (!en.has) return '';
+  const over = en.net > 0;
+  const cell = (v, l, cls) => `<div class="kcal-b ${cls || ''}"><b>${v}</b><span>${l}</span></div>`;
+  return `<div class="card">
+    <div class="card-title">⚡ ${d === todayStr() ? '오늘의' : '이 날의'} 칼로리
+      <span class="hint">${en.fromWatch ? '⌚ 애플워치 기준' : '직접 입력 기준'}</span></div>
+    <div class="kcal-nums">
+      ${cell(en.eaten ? fmtNum(en.eaten) : '—', '섭취')}
+      ${cell(en.act ? fmtNum(en.act) : '—', en.fromWatch ? '활동' : '운동')}
+      ${en.rest ? cell(fmtNum(en.rest), '휴식') : ''}
+      ${cell((over ? '+' : '') + fmtNum(en.net), '차이', 'net' + (over ? ' over' : ''))}
+    </div>
+    <div class="kcal-note">섭취 − 소비 = 차이예요. ${en.fromWatch
+      ? '애플워치의 활동 에너지에는 운동으로 태운 양이 이미 들어 있어요.'
+      : '애플워치를 연결하면 활동·휴식 칼로리까지 자동으로 채워져요.'}</div>
   </div>`;
 }
 function sortTodos(list) {
@@ -1692,6 +2684,7 @@ function renderToday() {
   const streak = maxCurStreak();
   const visitStreak = S.meta.visitStreak || 0;
   const quote = dailyQuote(d);
+  const eng = dailyEnglish(d);
 
   // 주간 스트립
   const week = weekDates(d).map(wd => {
@@ -1773,6 +2766,20 @@ function renderToday() {
       <div class="q-txt">“${esc(quote.t)}”</div>
       <div class="q-author">— ${esc(quote.a)}</div>
     </div>
+    <div class="card en-card">
+      <div class="card-title">🔤 오늘의 영어 <span class="hint">${eng.set}/${eng.sets}묶음 · 눌러서 예문</span></div>
+      <div class="en-list">
+        ${eng.words.map(w => `<button class="en-w" data-action="en-word">
+          <span class="en-top"><b>${esc(w.w)}</b><i>${esc(w.p)}</i><span>${esc(w.k)}</span></span>
+          <span class="en-ex"><em>${esc(w.e)}</em>${esc(w.t)}</span>
+        </button>`).join('')}
+      </div>
+      <div class="en-ph">
+        <div class="ep-e">${esc(eng.phrase.e)}</div>
+        <div class="ep-k">${esc(eng.phrase.k)}</div>
+        <div class="ep-n">💡 ${esc(eng.phrase.n)}</div>
+      </div>
+    </div>
     <div class="sec-head"><h2>🔁 루틴 <span class="cnt">${rs.filter(r => isRDone(r.id, d)).length}/${rs.length}</span></h2>
       <button data-action="manage-routines">관리</button></div>
     ${rs.length ? rs.map(r => routineItemHTML(r, d)).join('') :
@@ -1788,8 +2795,9 @@ function renderToday() {
           ${Object.entries(TRACKER_PRESETS).map(([k, p]) => `<button class="chip" data-action="preset-tracker" data-k="${k}">${p.emoji} ${p.name}</button>`).join('')}
           <button class="chip accent" data-action="add-tracker">＋ 직접 만들기</button>
         </div></div>`}
-    <div class="sec-head"><h2>🥗 식단 · 운동 · 독서 <span class="cnt">${LIFE_ORDER.filter(k => lifeSummary(k, d)).length}/3</span></h2></div>
+    <div class="sec-head"><h2>🥗 식단 · 운동 · 독서 · 활동 <span class="cnt">${LIFE_ORDER.filter(k => lifeSummary(k, d)).length}/${LIFE_ORDER.length}</span></h2></div>
     ${LIFE_ORDER.map(k => lifeRowHTML(k, d)).join('')}
+    ${energyCardHTML(d)}
     <div class="sec-head"><h2>✍️ 글 <span class="cnt">${memosOn(d).length}</span></h2>
       <button data-action="tab" data-tab="memos">메모 전체</button></div>
     ${diaryCardHTML(d, { bare: true })}
@@ -1971,6 +2979,7 @@ function renderCalendar() {
     ${diaryCardHTML(sel)}
     ${activeTrackers().map(tk => trackerRowHTML(tk, sel)).join('')}
     ${LIFE_ORDER.map(k => lifeRowHTML(k, sel)).join('')}
+    ${energyCardHTML(sel)}
     ${sel <= todayStr() ? reflHTML(sel) : ''}
   `;
 
@@ -2884,14 +3893,20 @@ function renderSettings() {
           `<button class="${s.weekStart === k ? 'on' : ''}" data-action="set-ws" data-k="${k}" style="padding:8px 13px">${l}</button>`).join('')}</div></div>
     </div>
     <div class="card">
-      <div class="card-title">☁️ 클라우드 자동 동기화 ${cloud.user ? '<span class="hint" style="color:var(--accent-dark)">● 켜짐</span>' : ''}</div>
+      <div class="card-title">☁️ 클라우드 자동 동기화 ${cloud.user ? (cloud.paused
+        ? '<span class="hint" style="color:var(--amber)">⏸ 멈춤</span>'
+        : '<span class="hint" style="color:var(--accent-dark)">● 켜짐</span>') : ''}</div>
       ${!window.FIREBASE_CONFIG ? `
         <div class="sd" style="font-size:.84rem;color:var(--sub);line-height:1.7">아직 준비 중이에요. Firebase 설정이 연결되면 이 자리에서 구글 로그인으로 켤 수 있어요.</div>`
       : cloud.user ? `
         <div class="set-row" style="padding-top:4px"><div><div class="sl">${esc(cloud.user.email || '내 구글 계정')}</div>
           <div class="sd">${cloud.lastSync ? '마지막 동기화 ' + cloud.lastSync.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) : '동기화 준비 중…'}</div></div>
           <button class="btn btn-sm" data-action="cloud-logout">로그아웃</button></div>
-        <div class="sd" style="font-size:.8rem;color:var(--sub);margin-top:6px">모든 변경이 자동으로 클라우드에 저장돼요. 다른 기기에서도 같은 계정으로 로그인하면 항상 같은 데이터를 봐요.</div>`
+        ${cloud.paused ? `
+        <div class="sd" style="font-size:.82rem;color:var(--amber);line-height:1.7;margin-top:6px">
+          어느 데이터를 쓸지 아직 안 골라서 동기화를 멈춰뒀어요.<br>지금은 이 기기에만 저장되고, 어느 쪽도 덮어쓰지 않아요.</div>
+        <button class="btn btn-primary btn-block" data-action="cloud-resync" style="margin-top:10px">다시 선택하고 동기화 켜기</button>`
+        : `<div class="sd" style="font-size:.8rem;color:var(--sub);margin-top:6px">모든 변경이 자동으로 클라우드에 저장돼요. 다른 기기에서도 같은 계정으로 로그인하면 항상 같은 데이터를 봐요.</div>`}`
       : `
         <button class="btn btn-primary btn-block" data-action="cloud-login" style="margin-bottom:10px">Google로 로그인하고 자동 동기화 켜기</button>
         <div class="sd" style="font-size:.8rem;color:var(--sub)">로그인하면 이 기기의 데이터가 내 구글 계정 클라우드에 자동 백업되고, 폰↔PC가 항상 똑같아져요. 백업 파일을 신경 쓸 필요가 없어요.</div>`}
@@ -2902,8 +3917,34 @@ function renderSettings() {
         <button class="btn btn-sm" data-action="export">JSON 저장</button></div>
       <div class="set-row"><div><div class="sl">백업 가져오기</div><div class="sd">폰↔PC 이동은 이 파일로 해요</div></div>
         <button class="btn btn-sm" data-action="import">파일 선택</button></div>
-      <div class="set-row"><div><div class="sl" style="color:var(--red)">전체 초기화</div><div class="sd">모든 데이터를 삭제해요</div></div>
+      <div class="set-row"><div><div class="sl">🗑️ 휴지통</div>
+        <div class="sd">${(S.trash || []).length ? `${S.trash.length}개 보관 중 · ${TRASH_KEEP_DAYS}일 후 자동 삭제` : '비어 있어요'}</div></div>
+        <button class="btn btn-sm" data-action="trash-open">열기</button></div>
+      <div class="set-row"><div><div class="sl" style="color:var(--red)">전체 초기화</div><div class="sd">휴지통을 거치지 않고 모두 삭제해요</div></div>
         <button class="btn btn-sm btn-danger" data-action="reset">초기화</button></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⌚ 애플워치 · 피트니스
+        <span class="hint">${fitDayCount() ? `${fitDayCount()}일 기록됨` : '아직 연결 전'}</span></div>
+      <div class="sd" style="font-size:.84rem;color:var(--sub);line-height:1.75">
+        애플 건강(HealthKit)은 웹앱이 직접 읽을 수 없어요. 대신 아이폰 <b>단축어</b> 앱이
+        활동 칼로리·운동 시간·걸음 수를 텍스트로 만들어 주면, 이 앱이 그걸 읽어 하루 기록에 넣어 줍니다.
+        한 번만 만들어 두면 아침마다 탭 두 번이면 끝이에요.
+      </div>
+      <button class="btn btn-primary btn-block" data-action="fit-guide" style="margin-top:12px">단축어 만드는 법 보기</button>
+      <button class="btn btn-block" data-action="life-modal" data-k="fit" data-date="${todayStr()}" style="margin-top:8px">오늘 활동 기록 열기</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🍽️ 식단 칼로리
+        <span class="hint">기본 ${FOOD_DB.length}종 + 내 음식 ${(S.foodDB || []).length}종</span></div>
+      <div class="sd" style="font-size:.84rem;color:var(--sub);line-height:1.75">
+        식단에 음식 이름을 쉼표로 적으면 칼로리를 어림해 드려요.
+        목록에 없는 음식은 식단 화면에서 <b>＋ 등록</b>으로 내 음식에 추가할 수 있어요.
+      </div>
+      ${(S.foodDB || []).length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:11px">
+        ${S.foodDB.slice(0, 30).map((f, i) => `<span class="chip violet">${esc(f.n)} ${fmtNum(f.k)}
+          <button data-action="food-del" data-i="${i}" aria-label="삭제">✕</button></span>`).join('')}
+      </div>` : ''}
     </div>
     <div class="card">
       <div class="card-title">앱 설치 ${standalone ? '<span class="hint">✅ 설치된 앱에서 실행 중</span>' : ''}</div>
@@ -3033,8 +4074,11 @@ function todoModal(id, presetDate) {
   };
   if (t) $('#td-del').onclick = async () => {
     if (await confirmDlg('할 일 삭제', `'${t.title}'을(를) 삭제할까요?`, { danger: true, ok: '삭제' })) {
-      S.todos = S.todos.filter(x => x.id !== t.id);
-      save(); render(); toast('삭제했어요');
+      deleteWithUndo({
+        keys: ['todos'], type: 'todo', data: { item: t },
+        del: () => { S.todos = S.todos.filter(x => x.id !== t.id); },
+        msg: '삭제했어요'
+      });
     }
   };
   if (!t) setTimeout(() => $('#td-title').focus(), 250);
@@ -3150,12 +4194,18 @@ function routineModal(id) {
   };
   if (r) $('#rt-del').onclick = async () => {
     if (await confirmDlg('루틴 삭제', `'${r.title}' 루틴과 모든 체크 기록을 삭제할까요?\n보관하면 기록은 남길 수 있어요.`, { danger: true, ok: '삭제' })) {
-      S.routines = S.routines.filter(x => x.id !== r.id);
-      for (const d in S.routineLog) {
-        S.routineLog[d] = S.routineLog[d].filter(x => x !== r.id);
-        if (!S.routineLog[d].length) delete S.routineLog[d];
-      }
-      save(); closeModal(); render(); toast('루틴을 삭제했어요');
+      const logDates = Object.keys(S.routineLog).filter(d => isRDone(r.id, d));
+      deleteWithUndo({
+        keys: ['routines', 'routineLog'], type: 'routine', data: { item: r, logDates },
+        del: () => {
+          S.routines = S.routines.filter(x => x.id !== r.id);
+          for (const d in S.routineLog) {
+            S.routineLog[d] = S.routineLog[d].filter(x => x !== r.id);
+            if (!S.routineLog[d].length) delete S.routineLog[d];
+          }
+        },
+        msg: '루틴을 삭제했어요'
+      });
     }
   };
   if (!r) setTimeout(() => $('#rt-title').focus(), 250);
@@ -3306,12 +4356,19 @@ function trackerModal(id) {
   };
   if (tk) $('#tr-del').onclick = async () => {
     if (await confirmDlg('기록 항목 삭제', `'${tk.name}' 항목과 모든 기록이 삭제돼요.\n보관하면 기록은 남길 수 있어요.`, { danger: true, ok: '삭제' })) {
-      S.trackers = S.trackers.filter(x => x.id !== tk.id);
-      for (const d in S.trackerLog) {
-        delete S.trackerLog[d][tk.id];
-        if (!Object.keys(S.trackerLog[d]).length) delete S.trackerLog[d];
-      }
-      save(); closeModal(); render(); toast('삭제했어요');
+      const log = {};
+      for (const d in S.trackerLog) if (S.trackerLog[d] && tk.id in S.trackerLog[d]) log[d] = S.trackerLog[d][tk.id];
+      deleteWithUndo({
+        keys: ['trackers', 'trackerLog'], type: 'tracker', data: { item: tk, log },
+        del: () => {
+          S.trackers = S.trackers.filter(x => x.id !== tk.id);
+          for (const d in S.trackerLog) {
+            delete S.trackerLog[d][tk.id];
+            if (!Object.keys(S.trackerLog[d]).length) delete S.trackerLog[d];
+          }
+        },
+        msg: '삭제했어요'
+      });
     }
   };
   if (!tk) setTimeout(() => $('#tr-name').focus(), 250);
@@ -3336,39 +4393,401 @@ function trackersManager() {
 }
 
 /* ============================================================
-   모달: 라이프로그(식단·운동·독서)
+   애플워치·피트니스 가져오기
+   ------------------------------------------------------------
+   웹앱은 애플 건강(HealthKit)을 직접 읽을 수 없어요. 그래서 아이폰 '단축어' 앱이
+   건강 데이터를 뽑아 텍스트로 만들어 주면, 그 텍스트를 이 앱이 읽는 방식을 씁니다.
+   - 붙여넣기(권장): 단축어 → 클립보드에 복사 → 앱에서 [클립보드에서] 한 번
+   - 주소로 열기: 주소 끝에 #fit=... 를 붙이면 열자마자 물어보고 가져와요 (PC·안드로이드용)
    ============================================================ */
-const MEAL_PLACEHOLDER = { b: '예: 계란후라이, 우유', l: '예: 김치찌개', d: '예: 닭가슴살 샐러드', s: '예: 사과 (선택)' };
+const FIT_KEYS = {
+  date: 'date', 날짜: 'date', day: 'date',
+  active: 'act', activeenergy: 'act', 활동: 'act', 활동에너지: 'act', 활동칼로리: 'act', act: 'act',
+  rest: 'rest', resting: 'rest', restingenergy: 'rest', 휴식: 'rest', 휴식에너지: 'rest',
+  기초: 'rest', 기초대사: 'rest', 기초대사량: 'rest',
+  exercise: 'ex', ex: 'ex', 운동시간: 'ex', 운동분: 'ex', exerciseminutes: 'ex',
+  stand: 'stand', standhours: 'stand', 서있기: 'stand', 서기: 'stand',
+  steps: 'steps', step: 'steps', 걸음: 'steps', 걸음수: 'steps',
+  workout: 'wk', workouts: 'wk', 운동: 'wk'
+};
+const fitNum = v => {
+  const m = String(v ?? '').replace(/,/g, '').match(/-?\d+(?:\.\d+)?/);
+  return m ? parseFloat(m[0]) : null;
+};
+function parseFitDate(v) {
+  const s = String(v ?? '').trim();
+  if (!s) return null;
+  if (/오늘|today/i.test(s)) return todayStr();
+  if (/어제|yesterday/i.test(s)) return addDays(todayStr(), -1);
+  const m = s.match(/(\d{4})\D{0,4}(\d{1,2})\D{0,4}(\d{1,2})/);
+  return m ? `${m[1]}-${pad(+m[2])}-${pad(+m[3])}` : null;
+}
+function applyFitKey(fit, key, val) {
+  if (key === 'wk') {
+    const p = String(val).split(/[|｜]/).map(x => x.trim());
+    if (!p[0]) return;
+    const it = { n: p[0].slice(0, 30) };
+    const mn = fitNum(p[1]); if (mn != null) it.min = Math.round(mn);
+    const kc = fitNum(p[2]); if (kc != null) it.kcal = Math.round(kc);
+    (fit.wk || (fit.wk = [])).push(it);
+    return;
+  }
+  const n = fitNum(val);
+  if (n == null || n < 0) return;
+  fit[key] = key === 'stand' ? Math.round(n * 10) / 10 : Math.round(n);
+}
+function fitFromObject(o) {
+  const rec = { date: todayStr(), fit: {} };
+  Object.entries(o || {}).forEach(([k, v]) => {
+    const key = FIT_KEYS[foodNorm(k)];
+    if (!key) return;
+    if (key === 'date') { rec.date = parseFitDate(v) || rec.date; return; }
+    if (key === 'wk' && Array.isArray(v)) {
+      v.forEach(w => {
+        if (typeof w === 'string') { applyFitKey(rec.fit, 'wk', w); return; }
+        const it = { n: String(w.n ?? w.name ?? w.type ?? '운동').slice(0, 30) };
+        const mn = fitNum(w.min ?? w.minutes ?? w.duration); if (mn != null) it.min = Math.round(mn);
+        const kc = fitNum(w.kcal ?? w.energy ?? w.calories); if (kc != null) it.kcal = Math.round(kc);
+        (rec.fit.wk || (rec.fit.wk = [])).push(it);
+      });
+      return;
+    }
+    applyFitKey(rec.fit, key, v);
+  });
+  return hasFit(rec.fit) ? rec : null;
+}
+/* 'active=520' 같은 줄들을 읽어 날짜별 기록으로 만들어요. date= 가 나오면 새 날이 시작됩니다. */
+function parseFitText(raw) {
+  const txt = String(raw || '').trim();
+  if (!txt) return [];
+  if (/^[[{]/.test(txt)) {
+    try {
+      const j = JSON.parse(txt);
+      return (Array.isArray(j) ? j : [j]).map(fitFromObject).filter(Boolean);
+    } catch (e) { /* JSON이 아니면 아래 줄 단위 방식으로 */ }
+  }
+  const recs = [];
+  let cur = null;
+  txt.split(/\r?\n/).forEach(line => {
+    const s = line.trim();
+    if (!s || /^dgrfit/i.test(s)) return;
+    const m = s.match(/^([^:=]{1,24})\s*[:=]\s*(.*)$/);
+    if (!m) return;
+    const key = FIT_KEYS[foodNorm(m[1])];
+    if (!key) return;
+    if (key === 'date') { cur = { date: parseFitDate(m[2]) || todayStr(), fit: {} }; recs.push(cur); return; }
+    if (!cur) { cur = { date: todayStr(), fit: {} }; recs.push(cur); }
+    applyFitKey(cur.fit, key, m[2].trim());
+  });
+  return recs.filter(r => hasFit(r.fit));
+}
+// 읽어 들인 기록을 실제로 저장 — 이미 있던 값은 새 값으로 덮되, 새 값에 없는 항목은 남겨 둬요
+function applyFitRecords(recs) {
+  const done = [];
+  (recs || []).forEach(r => {
+    if (!r || !r.date || r.date > todayStr()) return;
+    setLife(r.date, 'fit', { ...(lifeOf(r.date).fit || {}), ...r.fit, at: new Date().toISOString(), src: 'watch' });
+    done.push(r.date);
+  });
+  if (done.length) save();
+  return done;
+}
+const fitSummaryLine = f => [
+  f.act ? `활동 ${fmtNum(f.act)}kcal` : '', f.rest ? `휴식 ${fmtNum(f.rest)}kcal` : '',
+  f.ex ? `운동 ${fmtNum(f.ex)}분` : '', f.stand ? `서 있기 ${fmtNum(f.stand)}시간` : '',
+  f.steps ? `${(+f.steps).toLocaleString()}걸음` : '',
+  f.wk && f.wk.length ? `운동 ${f.wk.length}건` : ''
+].filter(Boolean).join(' · ') || '내용 없음';
+
+// 주소 끝에 #fit=... 이 붙어 열렸을 때 (단축어의 'URL 열기') — 반드시 물어보고 저장해요
+async function maybeFitFromHash() {
+  const m = (location.hash || '').match(/^#fit=([\s\S]*)$/);
+  if (!m) return;
+  let txt = m[1];
+  try { txt = decodeURIComponent(txt.replace(/\+/g, ' ')); } catch (e) { /* 이미 풀린 문자열 */ }
+  history.replaceState(null, '', location.pathname + location.search);   // 새로고침해도 다시 안 들어오게
+  const recs = parseFitText(txt);
+  if (!recs.length) { toast('가져올 활동 기록을 못 읽었어요'); return; }
+  const lines = recs.slice(0, 5).map(r => `${fmtKoShort(r.date)} — ${fitSummaryLine(r.fit)}`).join('\n');
+  const ok = await confirmDlg('활동 기록을 가져올까요?',
+    lines + (recs.length > 5 ? `\n외 ${recs.length - 5}일` : ''), { ok: '가져오기' });
+  if (!ok) return;
+  const done = applyFitRecords(recs);
+  render();
+  toast(done.length ? `활동 기록 ${done.length}일치를 가져왔어요 ⌚` : '가져올 날짜가 없었어요');
+}
+
+const FIT_TEMPLATE = `DGRFIT
+date=[현재 날짜]
+active=[활동]
+rest=[휴식]
+exercise=[운동시간]
+stand=[서있기]
+steps=[걸음]`;
+
+function fitGuideModal(backDate) {
+  const url = location.origin + location.pathname;
+  openModal(`
+    <div class="m-title">⌚ 애플워치 기록 가져오기</div>
+    <div class="guide-ol">
+      아이폰 <b>단축어</b> 앱이 애플 건강에서 숫자를 뽑아 텍스트로 만들어 주면,
+      그 텍스트를 이 앱이 읽어요. 한 번만 만들어 두면 그다음부터는 <b>탭 두 번</b>이면 끝나요.
+
+      <div class="step"><b>1.</b> 단축어 앱 → 우측 위 <b>＋</b> 로 새 단축어를 만들어요.</div>
+      <div class="step"><b>2.</b> <b>건강 샘플 찾기</b> 동작을 추가하고 이렇게 맞춰요.<br>
+        · 유형: <b>활동 에너지</b> · 필터: <b>시작 날짜 - 오늘</b> · 아래 <b>합계</b> 선택<br>
+        · 이어서 <b>변수 설정</b> 동작으로 이름을 <b>활동</b> 이라고 저장해요.</div>
+      <div class="step"><b>3.</b> 같은 방식으로 네 개를 더 만들어요.<br>
+        · 휴식 에너지 → <b>휴식</b> · Apple 운동 시간 → <b>운동시간</b><br>
+        · Apple 서 있기 시간 → <b>서있기</b> · 걸음 수 → <b>걸음</b></div>
+      <div class="step"><b>4.</b> <b>텍스트</b> 동작을 추가하고 아래 틀을 붙여 넣은 뒤,
+        대괄호 자리를 2·3번에서 만든 변수로 바꿔 끼워요.</div>
+    </div>
+    <div class="guide-pre">${esc(FIT_TEMPLATE)}</div>
+    <button class="btn btn-sm btn-block" id="fg-copy">📋 이 틀 복사하기</button>
+    <div class="guide-ol">
+      <div class="step"><b>5.</b> 운동 종류까지 남기고 싶으면 <b>운동 찾기</b>(오늘) → <b>각 항목 반복</b> 안에서
+        아래 한 줄을 덧붙이면 돼요. 종류·시간·칼로리를 <b>|</b> 로 구분해요.</div>
+    </div>
+    <div class="guide-pre">workout=[운동 종류]|[시간]|[활동 에너지]</div>
+    <div class="guide-ol">
+      <div class="step"><b>6.</b> 마지막에 <b>클립보드에 복사</b> 동작을 넣고 저장해요.
+        홈 화면에 단축어를 추가해 두면 더 편해요.</div>
+      <div class="step"><b>7.</b> 단축어 실행 → 동건루틴 → <b>활동</b> → <b>📋 클립보드에서</b> 누르면 끝이에요.</div>
+      <div class="step" style="color:var(--faint);font-size:.8rem;line-height:1.7">
+        💡 PC·안드로이드라면 <b>URL 열기</b> 동작으로 아래 주소 뒤에 텍스트를 붙여 한 번에 넣을 수도 있어요.
+        다만 아이폰은 이 링크가 <b>사파리</b>에서 열려서, 홈 화면 앱과 저장 공간이 달라져요.
+        아이폰에서는 클립보드 방식을 쓰세요.<br>
+        <span style="word-break:break-all">${esc(url)}#fit=(URL 인코딩한 텍스트)</span>
+      </div>
+    </div>
+    <div class="m-actions">
+      <button class="btn btn-primary" id="fg-back" style="flex:1">돌아가기</button>
+    </div>`);
+  $('#fg-copy').onclick = async () => {
+    try { await navigator.clipboard.writeText(FIT_TEMPLATE); toast('틀을 복사했어요 📋'); }
+    catch (e) { toast('이 환경에선 복사가 지원되지 않아요'); }
+  };
+  $('#fg-back').onclick = () => { closeModal(); if (backDate) lifeModal('fit', backDate); };
+}
+
+/* ============================================================
+   모달: 라이프로그(식단·운동·독서·활동)
+   ============================================================ */
+const MEAL_PLACEHOLDER = { b: '예: 계란후라이 2개, 우유', l: '예: 김치찌개, 공기밥', d: '예: 닭가슴살, 샐러드', s: '예: 사과 1개 (선택)' };
+let mealRefresh = null;   // 음식 등록 후 모달의 계산을 다시 돌리기 위한 고리
 function lifeModal(kind, d) {
   const K = LIFE_KINDS[kind]; if (!K) return;
   if (d > todayStr()) { toast('미래 날짜는 기록할 수 없어요'); return; }
   const L = lifeOf(d);
   const dateChip = `<span class="chip">${fmtKoShort(d)} ${KD[dow(d)]}</span>`;
 
-  /* --- 식단: 아침/점심/저녁/간식 --- */
+  /* --- 식단: 아침/점심/저녁/간식 + 칼로리 자동 계산 --- */
   if (kind === 'meal') {
     const m = L.meal || {};
     openModal(`
       <div class="m-title">🍽️ 식단 ${dateChip}</div>
-      ${LIFE_MEALS.map(([k, label]) => `
-        <div class="field"><label>${label}</label>
-          <input class="input lf-meal" data-k="${k}" maxlength="120" placeholder="${MEAL_PLACEHOLDER[k]}" value="${esc(m[k] || '')}"></div>`).join('')}
+      ${LIFE_MEALS.map(([k, label]) => {
+        const auto = estimateKcal(m[k] || '').kcal;
+        const savedK = (m.kc || {})[k];
+        const manual = savedK != null && Math.round(savedK) !== auto ? '1' : '';
+        return `<div class="field">
+          <label>${label}</label>
+          <div class="meal-line">
+            <input class="input lf-meal" data-k="${k}" maxlength="120" placeholder="${MEAL_PLACEHOLDER[k]}" value="${esc(m[k] || '')}">
+            <input class="input lf-kcal" data-k="${k}" data-manual="${manual}" type="number" min="0" inputmode="numeric"
+              placeholder="kcal" value="${savedK ? Math.round(savedK) : ''}">
+          </div>
+          <div class="mk-hint" data-k="${k}"></div>
+        </div>`;
+      }).join('')}
+      <div class="mk-total" id="mk-total"></div>
+      <div style="font-size:.74rem;color:var(--faint);line-height:1.6;margin:-6px 0 14px">
+        쉼표로 나눠 적으면 음식마다 칼로리를 어림해 드려요. 수량도 알아들어요 — <b>밥 2공기</b>, <b>사과 1개</b>, <b>닭가슴살 200g</b>.<br>
+        kcal 칸을 직접 고치면 그 값을 그대로 써요. 음식을 다시 적으면 자동 계산으로 돌아갑니다.
+      </div>
       <div class="m-actions">
         ${L.meal ? '<button class="btn btn-danger" id="lf-del">지우기</button>' : ''}
         <button class="btn btn-primary" id="lf-save" style="flex:1">저장</button>
       </div>`);
+
+    const refresh = () => {
+      let total = 0;
+      LIFE_MEALS.forEach(([k]) => {
+        const txt = $(`.lf-meal[data-k="${k}"]`), kin = $(`.lf-kcal[data-k="${k}"]`), hint = $(`.mk-hint[data-k="${k}"]`);
+        if (!txt || !kin || !hint) return;
+        const est = estimateKcal(txt.value.trim());
+        if (!kin.dataset.manual) kin.value = txt.value.trim() && est.kcal ? est.kcal : '';
+        const parts = est.hits.map(h => `${esc(h.n)} ${fmtNum(h.k)}${h.my ? '*' : ''}`);
+        const miss = est.miss.map(x =>
+          `<span class="miss">${esc(x)} ?</span><button type="button" class="mk-add" data-action="food-add" data-name="${esc(x)}">＋ 등록</button>`);
+        hint.innerHTML = txt.value.trim() ? [...parts, ...miss].join(' · ') : '';
+        total += (+kin.value || 0);
+      });
+      $('#mk-total').innerHTML = total ? `합계 ≈ ${fmtNum(total)} kcal <span>· 어림값이에요</span>` : '';
+    };
+    mealRefresh = refresh;
+    // 음식을 다시 적으면 손으로 고친 kcal은 놓아 주고 자동 계산으로 돌아가요
+    $$('.lf-meal').forEach(inp => inp.addEventListener('input', () => {
+      const kin = $(`.lf-kcal[data-k="${inp.dataset.k}"]`);
+      if (kin) kin.dataset.manual = '';
+      refresh();
+    }));
+    // kcal 칸에 손을 댔다면 비워 둔 것도 뜻이 있어요 — 자동으로 다시 채우지 않아요
+    $$('.lf-kcal').forEach(inp => inp.addEventListener('input', () => {
+      inp.dataset.manual = '1';
+      refresh();
+    }));
+    refresh();
+
     $('#lf-save').onclick = () => {
-      const out = {};
+      const out = { kc: {} };
       $$('.lf-meal').forEach(inp => { const v = inp.value.trim(); if (v) out[inp.dataset.k] = v; });
-      if (!Object.keys(out).length) { toast('한 끼라도 입력해주세요'); return; }
+      if (!LIFE_MEALS.some(([k]) => out[k])) { toast('한 끼라도 입력해주세요'); return; }
+      $$('.lf-kcal').forEach(inp => {
+        const k = inp.dataset.k;
+        if (!out[k]) return;
+        const raw = inp.value.trim();
+        // 자동으로 채워진 값을 일부러 지웠다면 0으로 남겨 '계산하지 않음'을 기억해요
+        if (raw === '') { if (estimateKcal(out[k]).kcal > 0) out.kc[k] = 0; return; }
+        const v = parseFloat(raw);
+        if (!isNaN(v) && v >= 0) out.kc[k] = Math.round(v);
+      });
+      if (!Object.keys(out.kc).length) delete out.kc;
       setLife(d, 'meal', out);
-      save(); closeModal(); render(); toast(K.done);
+      mealRefresh = null;
+      save(); closeModal(); render();
+      const tot = mealKcal(out);
+      toast(tot ? `식단을 기록했어요 🍽️ ${fmtNum(tot)} kcal` : K.done);
     };
     if (L.meal) $('#lf-del').onclick = () => {
       setLife(d, 'meal', null);
+      mealRefresh = null;
       save(); closeModal(); render(); toast('기록을 지웠어요');
     };
     if (!L.meal) setTimeout(() => { const i = $('.lf-meal'); if (i) i.focus(); }, 250);
+    return;
+  }
+
+  /* --- 활동: 애플워치·피트니스에서 가져오거나 직접 적기 --- */
+  if (kind === 'fit') {
+    const f = L.fit || {};
+    const wkLine = it => `<div class="life-line">
+      <input class="input" data-f="n" maxlength="30" placeholder="운동 (예: 달리기)" value="${it ? esc(it.n || '') : ''}">
+      <input class="input" data-f="a" type="number" min="0" inputmode="numeric" placeholder="분" value="${it && it.min != null ? it.min : ''}">
+      <input class="input" data-f="k" type="number" min="0" inputmode="numeric" placeholder="kcal" value="${it && it.kcal != null ? it.kcal : ''}">
+      <button type="button" class="lf-rm" data-action="life-rm" aria-label="줄 삭제">✕</button>
+    </div>`;
+    const num = (id, label, val, unit) => `<div class="field"><label>${label}</label>
+      <input class="input" id="${id}" type="number" min="0" inputmode="decimal" placeholder="${unit}" value="${val != null ? val : ''}"></div>`;
+    openModal(`
+      <div class="m-title">⌚ 활동 ${dateChip}</div>
+      <div class="fit-btns">
+        <button class="btn btn-primary btn-sm" id="fit-clip">📋 클립보드에서</button>
+        <button class="btn btn-sm" id="fit-guide">⌚ 단축어 만드는 법</button>
+      </div>
+      <div class="field">
+        <textarea class="input" id="fit-text" style="min-height:56px"
+          placeholder="단축어가 만든 텍스트를 붙여 넣어도 돼요"></textarea>
+        <button class="btn btn-sm btn-block" id="fit-apply" style="margin-top:7px">붙여 넣은 내용 읽기</button>
+      </div>
+      <div class="fit-grid">
+        ${num('fit-act', '활동 칼로리', f.act, 'kcal')}
+        ${num('fit-rest', '휴식 칼로리', f.rest, 'kcal')}
+        ${num('fit-ex', '운동 시간', f.ex, '분')}
+        ${num('fit-stand', '서 있기', f.stand, '시간')}
+      </div>
+      ${num('fit-steps', '걸음 수', f.steps, '걸음')}
+      <div class="field"><label>오늘 한 운동</label>
+        <div id="fit-rows">${((f.wk && f.wk.length ? f.wk : [null])).map(wkLine).join('')}</div>
+        <button type="button" class="btn btn-sm" id="fit-add" style="margin-top:2px">＋ 운동 추가</button>
+        <button type="button" class="btn btn-sm btn-block" id="fit-tow" style="margin-top:7px">💪 운동 기록에도 옮겨 담기</button>
+      </div>
+      <div style="font-size:.74rem;color:var(--faint);line-height:1.6;margin:-4px 0 14px">
+        애플 건강(HealthKit)은 웹앱이 직접 읽을 수 없어서, 아이폰 <b>단축어</b>가 만든 텍스트를 받아 오는 방식이에요.
+        ${f.at ? `<br>마지막으로 가져온 시각 — ${esc(memoTimeLabel(f.at))}` : ''}
+      </div>
+      <div class="m-actions">
+        ${hasFit(f) ? '<button class="btn btn-danger" id="lf-del">지우기</button>' : ''}
+        <button class="btn btn-primary" id="lf-save" style="flex:1">저장</button>
+      </div>`);
+
+    const readForm = () => {
+      const g = id => { const v = parseFloat(($('#' + id) || {}).value); return isNaN(v) || v < 0 ? null : v; };
+      const out = {};
+      const map = { act: 'fit-act', rest: 'fit-rest', ex: 'fit-ex', stand: 'fit-stand', steps: 'fit-steps' };
+      Object.entries(map).forEach(([k, id]) => {
+        const v = g(id);
+        if (v != null) out[k] = k === 'stand' ? Math.round(v * 10) / 10 : Math.round(v);
+      });
+      const wk = [];
+      $$('#fit-rows .life-line').forEach(row => {
+        const gv = ff => { const i = row.querySelector(`[data-f="${ff}"]`); return i ? i.value.trim() : ''; };
+        const n = gv('n'); if (!n) return;
+        const it = { n };
+        const mn = parseFloat(gv('a')); if (!isNaN(mn) && mn > 0) it.min = Math.round(mn);
+        const kc = parseFloat(gv('k')); if (!isNaN(kc) && kc > 0) it.kcal = Math.round(kc);
+        wk.push(it);
+      });
+      if (wk.length) out.wk = wk;
+      return out;
+    };
+    const fillForm = fit => {
+      [['fit-act', 'act'], ['fit-rest', 'rest'], ['fit-ex', 'ex'], ['fit-stand', 'stand'], ['fit-steps', 'steps']]
+        .forEach(([id, k]) => { if (fit[k] != null) $('#' + id).value = fit[k]; });
+      if (fit.wk && fit.wk.length) $('#fit-rows').innerHTML = fit.wk.map(wkLine).join('');
+    };
+    const readText = txt => {
+      const recs = parseFitText(txt);
+      if (!recs.length) { toast('읽을 수 있는 내용이 없어요 — 단축어 만드는 법을 확인해 주세요'); return; }
+      const mine = recs.find(r => r.date === d);
+      const others = recs.filter(r => r.date !== d && r.date <= todayStr());
+      if (mine) fillForm(mine.fit);
+      const saved = others.length ? applyFitRecords(others) : [];
+      if (!mine && !saved.length) { toast('이 날짜의 기록을 찾지 못했어요'); return; }
+      toast(mine
+        ? `가져왔어요 ⌚ ${fitSummaryLine(mine.fit)}${saved.length ? ` (+ 다른 날 ${saved.length}일)` : ''}`
+        : `다른 날짜 ${saved.length}일치를 저장했어요 ⌚`);
+    };
+
+    $('#fit-clip').onclick = async () => {
+      if (!navigator.clipboard || !navigator.clipboard.readText) {
+        toast('이 환경에선 아래 칸에 직접 붙여 넣어 주세요'); $('#fit-text').focus(); return;
+      }
+      try {
+        const txt = await navigator.clipboard.readText();
+        if (!txt || !txt.trim()) { toast('클립보드가 비어 있어요'); return; }
+        $('#fit-text').value = txt;
+        readText(txt);
+      } catch (e) { toast('클립보드를 못 읽었어요 — 아래 칸에 직접 붙여 넣어 주세요'); $('#fit-text').focus(); }
+    };
+    $('#fit-apply').onclick = () => readText($('#fit-text').value);
+    $('#fit-guide').onclick = () => { closeModal(); fitGuideModal(d); };
+    $('#fit-add').onclick = () => {
+      const box = $('#fit-rows');
+      box.insertAdjacentHTML('beforeend', wkLine(null));
+      box.lastElementChild.querySelector('input').focus();
+    };
+    $('#fit-tow').onclick = () => {
+      const wk = (readForm().wk || []);
+      if (!wk.length) { toast('옮길 운동이 없어요'); return; }
+      const cur = lifeOf(d).workout || [];
+      const add = wk.filter(x => !cur.some(c => c.n === x.n))
+        .map(x => ({ n: x.n, a: x.min ? x.min + '분' : '', ...(x.kcal ? { k: x.kcal } : {}) }));
+      if (!add.length) { toast('이미 운동 기록에 들어 있어요'); return; }
+      setLife(d, 'workout', [...cur, ...add]);
+      save(); toast(`운동 기록에 ${add.length}개를 담았어요 💪`);
+    };
+    $('#lf-save').onclick = () => {
+      const out = readForm();
+      if (!hasFit(out)) { toast('숫자를 하나라도 채워주세요'); return; }
+      setLife(d, 'fit', { ...out, at: new Date().toISOString(), src: (L.fit && L.fit.src) || 'manual' });
+      save(); closeModal(); render(); toast(K.done);
+    };
+    if (hasFit(f)) $('#lf-del').onclick = () => {
+      setLife(d, 'fit', null);
+      save(); closeModal(); render(); toast('기록을 지웠어요');
+    };
     return;
   }
 
@@ -3487,8 +4906,11 @@ function memoModal(id, presetDate) {
   if (m) $('#mm-del').onclick = async () => {
     closeModal();
     if (await confirmDlg('메모 삭제', `'${memoTitle(m)}' 메모를 삭제할까요?`, { danger: true, ok: '삭제' })) {
-      S.memos = S.memos.filter(x => x.id !== m.id);
-      save(); render(); toast('삭제했어요');
+      deleteWithUndo({
+        keys: ['memos'], type: 'memo', data: { item: m },
+        del: () => { S.memos = S.memos.filter(x => x.id !== m.id); },
+        msg: '삭제했어요'
+      });
     }
   };
   if (!m) setTimeout(() => ta.focus(), 250);
@@ -3695,9 +5117,15 @@ function goalModal(id, opts) {
   };
   if (g) $('#gl-del').onclick = async () => {
     if (await confirmDlg('목표 삭제', `'${g.title}' 목표를 삭제할까요?`, { danger: true, ok: '삭제' })) {
-      S.goals = S.goals.filter(x => x.id !== g.id);
-      S.todos.forEach(t => { if (t.goalId === g.id) t.goalId = null; });
-      save(); closeModal(); render(); toast('목표를 삭제했어요');
+      const todoIds = S.todos.filter(x => x.goalId === g.id).map(x => x.id);
+      deleteWithUndo({
+        keys: ['goals', 'todos'], type: 'goal', data: { item: g, todoIds },
+        del: () => {
+          S.goals = S.goals.filter(x => x.id !== g.id);
+          S.todos.forEach(t => { if (t.goalId === g.id) t.goalId = null; });
+        },
+        msg: '목표를 삭제했어요'
+      });
     }
   };
   if (!g) setTimeout(() => $('#gl-title').focus(), 250);
@@ -4018,7 +5446,7 @@ async function importData(file) {
       `이 파일로 현재 데이터를 완전히 교체해요.\n\n파일 내용: 할 일 ${data.todos.length}개 · 루틴 ${(data.routines || []).length}개 · 목표 ${(data.goals || []).length}개\n현재 데이터: 할 일 ${S.todos.length}개 · 루틴 ${S.routines.length}개 · 목표 ${S.goals.length}개`,
       { danger: true, ok: '교체하기' });
     if (!ok) return;
-    S = Object.assign(DEFAULT_DATA(), data);
+    S = fillDefaults(data, DEFAULT_DATA());
     save(); render();
     toast('가져오기 완료! 데이터를 교체했어요 ✅');
   } catch (e) {
@@ -4037,7 +5465,8 @@ async function resetAll() {
    클라우드 자동 동기화 (Firebase) — firebase-config.js 설정 시 활성화
    ============================================================ */
 let FB = null;                                  // 모듈 스크립트가 주입하는 Firebase API
-const cloud = { user: null, lastSync: null, ready: false };
+// paused: 어느 데이터를 쓸지 아직 안 고른 상태 — 한쪽이 다른 쪽을 덮지 않게 올리기·받기를 모두 멈춰요
+const cloud = { user: null, lastSync: null, ready: false, paused: false };
 let applyingRemote = false;
 let pushTimer = null;
 const deviceId = (() => {
@@ -4047,7 +5476,7 @@ const deviceId = (() => {
 })();
 
 function queuePush() {
-  if (!FB || !cloud.user || applyingRemote) return;
+  if (!FB || !cloud.user || cloud.paused || applyingRemote) return;
   clearTimeout(pushTimer);
   pushTimer = setTimeout(pushCloud, 1200);
 }
@@ -4067,24 +5496,36 @@ function applyRemote(data) {
   applyingRemote = false;
   cloud.lastSync = new Date();
 }
-const dataSummary = d => `할 일 ${(d.todos || []).length} · 루틴 ${(d.routines || []).length} · 목표 ${(d.goals || []).length}`;
-const isTrivial = d => !(d.todos || []).length && !(d.routines || []).length && !(d.goals || []).length;
+// '빈 데이터'인지 판단할 때는 메모·회고·생활기록·기록까지 모두 봐야 해요.
+// 할 일/루틴/목표만 세면, 메모만 쓰던 기기가 '비어 있다'고 오판돼 통째로 덮어써집니다.
+const COLL_KEYS = ['todos', 'routines', 'goals', 'memos', 'trackers'];
+const LOG_KEYS = ['routineLog', 'trackerLog', 'lifeLog', 'reflections'];
+const logDayCount = d => LOG_KEYS.reduce((a, k) => a + Object.keys(d[k] || {}).length, 0);
+const dataSummary = d =>
+  `할 일 ${(d.todos || []).length} · 루틴 ${(d.routines || []).length} · 목표 ${(d.goals || []).length}` +
+  ` · 메모 ${(d.memos || []).length} · 기록 ${logDayCount(d)}일`;
+const isTrivial = d => !d ? true
+  : COLL_KEYS.every(k => !(d[k] || []).length) && logDayCount(d) === 0;
 
 function chooseDataDlg(remoteData) {
   return new Promise(res => {
     openModal(`
       <div class="m-title">어느 데이터를 사용할까요?</div>
-      <p style="color:var(--sub);font-size:.9rem;margin:-6px 0 12px">이 기기와 클라우드에 서로 다른 데이터가 있어요.<br>선택하지 않은 쪽은 덮어써져요.</p>
+      <p style="color:var(--sub);font-size:.9rem;margin:-6px 0 12px">이 기기와 클라우드에 서로 다른 데이터가 있어요.<br>선택한 쪽으로 맞추고, 다른 쪽은 덮어써져요.</p>
       <div class="menu-list">
         <button class="btn" id="ch-cloud" style="display:block;text-align:left">☁️ 클라우드 데이터 사용<br><span style="font-size:.78rem;color:var(--sub);font-weight:500">${dataSummary(remoteData)}</span></button>
         <button class="btn" id="ch-local" style="display:block;text-align:left">📱 이 기기 데이터를 클라우드에 업로드<br><span style="font-size:.78rem;color:var(--sub);font-weight:500">${dataSummary(S)}</span></button>
-      </div>`);
-    $('#ch-cloud').onclick = () => { closeModal(); res(true); };
-    $('#ch-local').onclick = () => { closeModal(); res(false); };
+        <button class="btn" id="ch-later" style="display:block;text-align:left">⏸ 나중에 결정<br><span style="font-size:.78rem;color:var(--sub);font-weight:500">아무것도 덮어쓰지 않고 동기화를 멈춰요</span></button>
+      </div>`, () => res('later'));                // 배경 클릭·Esc = 나중에 결정
+    const done = v => { modalDismiss = null; closeModal(); res(v); };
+    $('#ch-cloud').onclick = () => done('cloud');
+    $('#ch-local').onclick = () => done('local');
+    $('#ch-later').onclick = () => done('later');
   });
 }
 async function onCloudLogin(user) {
   cloud.user = user;
+  cloud.paused = false;
   try {
     const remote = await FB.loadData(user.uid);
     if (!remote || !remote.data || isTrivial(remote.data)) {
@@ -4093,14 +5534,23 @@ async function onCloudLogin(user) {
       applyRemote(remote.data);                 // 이 기기가 비어있음 → 클라우드 사용
       toast('클라우드 데이터를 불러왔어요 ☁️');
     } else if ((remote.data.meta || {}).updatedAt !== S.meta.updatedAt) {
-      const useCloud = await chooseDataDlg(remote.data);
-      if (useCloud) { applyRemote(remote.data); toast('클라우드 데이터로 맞췄어요 ☁️'); }
-      else await pushCloud();
+      const choice = await chooseDataDlg(remote.data);
+      if (choice === 'cloud') { applyRemote(remote.data); toast('클라우드 데이터로 맞췄어요 ☁️'); }
+      else if (choice === 'local') { await pushCloud(); }
+      else {
+        // 아직 안 골랐으면 어느 쪽도 건드리지 않아요. 실시간 반영도 켜지 않습니다.
+        cloud.paused = true;
+        toast('동기화를 멈췄어요 — 설정에서 다시 고를 수 있어요');
+        render();
+        return;
+      }
     }
     FB.listen(user.uid, payload => {            // 다른 기기의 변경을 실시간 반영
       if (!payload || !payload.data) return;
       if (payload.device === deviceId) return;
-      if ((payload.data.meta || {}).updatedAt === S.meta.updatedAt) return;
+      const rt = (payload.data.meta || {}).updatedAt, lt = S.meta.updatedAt;
+      if (!rt || rt === lt) return;
+      if (lt && rt < lt) return;                // 늦게 도착한 옛 데이터가 새 데이터를 덮지 않게
       applyRemote(payload.data);
     });
   } catch (e) { console.warn('클라우드 연결 실패', e); }
@@ -4129,7 +5579,7 @@ async function cloudLogin() {
 }
 async function cloudLogout() {
   if (FB) { try { await FB.logout(); } catch (e) {} }
-  cloud.user = null; cloud.lastSync = null;
+  cloud.user = null; cloud.lastSync = null; cloud.paused = false;
   render(); toast('로그아웃했어요. 데이터는 이 기기에 그대로 있어요');
 }
 window.__fbInit = api => {
@@ -4296,6 +5746,7 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
     /* --- 내비/공통 --- */
     case 'tab': setTab(el.dataset.tab); break;
     case 'close-modal': closeModal(); break;
+    case 'toast-undo': { const fn = toastUndo; hideToast(); if (fn) fn(); break; }
     case 'open-search': searchModal(); break;
     case 'fab':
       if (V.tab === 'goals') goalModal();
@@ -4361,6 +5812,7 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
       catch (err) { toast('이 환경에선 복사가 지원되지 않아요'); }
       break;
     }
+    case 'en-word': el.classList.toggle('open'); break;   // 단어를 누르면 예문이 펼쳐져요
 
     /* --- 루틴 --- */
     case 'add-routine': routineModal(); break;
@@ -4381,9 +5833,49 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
       break;
     }
 
-    /* --- 라이프로그(식단·운동·독서) --- */
+    /* --- 라이프로그(식단·운동·독서·활동) --- */
     case 'life-modal': lifeModal(el.dataset.k, el.dataset.date); break;
     case 'life-rm': el.closest('.life-line').remove(); break;
+    case 'fit-guide': fitGuideModal(el.dataset.date || todayStr()); break;
+    case 'food-add': {                       // 목록에 없는 음식을 그 자리에서 등록
+      const name = el.dataset.name || '';
+      const box = document.createElement('span');
+      box.innerHTML = `<input class="mk-kin" type="number" min="0" inputmode="numeric" placeholder="kcal"
+          style="width:66px;border:1.5px solid var(--line);border-radius:8px;padding:2px 6px;font-size:.74rem;background:var(--card)">
+        <button type="button" class="mk-add" data-action="food-save" data-name="${esc(name)}">저장</button>`;
+      el.replaceWith(box);
+      const inp = box.querySelector('input');
+      inp.focus();
+      inp.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter') { ev.preventDefault(); box.querySelector('[data-action=food-save]').click(); }
+      });
+      break;
+    }
+    case 'food-save': {
+      const wrap = el.parentElement;
+      const inp = wrap && wrap.querySelector('.mk-kin');
+      const v = inp ? parseFloat(inp.value) : NaN;
+      const name = (el.dataset.name || '').trim();
+      if (!name || isNaN(v) || v <= 0) { toast('kcal을 숫자로 적어주세요'); break; }
+      if (!Array.isArray(S.foodDB)) S.foodDB = [];
+      const hit = S.foodDB.find(x => foodNorm(x.n) === foodNorm(name));
+      if (hit) hit.k = Math.round(v);
+      else S.foodDB.unshift({ n: name, k: Math.round(v), u: '1인분' });
+      save();
+      toast(`'${name}' 을(를) 내 음식으로 등록했어요`);
+      if (mealRefresh) mealRefresh();
+      break;
+    }
+    case 'food-del': {
+      const i = +el.dataset.i;
+      if (!Array.isArray(S.foodDB) || !S.foodDB[i]) break;
+      const gone = S.foodDB[i];
+      const snap = snapshotOf(['foodDB']);
+      S.foodDB.splice(i, 1);
+      save(); render();
+      toast(`'${gone.n}' 을(를) 지웠어요`, { undo: () => restoreSnapshot(snap) });
+      break;
+    }
 
     /* --- 메모장 --- */
     case 'add-memo': memoModal(); break;
@@ -4451,10 +5943,20 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
     case 'export': exportData(); break;
     case 'import': $('#import-file').click(); break;
     case 'reset': resetAll(); break;
+    case 'trash-open': trashModal(); break;
+    case 'trash-restore': trashRestore(id); trashModal(); break;
+    case 'trash-empty':
+      if (await confirmDlg('휴지통 비우기',
+        `보관 중인 ${(S.trash || []).length}개를 완전히 삭제해요.\n이건 되돌릴 수 없어요.`,
+        { danger: true, ok: '비우기' })) {
+        S.trash = []; save(); render(); toast('휴지통을 비웠어요');
+      }
+      break;
     case 'install':
       if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null; }
       break;
     case 'cloud-login': cloudLogin(); break;
+    case 'cloud-resync': if (cloud.user) { cloud.paused = false; onCloudLogin(cloud.user); } break;
     case 'cloud-logout':
       if (await confirmDlg('로그아웃', '자동 동기화가 꺼져요. 데이터는 이 기기에 그대로 남아요.', { ok: '로그아웃' })) cloudLogout();
       break;
@@ -4515,8 +6017,11 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
       const t = S.todos.find(x => x.id === id);
       closeModal();
       if (t && await confirmDlg('할 일 삭제', `'${t.title}'을(를) 삭제할까요?`, { danger: true, ok: '삭제' })) {
-        S.todos = S.todos.filter(x => x.id !== id);
-        save(); render(); toast('삭제했어요');
+        deleteWithUndo({
+          keys: ['todos'], type: 'todo', data: { item: t },
+          del: () => { S.todos = S.todos.filter(x => x.id !== id); },
+          msg: '삭제했어요'
+        });
       }
       break;
     }
@@ -4662,10 +6167,14 @@ mainEl.addEventListener('touchcancel', () => {
 
 // 시작
 load();
+trashSweep();
 trackVisit();
 if (S.settings.assetCur === 'USD' || S.settings.assetCur === 'KRW') V.assetCur = S.settings.assetCur;
 applyTheme();
 render();
+maybeFitFromHash();
+// 앱이 이미 떠 있는 상태에서 #fit=... 주소가 열리면 새로고침이 안 되니 따로 들어 둬요
+window.addEventListener('hashchange', maybeFitFromHash);
 setTimeout(maybeWeeklyReport, 800);
 if ('ontouchstart' in window && !localStorage.getItem('dgr_swipe_hint')) {
   setTimeout(() => toast('👈 좌우로 밀면 날짜가 넘어가요 👉'), 900);
