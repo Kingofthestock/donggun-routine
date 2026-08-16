@@ -786,7 +786,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.9.5';
+const APP_VERSION = '1.9.6';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -2092,7 +2092,7 @@ function goalCardHTML(g) {
     ${metricHTML}
     <div class="goal-meta">
       ${metric ? `<span>${metric.link ? '💰 포트폴리오 · ' + (PF_LINK_LABEL[metric.link] || '') : (metric.dir === 'down' ? '📉' : '📈') + ' 측정 목표'}${metric.unit ? ' · ' + esc(metric.unit) : ''}</span>` :
-        ms.length ? `<span>📍 마일스톤 ${ms.filter(x => x.done).length}/${ms.length}</span>` : '<span>수동 진행률</span>'}
+        ms.length ? `<span>📍 단계 ${ms.filter(x => x.done).length}/${ms.length}</span>` : '<span>수동 진행률</span>'}
       ${ls.total ? `<span>🔗 연결된 할 일 ${ls.done}/${ls.total}</span>` : ''}
       ${S.trackers.filter(tk => tk.goalId === g.id && !tk.archived).map(tk => {
         const last = lastTrackerEntry(tk);
@@ -3529,7 +3529,7 @@ function goalModal(id, opts) {
     <div class="field"><label>진행률 계산 방식</label>
       <div class="seg" id="gl-mode">
         <button type="button" data-mode="metric">📏 측정값</button>
-        <button type="button" data-mode="milestone">📍 마일스톤</button>
+        <button type="button" data-mode="milestone">📍 단계별</button>
         <button type="button" data-mode="manual">🎚️ 직접</button>
       </div>
     </div>
@@ -3557,9 +3557,9 @@ function goalModal(id, opts) {
       <div class="field" style="margin-bottom:6px"><div id="gl-metric-preview" class="metric-preview"></div></div>
     </div>
     <div class="pmode" id="pm-milestone">
-      <div class="field" style="margin-bottom:6px"><label>마일스톤 (단계별 체크 → 진행률 자동 계산)</label>
+      <div class="field" style="margin-bottom:6px"><label>단계별 목표 (하나씩 체크 → 진행률 자동 계산)</label>
         <div class="ms-edit" id="gl-ms">${(g && g.milestones ? g.milestones : []).map(subLineHTML).join('')}</div>
-        <button class="add-line" data-action="modal-ms-add" type="button">＋ 마일스톤 추가</button>
+        <button class="add-line" data-action="modal-ms-add" type="button">＋ 단계 추가</button>
       </div>
     </div>
     <div class="pmode" id="pm-manual">
@@ -3584,7 +3584,7 @@ function goalModal(id, opts) {
     const defK = curType === 'month' ? `${y}-${pad(new Date().getMonth() + 1)}` : curType === 'quarter' ? `${y}-Q${Math.floor(new Date().getMonth() / 3) + 1}` : String(y);
     $('#gl-picker').innerHTML = pickerHTML(curType, defK);
   });
-  // 진행률 방식(측정/마일스톤/직접) + 측정 방향
+  // 진행률 방식(측정/단계별/직접) + 측정 방향
   const m0 = g && hasMetric(g) ? g.metric : null;
   let curDir = m0 ? m0.dir : 'down';
   let curLink = m0 ? (m0.link || null) : null;   // 포트폴리오 자동 연동 지표
@@ -4424,7 +4424,7 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
       m.done = !m.done; vib();
       const p = goalProg(g);
       save(); render();
-      if (p === 100 && !g.done) toast('마일스톤 전부 달성! 🏆 목표를 완료로 표시해보세요');
+      if (p === 100 && !g.done) toast('모든 단계 달성! 🏆 목표를 완료로 표시해보세요');
       break;
     }
 
@@ -4459,7 +4459,7 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
       if (await confirmDlg('로그아웃', '자동 동기화가 꺼져요. 데이터는 이 기기에 그대로 남아요.', { ok: '로그아웃' })) cloudLogout();
       break;
 
-    /* --- 모달 내부 공용(서브태스크/마일스톤 편집) --- */
+    /* --- 모달 내부 공용(서브태스크/단계 편집) --- */
     case 'modal-sub-add': {
       const box = $('#td-subs');
       box.insertAdjacentHTML('beforeend', subLineHTML());
