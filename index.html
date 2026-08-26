@@ -391,7 +391,7 @@ input,select,textarea{font:inherit;color:var(--text)}
 .pf-div-box .s{font-size:.7rem;color:var(--faint);margin-top:3px}
 .pf-note{font-size:.74rem;color:var(--faint);line-height:1.7;text-align:center;margin-top:2px}
 /* 보유 종목 리스트 */
-.hold-row{display:flex;align-items:center;gap:8px;padding:11px 0 12px;position:relative;cursor:pointer}
+.hold-row{display:flex;align-items:center;gap:8px;padding:10px 0 11px;position:relative;cursor:pointer}
 .hold-row+.hold-row,.hold-detail+.hold-row{border-top:1px solid var(--line)}
 .h-icon{width:32px;height:32px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;
   color:#fff;font-size:.58rem;font-weight:800;letter-spacing:-.3px}
@@ -448,6 +448,73 @@ input,select,textarea{font:inherit;color:var(--text)}
 .dvgoal .dg-sub{font-size:.72rem;color:var(--sub);margin-top:6px}
 .dvgoal-new{display:block;width:100%;text-align:left;background:var(--accent-soft);color:var(--accent-dark);font-weight:700;font-size:.85rem;border-radius:12px;padding:12px 13px;margin-top:15px}
 [data-theme="dark"] .dvgoal-new{color:var(--accent)}
+/* 종목 행 배경 비중 바 — 리스트를 훑기만 해도 비중이 느껴지게 */
+.hold-row .h-bg{position:absolute;left:-8px;top:4px;bottom:4px;border-radius:9px;opacity:.11;pointer-events:none}
+[data-theme="dark"] .hold-row .h-bg{opacity:.18}
+.hold-row>.h-icon,.hold-row>.h-main,.hold-row>.h-val,.hold-row>.h-wt{position:relative}
+.h-dy2{display:flex;gap:9px;margin-top:2px;line-height:1.3;font-size:.66rem;font-weight:700;white-space:nowrap}
+.h-dy2 .now{color:var(--accent-dark)}
+.h-dy2 .yoc{color:var(--violet)}
+[data-theme="dark"] .h-dy2 .now{color:var(--accent)}
+/* 펼친 종목 상세 안 — 배당률 두 칸 */
+.hold-detail .hdy{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.hdy-box{background:var(--card);border-radius:10px;padding:8px 10px;border:1px solid var(--line)}
+.hdy-box.now{border-left:3px solid var(--accent)}
+.hdy-box.yoc{border-left:3px solid var(--violet)}
+.hdy-box i{display:block;font-style:normal;font-size:.66rem;color:var(--sub);font-weight:600}
+.hdy-box b{display:block;font-size:1.02rem;font-weight:800;margin-top:1px}
+.hdy-box u{display:block;text-decoration:none;font-size:.63rem;color:var(--faint);margin-top:1px}
+.hdy-note{grid-column:1/-1;font-size:.68rem;color:var(--faint);text-align:center}
+/* 종목별 배당률 — 현재가 대비 · 매수가 대비 비교 바 */
+.pf-div-box.dy-now{border-left:3px solid var(--accent)}
+.pf-div-box.dy-yoc{border-left:3px solid var(--violet)}
+.dy-legend{display:flex;flex-wrap:wrap;gap:3px 14px;font-size:.7rem;color:var(--sub);margin:0 2px 9px}
+.dy-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.dy-legend .k1{background:var(--accent)}
+.dy-legend .k2{background:var(--violet)}
+.dy-row{display:flex;align-items:center;gap:9px;padding:7px 0;cursor:pointer}
+.dy-row+.dy-row{border-top:1px solid var(--line)}
+.dy-name{flex:none;width:96px;font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dy-name .dy-dot{display:inline-block;width:7px;height:7px;border-radius:99px;margin-right:5px;vertical-align:1px}
+.dy-bars{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.dyb{height:7px;border-radius:99px;background:var(--card2);overflow:hidden}
+.dyb>i{display:block;height:100%;border-radius:99px;transition:width .4s ease}
+.dyb.now>i{background:var(--accent)}
+.dyb.yoc>i{background:var(--violet)}
+.dy-v{flex:none;width:48px;text-align:right;font-variant-numeric:tabular-nums}
+.dy-v b{display:block;font-size:.78rem;font-weight:800;color:var(--accent-dark)}
+[data-theme="dark"] .dy-v b{color:var(--accent)}
+.dy-v i{display:block;font-style:normal;font-size:.72rem;font-weight:700;color:var(--violet)}
+.dy-more{display:block;width:100%;margin-top:11px;padding:9px;border-radius:11px;background:var(--card2);color:var(--sub);font-size:.78rem;font-weight:700}
+/* 수익률 히트맵(트리맵) — 칸 크기 = 비중 · 색 = 손익률 */
+.tmap{position:relative;width:100%;aspect-ratio:100/70;border-radius:12px;overflow:hidden;background:var(--card2)}
+.tm-t{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  border:1.5px solid var(--card);border-radius:5px;color:#fff;overflow:hidden;padding:0;line-height:1.15}
+.tm-t b{font-size:.62rem;font-weight:800;letter-spacing:-.3px;text-shadow:0 1px 2px rgba(0,0,0,.28)}
+.tm-t i{font-size:.58rem;font-style:normal;font-weight:700;opacity:.96;text-shadow:0 1px 2px rgba(0,0,0,.28)}
+.tm-t b.sm{display:none;font-size:.5rem}
+@media (min-width:620px){.tm-t b.sm{display:block}}
+.tm-t:active{filter:brightness(1.12)}
+.tm-legend{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.68rem;color:var(--faint)}
+.tm-legend .tmg{flex:1;height:7px;border-radius:99px;
+  background:linear-gradient(90deg,hsl(217,80%,41%),hsl(217,52%,63%),hsl(4,52%,63%),hsl(4,80%,41%))}
+.tm-note{font-size:.7rem;color:var(--faint);text-align:center;margin-top:8px}
+/* 배당 달력 그리드 — 세로 종목 · 가로 12달 */
+.dgrid{display:grid;grid-template-columns:46px repeat(12,1fr);gap:3px;align-items:center}
+.dg-nm{display:flex;align-items:center;justify-content:flex-end;font-size:.6rem;font-weight:700;color:var(--sub);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:3px}
+.dg-m{font-size:.56rem;color:var(--faint);font-weight:700;padding:0;height:14px}
+.dg-m.sel{color:var(--accent-dark);font-weight:800}
+[data-theme="dark"] .dg-m.sel{color:var(--accent)}
+.dg-c{display:block;height:14px;border-radius:3px;background:var(--heat0)}
+.dg-c.l1{background:var(--heat1)}
+.dg-c.l2{background:var(--heat2)}
+.dg-c.l3{background:var(--heat3)}
+.dg-c.l4{background:var(--heat4)}
+.dg-c.sel{outline:1.5px solid var(--accent-dark);outline-offset:-1.5px}
+[data-theme="dark"] .dg-c.sel{outline-color:var(--accent)}
+.dg-foot{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:9px;font-size:.66rem;color:var(--faint)}
+.dg-foot i{width:12px;height:12px;border-radius:3px}
 /* 자산 > 기록 */
 .hx-chart{display:block;width:100%;height:auto;margin:2px 0 0;overflow:visible}
 .hx-gapnote{font-size:.68rem;color:var(--faint);text-align:center;margin-top:2px}
@@ -848,7 +915,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.11.3';
+const APP_VERSION = '1.12.0';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -1337,7 +1404,10 @@ function computePortfolio() {
       price: h.pr, avgCost: h.ac, value, cost: hcost, pl,
       plPct: hcost > 0 ? pl / hcost * 100 : 0,
       weight: stock > 0 ? value / stock * 100 : 0,
-      annualDiv, currentYield: value > 0 ? annualDiv / value * 100 : 0,
+      annualDiv, divPS: h.div,
+      // 배당률 두 가지 — currentYield = 지금 사면 받는 율(현재가 기준) · yocPct = 내 매수가 기준(원가 대비)
+      currentYield: value > 0 ? annualDiv / value * 100 : 0,
+      yocPct: hcost > 0 ? annualDiv / hcost * 100 : 0,
       color: PF_SECTOR_COLORS[h.sec] || '#94a3b8'
     };
   }).sort((a, b) => b.value - a.value);
@@ -2346,6 +2416,8 @@ const V = {
   holdSort: 'weight',                // 보유 종목 정렬 (weight | plPct | yield)
   holdOpen: null,                    // 상세가 펼쳐진 보유 종목 티커
   divMonth: new Date().getMonth() + 1, // 배당 캘린더에서 선택된 월 (null = 닫힘)
+  dyBase: 'now',                     // 종목별 배당률 정렬 기준 (now = 현재가 대비 | cost = 매수가 대비)
+  dyAll: false,                      // 종목별 배당률 — 전체 종목 펼치기
   hxDivYear: 2024,                   // 기록 탭 — 배당 상세를 볼 연도
   hxSnap: '2021-12'                  // 기록 탭 — 펼쳐 볼 포트폴리오 시점
 };
@@ -3149,6 +3221,39 @@ function renderGoals() {
   `;
 }
 
+/* 트리맵 배치(squarified) — 넓이 합이 w*h가 되도록 미리 맞춘 a값을 넣어주세요.
+   칸이 정사각형에 가깝게 나오도록 한 줄씩 채워 나가요. */
+function squarify(items, x, y, w, h, out) {
+  if (!items.length || w <= 0.0001 || h <= 0.0001) return out;
+  const short = Math.min(w, h);
+  const row = [];
+  let sum = 0, best = Infinity;
+  for (const it of items) {
+    const s = sum + it.a;
+    const mx = Math.max(it.a, ...row.map(z => z.a)), mn = Math.min(it.a, ...row.map(z => z.a));
+    const ratio = Math.max(short * short * mx / (s * s), (s * s) / (short * short * mn));
+    if (row.length && ratio > best) break;   // 더 넣으면 칸이 길쭉해지는 순간이 이 줄의 끝
+    row.push(it); sum = s; best = ratio;
+  }
+  const rest = items.slice(row.length);
+  if (w >= h) {
+    const cw = sum / h;
+    let cy = y;
+    row.forEach(it => { const ch = it.a / cw; out.push({ ...it, x, y: cy, w: cw, h: ch }); cy += ch; });
+    return squarify(rest, x + cw, y, w - cw, h, out);
+  }
+  const ch = sum / w;
+  let cx = x;
+  row.forEach(it => { const cw = it.a / ch; out.push({ ...it, x: cx, y, w: cw, h: ch }); cx += cw; });
+  return squarify(rest, x, y + ch, w, h - ch, out);
+}
+// 손익률 → 히트맵 색. 한국식으로 수익은 빨강 · 손실은 파랑.
+// 100%를 훌쩍 넘는 종목이 있어서 제곱근으로 눌러야 중간 구간이 서로 구별돼요(±150%에서 가장 진함).
+function pfHeatColor(pct) {
+  const t = Math.min(1, Math.sqrt(Math.abs(pct) / 150));
+  return `hsl(${pct >= 0 ? 4 : 217}, ${Math.round(52 + t * 28)}%, ${Math.round(63 - t * 22)}%)`;
+}
+
 /* ============================================================
    자산(포트폴리오) 뷰 — 내 포트폴리오 첫 화면 요약
    ============================================================ */
@@ -3223,16 +3328,22 @@ function renderAssets() {
     yield: (a, b) => b.currentYield - a.currentYield
   };
   const holds = [...pf.holdings].sort(holdSorters[V.holdSort] || holdSorters.weight);
+  const maxHoldW = Math.max(...pf.holdings.map(h => h.weight), 1);   // 행 뒤 비중 바 스케일
   const holdRows = holds.map(h => {
     const up = h.pl >= 0;
     const open = V.holdOpen === h.t;
     const pmonths = payMonthsOf(h);
     const pmLabel = pmonths.length === 12 ? '매월' : pmonths.join('·') + '월';
+    const dyGap = h.yocPct - h.currentYield;
     return `<div class="hold-row" data-action="hold-open" data-t="${esc(h.t)}">
+      <span class="h-bg" style="width:${(h.weight / maxHoldW * 100).toFixed(1)}%;background:${h.color}"></span>
       <div class="h-icon" style="background:${h.color}">${esc(h.t.slice(0, 4))}</div>
       <div class="h-main">
         <div class="h-name">${esc(h.name)}</div>
-        <div class="h-sub">${esc(h.t)} · ${h.sh}주${h.annualDiv > 0 ? ` · 배당 ${h.currentYield.toFixed(1)}%` : ' · 무배당'}</div>
+        <div class="h-sub">${esc(h.t)} · ${h.sh}주${h.annualDiv > 0 ? '' : ' · 무배당'}</div>
+        ${h.annualDiv > 0 ? `<div class="h-dy2" title="현재가 대비 / 매수가 대비 배당률">
+          <span class="now">현재 ${h.currentYield.toFixed(1)}%</span><span class="yoc">원가 ${h.yocPct.toFixed(1)}%</span>
+        </div>` : ''}
       </div>
       <div class="h-val">
         <div class="now">${compact(h.value)}</div>
@@ -3252,6 +3363,11 @@ function renderAssets() {
       <span><i>연 배당(세전)</i><b>${h.annualDiv > 0 ? compact(h.annualDiv) : '—'}</b></span>
       <span><i>섹터</i><b>${esc(h.sec)}</b></span>
       <span><i>지급월(예상)</i><b>${h.annualDiv > 0 ? pmLabel : '—'}</b></span>
+      ${h.annualDiv > 0 ? `<div class="hdy">
+        <div class="hdy-box now"><i>현재가 대비 배당률</i><b>${h.currentYield.toFixed(2)}%</b><u>${price(h.price)} 기준</u></div>
+        <div class="hdy-box yoc"><i>매수가 대비 배당률</i><b>${h.yocPct.toFixed(2)}%</b><u>${price(h.avgCost)} 기준</u></div>
+        <div class="hdy-note">주당 연 배당 ${price(h.divPS)} · 매수가 대비가 ${Math.abs(dyGap).toFixed(2)}%p ${dyGap >= 0 ? '높아요' : '낮아요'}</div>
+      </div>` : ''}
     </div>` : ''}`;
   }).join('');
 
@@ -3300,6 +3416,61 @@ function renderAssets() {
         </div>`).join('') : '<div class="dm-empty">이 달에는 예상 배당이 없어요</div>'}
     </div>`;
   }
+  // 배당 달력 그리드 — 세로 종목 · 가로 12달, 색이 진할수록 그 달에 많이 들어와요
+  const gridHolds = pf.holdings.filter(h => h.annualDiv > 0).sort((a, b) => b.annualDiv - a.annualDiv);
+  const perPay = h => h.annualDiv / payMonthsOf(h).length;     // 1회에 들어오는 금액(세전)
+  const gMax = Math.max(...gridHolds.map(perPay), 0.0001);
+  // 한 종목이 유난히 커서 나머지가 다 옅어지지 않게 제곱근으로 눌러 칠해요
+  const gLevel = v => v <= 0 ? 0 : Math.min(4, 1 + Math.floor(Math.sqrt(v / gMax) * 3.99));
+  const dGridHTML = gridHolds.length ? `
+    <div class="dgrid">
+      <span class="dg-nm"></span>
+      ${Array.from({ length: 12 }, (_, i) =>
+        `<button class="dg-m ${selM === i + 1 ? 'sel' : ''}" data-action="div-month" data-m="${i + 1}">${i + 1}</button>`).join('')}
+      ${gridHolds.map(h => {
+        const pm = payMonthsOf(h), v = perPay(h);
+        return `<span class="dg-nm" title="${esc(h.name)}">${esc(h.t)}</span>` +
+          Array.from({ length: 12 }, (_, i) => {
+            const on = pm.includes(i + 1);
+            return `<i class="dg-c l${on ? gLevel(v) : 0}${selM === i + 1 ? ' sel' : ''}" title="${esc(h.name)} · ${i + 1}월 ${on ? exact(v) : '없음'}"></i>`;
+          }).join('');
+      }).join('')}
+    </div>
+    <div class="dg-foot">적음 <i class="dg-c l1"></i><i class="dg-c l2"></i><i class="dg-c l3"></i><i class="dg-c l4"></i> 많음</div>` : '';
+
+  // 종목별 배당률 — 현재가 대비(지금 사면 받는 율) vs 매수가 대비(내 원가 기준 · YOC)
+  const dyBase = V.dyBase === 'cost' ? 'cost' : 'now';
+  const dyAllRows = pf.holdings.filter(h => h.annualDiv > 0)
+    .sort((a, b) => dyBase === 'cost' ? b.yocPct - a.yocPct : b.currentYield - a.currentYield);
+  const dyMax = Math.max(...dyAllRows.map(h => Math.max(h.currentYield, h.yocPct)), 0.0001);
+  const dyShow = V.dyAll ? dyAllRows : dyAllRows.slice(0, 8);
+  const dyRows = dyShow.map(h => `
+    <div class="dy-row" data-action="hold-open" data-t="${esc(h.t)}">
+      <span class="dy-name"><i class="dy-dot" style="background:${h.color}"></i>${esc(h.name)}</span>
+      <span class="dy-bars">
+        <span class="dyb now"><i style="width:${(h.currentYield / dyMax * 100).toFixed(1)}%"></i></span>
+        <span class="dyb yoc"><i style="width:${(h.yocPct / dyMax * 100).toFixed(1)}%"></i></span>
+      </span>
+      <span class="dy-v"><b>${h.currentYield.toFixed(1)}%</b><i>${h.yocPct.toFixed(1)}%</i></span>
+    </div>`).join('');
+
+  // 수익률 히트맵 — 칸 크기 = 평가금액 비중, 색 = 손익률
+  const TW = 100, TH = 70;
+  const tmSum = pf.holdings.reduce((a, h) => a + h.value, 0) || 1;
+  // 종목은 d에 담아요 — squarify가 쓰는 w/h(칸 크기)와 이름이 겹치지 않게
+  const tmTiles = squarify(pf.holdings.map(d => ({ d, a: d.value / tmSum * TW * TH })), 0, 0, TW, TH, []);
+  const tmapHTML = tmTiles.map(t => {
+    const h = t.d, up = h.pl >= 0;
+    // 칸이 작아질수록 글자를 덜어내요 (sm = 좁은 화면에선 숨기고 넓은 화면에서만)
+    const big = t.w >= 15 && t.h >= 13, mid = t.w >= 8.5 && t.h >= 7.5, sm = t.w >= 5 && t.h >= 5;
+    const label = big ? '2' : mid ? '1' : sm ? '0' : '';
+    return `<button class="tm-t" data-action="hold-open" data-t="${esc(h.t)}"
+      style="left:${t.x.toFixed(2)}%;top:${(t.y / TH * 100).toFixed(2)}%;width:${t.w.toFixed(2)}%;height:${(t.h / TH * 100).toFixed(2)}%;background:${pfHeatColor(h.plPct)}"
+      title="${esc(h.name)} · 비중 ${h.weight.toFixed(1)}% · ${(up ? '+' : '') + h.plPct.toFixed(1)}%">
+      ${label ? `<b class="${label === '0' ? 'sm' : ''}">${esc(h.t)}</b>` : ''}${label === '2' ? `<i>${(up ? '+' : '') + h.plPct.toFixed(1)}%</i>` : ''}
+    </button>`;
+  }).join('');
+
   const divTop = pf.holdings.filter(h => h.annualDiv > 0).sort((a, b) => b.annualDiv - a.annualDiv).slice(0, 5);
   const maxDiv = divTop.length ? divTop[0].annualDiv : 1;
   const divTopRows = divTop.map(h => `
@@ -3340,7 +3511,7 @@ function renderAssets() {
       <div class="div-hero">
         <div class="k">연 배당 (세후)</div>
         <div class="v">${M(pf.divAfterUSD)}</div>
-        <div class="s">세전 ${M(pf.divUSD)} · 배당수익률 ${pf.yieldPct.toFixed(2)}% · 원가대비 ${pf.yocPct.toFixed(2)}%</div>
+        <div class="s">세전 ${M(pf.divUSD)} · 현재가 대비 ${pf.yieldPct.toFixed(2)}% · 매수가 대비 ${pf.yocPct.toFixed(2)}%</div>
       </div>
       <div class="pf-div-grid" style="margin-top:12px">
         <div class="pf-div-box"><div class="k">월평균 (세후)</div><div class="v">${M(pf.divAfterUSD / 12)}</div><div class="s">자는 동안에도 쌓여요</div></div>
@@ -3349,15 +3520,41 @@ function renderAssets() {
       <div class="sec-sub">월별 예상 배당 <span>세후 · 지급월은 예상 · <b>월을 탭하면 종목별 상세</b></span></div>
       <div class="div-cal">${divCal}</div>
       ${divDetail}
+      <div class="sec-sub">배당 달력 <span>세로 종목 · 가로 달 · 진할수록 그 달에 많이 들어와요</span></div>
+      ${dGridHTML}
+      ${divGoalHTML}
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>📊 종목별 배당률 <span class="hint">${dyAllRows.length}개 · 세전</span></span>
+        <div class="hold-sort">
+          ${[['now', '현재가순'], ['cost', '매수가순']].map(([k, l]) =>
+            `<button class="${dyBase === k ? 'on' : ''}" data-action="dy-base" data-k="${k}">${l}</button>`).join('')}
+        </div>
+      </div>
+      <div class="pf-div-grid">
+        <div class="pf-div-box dy-now"><div class="k">현재가 대비</div><div class="v">${pf.yieldPct.toFixed(2)}%</div><div class="s">지금 사면 받는 배당률</div></div>
+        <div class="pf-div-box dy-yoc"><div class="k">매수가 대비</div><div class="v">${pf.yocPct.toFixed(2)}%</div><div class="s">내 원가 기준 · YOC</div></div>
+      </div>
+      <div class="sec-sub">종목별로 보면 <span>탭하면 아래 보유 종목에서 상세가 열려요</span></div>
+      <div class="dy-legend"><span><i class="k1"></i>현재가 대비</span><span><i class="k2"></i>매수가 대비(원가)</span></div>
+      ${dyRows}
+      ${dyAllRows.length > 8 ? `<button class="dy-more" data-action="dy-all">${V.dyAll ? '접기' : `+ ${dyAllRows.length - 8}개 더 보기`}</button>` : ''}
       <div class="sec-sub">배당 기여 TOP ${divTop.length} <span>연 배당(세전) 기준</span></div>
       <div class="wbars" style="gap:9px">${divTopRows}</div>
-      ${divGoalHTML}
     </div>
 
     <div class="card">
       <div class="card-title">포트폴리오 비중 <span class="hint">평가금액 기준 · 섹터별</span></div>
       <div class="pf-stack">${stack}</div>
       <div class="wbars">${bars}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔥 수익률 히트맵 <span class="hint">칸 = 비중 · 색 = 손익률</span></div>
+      <div class="tmap">${tmapHTML}</div>
+      <div class="tm-legend"><span>손실</span><i class="tmg"></i><span>수익</span></div>
+      <div class="tm-note">칸을 탭하면 아래 보유 종목에서 그 종목 상세가 열려요</div>
     </div>
 
     <div class="card">
@@ -5930,6 +6127,8 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
     case 'asset-cur': V.assetCur = el.dataset.k; S.settings.assetCur = el.dataset.k; save(); render(); break;
     case 'div-month': V.divMonth = V.divMonth === +el.dataset.m ? null : +el.dataset.m; render(); break;
     case 'hold-sort': V.holdSort = el.dataset.k; render(); break;
+    case 'dy-base': V.dyBase = el.dataset.k; render(); break;
+    case 'dy-all': V.dyAll = !V.dyAll; render(); break;
     case 'hold-open': V.holdOpen = V.holdOpen === el.dataset.t ? null : el.dataset.t; render(); break;
     case 'new-asset-goal': goalModal(null, { mpreset: 'pf_assets' }); break;
     case 'new-div-goal': goalModal(null, { mpreset: 'pf_div' }); break;
