@@ -421,7 +421,8 @@ input,select,textarea{font:inherit;color:var(--text)}
 [data-theme="dark"] .div-hero .v{color:var(--accent)}
 .div-hero .s{font-size:.72rem;color:var(--faint);margin-top:3px}
 .sec-sub{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:17px 2px 8px;font-size:.85rem;font-weight:800}
-.sec-sub span{font-size:.7rem;color:var(--sub);font-weight:600;text-align:right}
+.sec-sub>span{font-size:.7rem;color:var(--sub);font-weight:600;text-align:right}
+.sec-sub .hold-sort{margin:-4px -6px -4px 0}
 .div-cal{display:flex;align-items:flex-end;gap:3px;height:106px;padding-top:15px}
 .div-cal .dc{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;min-width:0;cursor:pointer;border-radius:8px;padding:3px 0 2px}
 .div-cal .dc b{font-size:.54rem;color:var(--sub);font-weight:700;white-space:nowrap}
@@ -472,8 +473,9 @@ input,select,textarea{font:inherit;color:var(--text)}
 .dy-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .dy-legend .k1{background:var(--accent)}
 .dy-legend .k2{background:var(--violet)}
-.dy-row{display:flex;align-items:center;gap:9px;padding:7px 0;cursor:pointer}
+.dy-row{display:flex;align-items:center;gap:9px;padding:7px 0;cursor:pointer;border-radius:9px}
 .dy-row+.dy-row{border-top:1px solid var(--line)}
+.dy-row.on{background:var(--accent-soft);box-shadow:0 0 0 6px var(--accent-soft)}
 .dy-name{flex:none;width:96px;font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dy-name .dy-dot{display:inline-block;width:7px;height:7px;border-radius:99px;margin-right:5px;vertical-align:1px}
 .dy-bars{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -971,7 +973,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.13.0';
+const APP_VERSION = '1.14.0';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -1264,32 +1266,32 @@ const allTags = () => [...new Set(S.todos.flatMap(t => t.tags || []))];
      SGOV·VTI 처럼 분배금이 그때그때 달라지는 건 갱신할 때 다시 확인해 주세요.
    ============================================================ */
 const PF_SNAPSHOT = {
-  asOf: '2026-09-01',        // 데이터 기준일
-  priceDate: '2026-08-28',   // 가격 종가일
-  fx: 1371.50,               // 환율(원/$)
+  asOf: '2026-09-12',        // 데이터 기준일
+  priceDate: '2026-09-11',   // 가격 종가일
+  fx: 1341.05,               // 환율(원/$)
   taxRate: 0.15,             // 미국 배당세(한미 조세협약)
   cashUSD: 22.83,            // 외화 예수금
   holdings: [
-    { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 346.59, ac: 155.29,   div: 0.88,  sec: '기술' },
-    { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 76,  pr: 379.36, ac: 224.4726, div: 4.18,  sec: 'ETF' },
-    { t: 'SGOV',  name: '단기 국채 ETF',    sh: 154, pr: 100.69, ac: 100.5629, div: 3.68,  sec: '채권' },
-    { t: 'ZTS',   name: '조에티스',         sh: 193, pr: 77.34,  ac: 102.6911, div: 2.12,  sec: '헬스케어' },
-    { t: 'HRL',   name: '호멜 푸즈',        sh: 440, pr: 21.57,  ac: 31.9649,  div: 1.17,  sec: '필수소비재' },
-    { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 132.90, ac: 45.873,   div: 2.68,  sec: '금융' },
-    { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 55.40,  ac: 53.9682,  div: 2.04,  sec: '필수소비재' },
-    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 126.01, ac: 102.3749, div: 2.62,  sec: '산업' },
-    { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 147.39, ac: 99.1924,  div: 1.80,  sec: '임의소비재' },
-    { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 158, pr: 32.29,  ac: 35.1756,  div: 1.57,  sec: '유틸리티' },
-    { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 141.07, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
-    { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 143.78, ac: 141.39,   div: 4.36,  sec: '필수소비재' },
-    { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 61.98,  ac: 63.7805,  div: 3.252, sec: '리츠' },
-    { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 337.47, ac: 223.3162, div: 0.88,  sec: '헬스케어' },
-    { t: 'V',     name: '비자',             sh: 4,   pr: 381.60, ac: 382.78,   div: 2.68,  sec: '금융' },
-    { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 34.72,  ac: 56.2913,  div: 0.96,  sec: '임의소비재' },
-    { t: 'MCO',   name: '무디스',           sh: 2,   pr: 514.95, ac: 244.83,   div: 4.12,  sec: '금융' },
-    { t: 'SPTM',  name: 'SPTM(미국 1500)',  sh: 11,  pr: 93.25,  ac: 59.8936,  div: 1.00,  sec: 'ETF' },
-    { t: 'EXPO',  name: '엑스포넌트',       sh: 1,   pr: 71.53,  ac: 69.63,    div: 1.24,  sec: '산업' },
-    { t: 'HUBB',  name: '허벨',             sh: 4,   pr: 459.66, ac: 455.6350, div: 5.68,  sec: '산업' }
+    { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 338.50, ac: 155.29,   div: 0.88,  sec: '기술' },
+    { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 76,  pr: 376.31, ac: 224.4726, div: 4.18,  sec: 'ETF' },
+    { t: 'SGOV',  name: '단기 국채 ETF',    sh: 154, pr: 100.52, ac: 100.5629, div: 3.68,  sec: '채권' },
+    { t: 'ZTS',   name: '조에티스',         sh: 193, pr: 72.97,  ac: 102.6911, div: 2.12,  sec: '헬스케어' },
+    { t: 'HRL',   name: '호멜 푸즈',        sh: 440, pr: 20.57,  ac: 31.9649,  div: 1.17,  sec: '필수소비재' },
+    { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 138.82, ac: 45.873,   div: 2.68,  sec: '금융' },
+    { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 52.98,  ac: 53.9682,  div: 2.04,  sec: '필수소비재' },
+    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 122.25, ac: 102.3749, div: 2.62,  sec: '산업' },
+    { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 137.89, ac: 99.1924,  div: 1.80,  sec: '임의소비재' },
+    { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 158, pr: 30.77,  ac: 35.1756,  div: 1.57,  sec: '유틸리티' },
+    { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 136.32, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
+    { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 145.27, ac: 141.39,   div: 4.36,  sec: '필수소비재' },
+    { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 59.50,  ac: 63.7805,  div: 3.252, sec: '리츠' },
+    { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 346.23, ac: 223.3162, div: 0.88,  sec: '헬스케어' },
+    { t: 'V',     name: '비자',             sh: 4,   pr: 370.45, ac: 382.78,   div: 2.68,  sec: '금융' },
+    { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 33.01,  ac: 56.2913,  div: 0.96,  sec: '임의소비재' },
+    { t: 'MCO',   name: '무디스',           sh: 2,   pr: 474.95, ac: 244.83,   div: 4.12,  sec: '금융' },
+    { t: 'SPTM',  name: 'SPTM(미국 1500)',  sh: 11,  pr: 92.55,  ac: 59.8936,  div: 1.00,  sec: 'ETF' },
+    { t: 'EXPO',  name: '엑스포넌트',       sh: 1,   pr: 67.21,  ac: 69.63,    div: 1.24,  sec: '산업' },
+    { t: 'HUBB',  name: '허벨',             sh: 4,   pr: 460.40, ac: 455.6350, div: 5.68,  sec: '산업' }
   ]
 };
 const PF_SECTOR_COLORS = {
@@ -2470,11 +2472,12 @@ const V = {
   goalKey: { month: curKey('month'), quarter: curKey('quarter'), year: curKey('year') },
   statsRange: 'week',
   assetCur: 'KRW',                   // 자산 탭 통화 (KRW | USD)
-  assetTab: 'now',                   // 자산 탭 서브뷰 (now = 현재 | log = 기록)
+  assetTab: 'sum',                   // 자산 탭 섹션 (sum = 요약 | div = 배당 | hold = 종목 | log = 기록)
   holdSort: 'weight',                // 보유 종목 정렬 (weight | plPct | yield)
   holdOpen: null,                    // 상세가 펼쳐진 보유 종목 티커
   divMonth: new Date().getMonth() + 1, // 배당 캘린더에서 선택된 월 (null = 닫힘)
-  divMonTable: false,                // 월별 배당 — 표로 보기
+  divMonTable: false,                // 배당 › '언제' — 분기별·월별 표·달력 더 보기
+  divMore: false,                    // 배당 › '어디서' — 섹터별 기여·종목별 배당률 더 보기
   divSort: 'amt',                    // 배당 전체 표 정렬 (amt = 금액 | yield = 배당률 | ps = 주당 | name = 종목)
   dyBase: 'now',                     // 종목별 배당률 정렬 기준 (now = 현재가 대비 | cost = 매수가 대비)
   dyAll: false,                      // 종목별 배당률 — 전체 종목 펼치기
@@ -2860,7 +2863,7 @@ function renderToday() {
   const thisM = +d.slice(5, 7);
   const mDivUSD = monthlyDividendsUSD()[thisM - 1] * (1 - pf.taxRate);
   const pfStrip = `
-    <div class="pf-strip" data-action="tab" data-tab="assets">
+    <div class="pf-strip" data-action="asset-go" data-k="sum">
       <div class="pfs-main">
         <div class="pfs-t">💰 내 자산 <span style="color:var(--faint)">· ${pf.priceDate} 종가</span></div>
         <div class="pfs-v">${pfCompact(pf.totalUSD, V.assetCur)}
@@ -3327,10 +3330,16 @@ function renderAssets() {
   const signed = usd => (usd >= 0 ? '+' : '') + compact(usd);
   const staleDays = diffDays(pf.asOf, todayStr());
 
-  // 상단 — 통화 토글 + [현재 / 기록] 서브탭
+  // 상단 — 통화 토글 + [요약 · 배당 · 종목 · 기록] 한 줄
+  const secSub = {
+    sum: `${pf.priceDate} 종가 기준 · ${pf.holdings.length}종목`,
+    div: '1년에 얼마가 · 언제 · 어디서 들어오나',
+    hold: `${pf.holdings.length}종목 · 비중과 수익률`,
+    log: '2021년부터 남겨온 기록'
+  };
   const head = `
     <div class="vhead">
-      <div><h1>자산</h1><div class="sub">${V.assetTab === 'log' ? '2021년부터 남겨온 기록' : `내 포트폴리오 · ${pf.priceDate} 종가 기준`}</div></div>
+      <div><h1>자산</h1><div class="sub">${secSub[V.assetTab] || secSub.sum}</div></div>
       <div class="actions">
         <div class="seg" style="width:auto">
           ${[['KRW', '₩'], ['USD', '$']].map(([k, l]) =>
@@ -3339,7 +3348,7 @@ function renderAssets() {
       </div>
     </div>
     <div class="seg" style="margin-bottom:14px">
-      ${[['now', '현재'], ['log', '기록']].map(([k, l]) =>
+      ${[['sum', '요약'], ['div', '배당'], ['hold', '종목'], ['log', '기록']].map(([k, l]) =>
         `<button class="${V.assetTab === k ? 'on' : ''}" data-action="asset-tab" data-k="${k}">${l}</button>`).join('')}
     </div>`;
 
@@ -3389,19 +3398,20 @@ function renderAssets() {
   };
   const holds = [...pf.holdings].sort(holdSorters[V.holdSort] || holdSorters.weight);
   const maxHoldW = Math.max(...pf.holdings.map(h => h.weight), 1);   // 행 뒤 비중 바 스케일
-  const holdRows = holds.map(h => {
+  // slim = 요약 화면 미리보기용 (배당률 줄·펼침 상세 없이 가볍게)
+  const holdRowHTML = (h, slim) => {
     const up = h.pl >= 0;
     const open = V.holdOpen === h.t;
     const pmonths = payMonthsOf(h);
     const pmLabel = pmonths.length === 12 ? '매월' : pmonths.join('·') + '월';
     const dyGap = h.yocPct - h.currentYield;
-    return `<div class="hold-row" data-action="hold-open" data-t="${esc(h.t)}">
+    return `<div class="hold-row" data-action="${slim ? 'hold-go' : 'hold-open'}" data-t="${esc(h.t)}">
       <span class="h-bg" style="width:${(h.weight / maxHoldW * 100).toFixed(1)}%;background:${h.color}"></span>
       <div class="h-icon" style="background:${h.color}">${esc(h.t.slice(0, 4))}</div>
       <div class="h-main">
         <div class="h-name">${esc(h.name)}</div>
         <div class="h-sub">${esc(h.t)} · ${h.sh}주${h.annualDiv > 0 ? '' : ' · 무배당'}</div>
-        ${h.annualDiv > 0 ? `<div class="h-dy2" title="현재가 대비 / 매수가 대비 배당률">
+        ${!slim && h.annualDiv > 0 ? `<div class="h-dy2" title="현재가 대비 / 매수가 대비 배당률">
           <span class="now">현재 ${h.currentYield.toFixed(1)}%</span><span class="yoc">원가 ${h.yocPct.toFixed(1)}%</span>
         </div>` : ''}
       </div>
@@ -3414,7 +3424,7 @@ function renderAssets() {
         <div class="pl2 ${up ? 'up' : 'down'}">${signed(h.pl)}</div>
       </div>
     </div>
-    ${open ? `<div class="hold-detail">
+    ${!slim && open ? `<div class="hold-detail">
       <span><i>현재가</i><b>${price(h.price)}</b></span>
       <span><i>평단가</i><b>${price(h.avgCost)}</b></span>
       <span><i>평가금액</i><b>${compact(h.value)}</b></span>
@@ -3429,7 +3439,10 @@ function renderAssets() {
         <div class="hdy-note">주당 연 배당 ${price(h.divPS)} · 매수가 대비가 ${Math.abs(dyGap).toFixed(2)}%p ${dyGap >= 0 ? '높아요' : '낮아요'}</div>
       </div>` : ''}
     </div>` : ''}`;
-  }).join('');
+  };
+  const holdRows = holds.map(h => holdRowHTML(h, false)).join('');
+  const topHolds = [...pf.holdings].sort((a, b) => b.value - a.value).slice(0, 5);
+  const topRows = topHolds.map(h => holdRowHTML(h, true)).join('');
 
   // 배당 — 월별 예상 캘린더 + 기여 TOP + 배당 목표
   const md = monthlyDividendsUSD();
@@ -3511,7 +3524,7 @@ function renderAssets() {
 
   // 월별 배당을 표로도 — 몇 종목이 세전·세후 얼마씩 주는지 숫자로
   const monCount = m => pf.holdings.filter(h => h.annualDiv > 0 && payMonthsOf(h).includes(m)).length;
-  const monTableHTML = V.divMonTable ? `
+  const monTableHTML = `
     <table class="dmt">
       <thead><tr><th>월</th><th>종목</th><th>세전</th><th>세후</th><th>연중 비중</th></tr></thead>
       <tbody>${md.map((v, i) => `
@@ -3525,7 +3538,7 @@ function renderAssets() {
         </tr>`).join('')}</tbody>
       <tfoot><tr><td>합계</td><td>${pf.holdings.filter(h => h.annualDiv > 0).length}개</td>
         <td>${compact(pf.divUSD)}</td><td>${compact(pf.divAfterUSD)}</td><td>100%</td></tr></tfoot>
-    </table>` : '';
+    </table>`;
 
   /* 배당 전체 표 — 전체 배당에서 이 종목이 얼마·몇 %인지 한 줄씩 */
   const divPayers = pf.holdings.filter(h => h.annualDiv > 0);
@@ -3643,7 +3656,7 @@ function renderAssets() {
   const dyMax = Math.max(...dyAllRows.map(h => Math.max(h.currentYield, h.yocPct)), 0.0001);
   const dyShow = V.dyAll ? dyAllRows : dyAllRows.slice(0, 8);
   const dyRows = dyShow.map(h => `
-    <div class="dy-row" data-action="hold-open" data-t="${esc(h.t)}">
+    <div class="dy-row${V.holdOpen === h.t ? ' on' : ''}" data-action="hold-open" data-t="${esc(h.t)}">
       <span class="dy-name"><i class="dy-dot" style="background:${h.color}"></i>${esc(h.name)}</span>
       <span class="dy-bars">
         <span class="dyb now"><i style="width:${(h.currentYield / dyMax * 100).toFixed(1)}%"></i></span>
@@ -3684,21 +3697,47 @@ function renderAssets() {
     </div>`;
   })() : `<button class="dvgoal-new" data-action="new-div-goal">🎯 연 배당 목표 세우기 →</button>`;
 
-  $('[data-view=assets]').innerHTML = head + `
+  // 어느 섹션에서도 맨 아래에 붙는 데이터 기준 안내
+  const secNote = `
+    <div class="pf-note">
+      ${staleDays >= 7 ? `<span style="color:var(--amber);font-weight:700">📅 데이터가 ${staleDays}일 지났어요 — 최신 수치로 갱신해 주세요</span><br>` : ''}
+      데이터 기준 ${pf.asOf} (가격 ${pf.priceDate} 종가) · 환율 ${pf.fx.toLocaleString('en-US')}원/$<br>
+      수치를 갱신하려면 코드의 <b>PF_SNAPSHOT</b>에 최신 포트폴리오 데이터를 넣어주세요.
+    </div>`;
+
+  /* ── 요약 ── 총자산 · 손익 · 배당 · 이번 달 · 섹터 비중 · 큰 종목 5개 */
+  const thisMonUSD = md[nowM];
+  const thisMonN = pf.holdings.filter(h => h.annualDiv > 0 && payMonthsOf(h).includes(nowM + 1)).length;
+  const sumHTML = `
     <div class="pf-hero">
       <div class="pf-label">총 자산 (주식 + 예수금)</div>
       <div class="pf-total">${M(pf.totalUSD)}</div>
-      <div class="pf-secondary">약 ${other} · 주식 ${compact(pf.stockUSD)} + 예수금 ${compact(pf.cashUSD)}</div>
+      <div class="pf-secondary">약 ${other} · 주식 ${compact(pf.stockUSD)} + 예수금 ${compact(pf.cashUSD)}<br>투자원금 ${compact(pf.costUSD)}</div>
       <div class="pf-stats">
         <div class="ps"><div class="k">평가손익</div><div class="v">${pf.plUSD >= 0 ? '▲' : '▼'} ${compact(Math.abs(pf.plUSD))}</div><div class="k" style="margin-top:2px">${(pf.plPct >= 0 ? '+' : '') + pf.plPct.toFixed(1)}%</div></div>
-        <div class="ps"><div class="k">투자원금</div><div class="v">${compact(pf.costUSD)}</div><div class="k" style="margin-top:2px">주식 매입 기준</div></div>
         <div class="ps"><div class="k">연 배당 (세후)</div><div class="v">${compact(pf.divAfterUSD)}</div><div class="k" style="margin-top:2px">월 ≈ ${compact(pf.divAfterUSD / 12)}</div></div>
+        <div class="ps" data-action="asset-tab" data-k="div" style="cursor:pointer"><div class="k">${nowM + 1}월 배당</div><div class="v">${thisMonUSD > 0 ? compact(thisMonUSD * (1 - pf.taxRate)) : '—'}</div><div class="k" style="margin-top:2px">${thisMonN > 0 ? `세후 · ${thisMonN}종목` : '이 달은 없어요'}</div></div>
       </div>
       ${goalHTML}
     </div>
 
     <div class="card">
-      <div class="card-title">💵 배당 <span class="hint">세후 = 미국 15% 원천징수</span></div>
+      <div class="card-title">포트폴리오 비중 <span class="hint">평가금액 기준 · 섹터별</span></div>
+      <div class="pf-stack">${stack}</div>
+      <div class="wbars">${bars}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>비중 큰 종목 <span class="hint">상위 ${topHolds.length}개</span></span></div>
+      ${topRows}
+      <button class="dy-more" data-action="asset-tab" data-k="hold">${pf.holdings.length}종목 전부 보기 · 히트맵 →</button>
+    </div>
+    ${secNote}`;
+
+  /* ── 배당 ── 얼마나 · 언제 · 어디서, 세 장으로 나눠서 */
+  const divHTML = `
+    <div class="card">
+      <div class="card-title">💵 얼마나 <span class="hint">세후 = 미국 15% 원천징수</span></div>
       <div class="div-hero">
         <div class="k">연 배당 (세후)</div>
         <div class="v">${M(pf.divAfterUSD)}</div>
@@ -3710,20 +3749,25 @@ function renderAssets() {
         <div class="pf-div-box"><div class="k">연 원천징수</div><div class="v">−${M(pf.divUSD - pf.divAfterUSD)}</div><div class="s">세전에서 15% 떼는 몫</div></div>
         <div class="pf-div-box"><div class="k">입금 횟수</div><div class="v">연 ${payEvents}번</div><div class="s">들어오는 달 ${payMonthsCount}개월</div></div>
       </div>
-      <div class="sec-sub">월별 예상 배당 <span>세후 · 지급월은 예상 · <b>월을 탭하면 종목별 상세</b></span></div>
-      <div class="div-cal">${divCal}</div>
-      ${divDetail}
-      <button class="dy-more" data-action="div-montable">${V.divMonTable ? '월별 표 접기' : '📋 월별 표로 보기'}</button>
-      ${monTableHTML}
-      <div class="sec-sub">분기별로 보면 <span>세후 · 아래 %는 한 해 배당 중 비중</span></div>
-      ${qHTML}
-      <div class="sec-sub">배당 달력 <span>세로 종목 · 가로 달 · 진할수록 그 달에 많이 들어와요</span></div>
-      ${dGridHTML}
       ${divGoalHTML}
     </div>
 
     <div class="card">
-      <div class="card-title"><span>📋 배당 전체 표</span>
+      <div class="card-title">📅 언제 <span class="hint">세후 · 월을 탭하면 종목별 상세</span></div>
+      <div class="div-cal">${divCal}</div>
+      ${divDetail}
+      <button class="dy-more" data-action="div-montable">${V.divMonTable ? '접기' : '📋 분기별 · 월별 표 · 배당 달력 더 보기'}</button>
+      ${V.divMonTable ? `
+        <div class="sec-sub">분기별로 보면 <span>세후 · 아래 %는 한 해 배당 중 비중</span></div>
+        ${qHTML}
+        <div class="sec-sub">월별 표 <span>몇 종목이 · 세전/세후 얼마</span></div>
+        ${monTableHTML}
+        <div class="sec-sub">배당 달력 <span>세로 종목 · 가로 달 · 진할수록 그 달에 많이</span></div>
+        ${dGridHTML}` : ''}
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>📋 어디서 <span class="hint">${divPayers.length}종목</span></span>
         <div class="hold-sort">
           ${[['amt', '금액'], ['yield', '배당률'], ['name', '가나다']].map(([k, l]) =>
             `<button class="${divSort === k ? 'on' : ''}" data-action="div-sort" data-k="${k}">${l}</button>`).join('')}
@@ -3731,36 +3775,26 @@ function renderAssets() {
       </div>
       ${divPieHTML}
       ${divTableHTML}
-      <div class="tm-note">줄을 탭하면 아래 보유 종목에서 그 종목 상세가 열려요</div>
-      <div class="sec-sub">섹터별 배당 기여 <span>배당 비중 vs 자산 비중</span></div>
-      <div class="dy-legend"><span><i class="k1"></i>배당 비중</span><span><i class="k2"></i>자산 비중</span></div>
-      ${secDivRows}
-      <div class="tm-note">배당 비중이 자산 비중보다 크면 그 섹터가 몫보다 배당을 많이 주고 있어요</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span>📊 종목별 배당률 <span class="hint">${dyAllRows.length}개 · 세전</span></span>
-        <div class="hold-sort">
-          ${[['now', '현재가순'], ['cost', '매수가순']].map(([k, l]) =>
-            `<button class="${dyBase === k ? 'on' : ''}" data-action="dy-base" data-k="${k}">${l}</button>`).join('')}
+      <button class="dy-more" data-action="div-more">${V.divMore ? '접기' : '📊 섹터별 기여 · 종목별 배당률 더 보기'}</button>
+      ${V.divMore ? `
+        <div class="sec-sub">섹터별 배당 기여 <span>배당 비중 vs 자산 비중</span></div>
+        <div class="dy-legend"><span><i class="k1"></i>배당 비중</span><span><i class="k2"></i>자산 비중</span></div>
+        ${secDivRows}
+        <div class="tm-note">배당 비중이 자산 비중보다 크면 그 섹터가 몫보다 배당을 많이 주고 있어요</div>
+        <div class="sec-sub">종목별 배당률
+          <div class="hold-sort">
+            ${[['now', '현재가순'], ['cost', '매수가순']].map(([k, l]) =>
+              `<button class="${dyBase === k ? 'on' : ''}" data-action="dy-base" data-k="${k}">${l}</button>`).join('')}
+          </div>
         </div>
-      </div>
-      <div class="pf-div-grid">
-        <div class="pf-div-box dy-now"><div class="k">현재가 대비</div><div class="v">${pf.yieldPct.toFixed(2)}%</div><div class="s">지금 사면 받는 배당률</div></div>
-        <div class="pf-div-box dy-yoc"><div class="k">매수가 대비</div><div class="v">${pf.yocPct.toFixed(2)}%</div><div class="s">내 원가 기준 · YOC</div></div>
-      </div>
-      <div class="sec-sub">종목별로 보면 <span>탭하면 아래 보유 종목에서 상세가 열려요</span></div>
-      <div class="dy-legend"><span><i class="k1"></i>현재가 대비</span><span><i class="k2"></i>매수가 대비(원가)</span></div>
-      ${dyRows}
-      ${dyAllRows.length > 8 ? `<button class="dy-more" data-action="dy-all">${V.dyAll ? '접기' : `+ ${dyAllRows.length - 8}개 더 보기`}</button>` : ''}
+        <div class="dy-legend"><span><i class="k1"></i>현재가 대비</span><span><i class="k2"></i>매수가 대비(원가)</span></div>
+        ${dyRows}
+        ${dyAllRows.length > 8 ? `<button class="dy-more" data-action="dy-all">${V.dyAll ? '접기' : `+ ${dyAllRows.length - 8}개 더 보기`}</button>` : ''}` : ''}
     </div>
+    ${secNote}`;
 
-    <div class="card">
-      <div class="card-title">포트폴리오 비중 <span class="hint">평가금액 기준 · 섹터별</span></div>
-      <div class="pf-stack">${stack}</div>
-      <div class="wbars">${bars}</div>
-    </div>
-
+  /* ── 종목 ── 히트맵 + 보유 종목 전체 */
+  const holdHTML = `
     <div class="card">
       <div class="card-title">🔥 수익률 히트맵 <span class="hint">칸 = 비중 · 색 = 손익률</span></div>
       <div class="tmap">${tmapHTML}</div>
@@ -3777,13 +3811,10 @@ function renderAssets() {
       </div>
       ${holdRows}
     </div>
+    ${secNote}`;
 
-    <div class="pf-note">
-      ${staleDays >= 7 ? `<span style="color:var(--amber);font-weight:700">📅 데이터가 ${staleDays}일 지났어요 — 최신 수치로 갱신해 주세요</span><br>` : ''}
-      데이터 기준 ${pf.asOf} (가격 ${pf.priceDate} 종가) · 환율 ${pf.fx.toLocaleString('en-US')}원/$<br>
-      수치를 갱신하려면 코드의 <b>PF_SNAPSHOT</b>에 최신 포트폴리오 데이터를 넣어주세요.
-    </div>
-  `;
+  $('[data-view=assets]').innerHTML = head +
+    (V.assetTab === 'div' ? divHTML : V.assetTab === 'hold' ? holdHTML : sumHTML);
 }
 
 /* ============================================================
@@ -6313,7 +6344,7 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
       if (V.calView === 'agenda') V.calView = 'month';   // 목록에서 날짜를 누르면 그 날 상세로
       render(); break;
     }
-    case 'cal-div': V.divMonth = +el.dataset.m; V.assetTab = 'now'; setTab('assets'); break;
+    case 'cal-div': V.divMonth = +el.dataset.m; V.assetTab = 'div'; setTab('assets'); break;
     case 'add-todo-date': todoModal(null, el.dataset.date); break;
     case 'add-diary': memoModal(null, el.dataset.date); break;
     case 'cal-add': todoModal(null, el.dataset.date); break;
@@ -6338,14 +6369,19 @@ async function runAction(a, el, e = { stopPropagation() {}, preventDefault() {} 
     case 'asset-cur': V.assetCur = el.dataset.k; S.settings.assetCur = el.dataset.k; save(); render(); break;
     case 'div-month': V.divMonth = V.divMonth === +el.dataset.m ? null : +el.dataset.m; render(); break;
     case 'div-montable': V.divMonTable = !V.divMonTable; render(); break;
+    case 'div-more': V.divMore = !V.divMore; render(); break;
     case 'div-sort': V.divSort = el.dataset.k; render(); break;
     case 'hold-sort': V.holdSort = el.dataset.k; render(); break;
     case 'dy-base': V.dyBase = el.dataset.k; render(); break;
     case 'dy-all': V.dyAll = !V.dyAll; render(); break;
     case 'hold-open': V.holdOpen = V.holdOpen === el.dataset.t ? null : el.dataset.t; render(); break;
+    // 요약의 미리보기 줄 → 종목 섹션으로 넘어가면서 그 종목을 펼쳐요
+    case 'hold-go': V.holdOpen = el.dataset.t; V.assetTab = 'hold'; render(); break;
     case 'new-asset-goal': goalModal(null, { mpreset: 'pf_assets' }); break;
     case 'new-div-goal': goalModal(null, { mpreset: 'pf_div' }); break;
     case 'asset-tab': V.assetTab = el.dataset.k; render(); break;
+    // 다른 탭에서 자산의 특정 섹션으로 바로 (오늘 탭 자산 한 줄 등)
+    case 'asset-go': V.assetTab = el.dataset.k; setTab('assets'); break;
     case 'hx-div-year': V.hxDivYear = +el.dataset.y; render(); break;
     case 'hx-snap': V.hxSnap = el.dataset.k; render(); break;
 
