@@ -973,7 +973,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.14.0';
+const APP_VERSION = '1.14.1';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -1266,7 +1266,7 @@ const allTags = () => [...new Set(S.todos.flatMap(t => t.tags || []))];
      SGOV·VTI 처럼 분배금이 그때그때 달라지는 건 갱신할 때 다시 확인해 주세요.
    ============================================================ */
 const PF_SNAPSHOT = {
-  asOf: '2026-09-12',        // 데이터 기준일
+  asOf: '2026-09-19',        // 데이터 기준일
   priceDate: '2026-09-11',   // 가격 종가일
   fx: 1341.05,               // 환율(원/$)
   taxRate: 0.15,             // 미국 배당세(한미 조세협약)
@@ -1286,7 +1286,7 @@ const PF_SNAPSHOT = {
     { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 145.27, ac: 141.39,   div: 4.36,  sec: '필수소비재' },
     { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 59.50,  ac: 63.7805,  div: 3.252, sec: '리츠' },
     { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 346.23, ac: 223.3162, div: 0.88,  sec: '헬스케어' },
-    { t: 'V',     name: '비자',             sh: 4,   pr: 370.45, ac: 382.78,   div: 2.68,  sec: '금융' },
+    { t: 'V',     name: '비자',             sh: 32,  pr: 370.45, ac: 371.93,   div: 2.68,  sec: '금융' },
     { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 33.01,  ac: 56.2913,  div: 0.96,  sec: '임의소비재' },
     { t: 'MCO',   name: '무디스',           sh: 2,   pr: 474.95, ac: 244.83,   div: 4.12,  sec: '금융' },
     { t: 'SPTM',  name: 'SPTM(미국 1500)',  sh: 11,  pr: 92.55,  ac: 59.8936,  div: 1.00,  sec: 'ETF' },
