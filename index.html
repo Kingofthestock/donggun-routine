@@ -973,7 +973,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.14.1';
+const APP_VERSION = '1.14.2';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -1267,31 +1267,31 @@ const allTags = () => [...new Set(S.todos.flatMap(t => t.tags || []))];
    ============================================================ */
 const PF_SNAPSHOT = {
   asOf: '2026-09-19',        // 데이터 기준일
-  priceDate: '2026-09-11',   // 가격 종가일
-  fx: 1341.05,               // 환율(원/$)
+  priceDate: '2026-09-18',   // 가격 종가일
+  fx: 1385.95,               // 환율(원/$)
   taxRate: 0.15,             // 미국 배당세(한미 조세협약)
   cashUSD: 22.83,            // 외화 예수금
   holdings: [
-    { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 338.50, ac: 155.29,   div: 0.88,  sec: '기술' },
-    { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 76,  pr: 376.31, ac: 224.4726, div: 4.18,  sec: 'ETF' },
-    { t: 'SGOV',  name: '단기 국채 ETF',    sh: 154, pr: 100.52, ac: 100.5629, div: 3.68,  sec: '채권' },
-    { t: 'ZTS',   name: '조에티스',         sh: 193, pr: 72.97,  ac: 102.6911, div: 2.12,  sec: '헬스케어' },
-    { t: 'HRL',   name: '호멜 푸즈',        sh: 440, pr: 20.57,  ac: 31.9649,  div: 1.17,  sec: '필수소비재' },
-    { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 138.82, ac: 45.873,   div: 2.68,  sec: '금융' },
-    { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 52.98,  ac: 53.9682,  div: 2.04,  sec: '필수소비재' },
-    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 122.25, ac: 102.3749, div: 2.62,  sec: '산업' },
-    { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 137.89, ac: 99.1924,  div: 1.80,  sec: '임의소비재' },
-    { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 158, pr: 30.77,  ac: 35.1756,  div: 1.57,  sec: '유틸리티' },
-    { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 136.32, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
-    { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 145.27, ac: 141.39,   div: 4.36,  sec: '필수소비재' },
-    { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 59.50,  ac: 63.7805,  div: 3.252, sec: '리츠' },
-    { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 346.23, ac: 223.3162, div: 0.88,  sec: '헬스케어' },
-    { t: 'V',     name: '비자',             sh: 32,  pr: 370.45, ac: 371.93,   div: 2.68,  sec: '금융' },
-    { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 33.01,  ac: 56.2913,  div: 0.96,  sec: '임의소비재' },
-    { t: 'MCO',   name: '무디스',           sh: 2,   pr: 474.95, ac: 244.83,   div: 4.12,  sec: '금융' },
-    { t: 'SPTM',  name: 'SPTM(미국 1500)',  sh: 11,  pr: 92.55,  ac: 59.8936,  div: 1.00,  sec: 'ETF' },
-    { t: 'EXPO',  name: '엑스포넌트',       sh: 1,   pr: 67.21,  ac: 69.63,    div: 1.24,  sec: '산업' },
-    { t: 'HUBB',  name: '허벨',             sh: 4,   pr: 460.40, ac: 455.6350, div: 5.68,  sec: '산업' }
+    { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 349.54, ac: 155.29,   div: 0.88,  sec: '기술' },
+    { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 76,  pr: 375.43, ac: 224.4726, div: 4.18,  sec: 'ETF' },
+    { t: 'SGOV',  name: '단기 국채 ETF',    sh: 154, pr: 100.59, ac: 100.5629, div: 3.68,  sec: '채권' },
+    { t: 'ZTS',   name: '조에티스',         sh: 193, pr: 71.40,  ac: 102.6911, div: 2.12,  sec: '헬스케어' },
+    { t: 'HRL',   name: '호멜 푸즈',        sh: 440, pr: 20.83,  ac: 31.9649,  div: 1.17,  sec: '필수소비재' },
+    { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 131.77, ac: 45.873,   div: 2.68,  sec: '금융' },
+    { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 52.77,  ac: 53.9682,  div: 2.04,  sec: '필수소비재' },
+    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 118.95, ac: 102.3749, div: 2.62,  sec: '산업' },
+    { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 138.02, ac: 99.1924,  div: 1.80,  sec: '임의소비재' },
+    { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 158, pr: 29.93,  ac: 35.1756,  div: 1.57,  sec: '유틸리티' },
+    { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 129.75, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
+    { t: 'PG',    name: '프록터앤갬블',      sh: 16,  pr: 146.39, ac: 141.39,   div: 4.36,  sec: '필수소비재' },
+    { t: 'O',     name: '리얼티 인컴',       sh: 37,  pr: 56.66,  ac: 63.7805,  div: 3.252, sec: '리츠' },
+    { t: 'WST',   name: '웨스트 파마',       sh: 8,   pr: 362.31, ac: 223.3162, div: 0.88,  sec: '헬스케어' },
+    { t: 'V',     name: '비자',             sh: 32,  pr: 368.29, ac: 371.93,   div: 2.68,  sec: '금융' },
+    { t: 'TSCO',  name: '트랙터 서플라이',   sh: 38,  pr: 32.21,  ac: 56.2913,  div: 0.96,  sec: '임의소비재' },
+    { t: 'MCO',   name: '무디스',           sh: 2,   pr: 468.59, ac: 244.83,   div: 4.12,  sec: '금융' },
+    { t: 'SPTM',  name: 'SPTM(미국 1500)',  sh: 11,  pr: 92.36,  ac: 59.8936,  div: 1.00,  sec: 'ETF' },
+    { t: 'EXPO',  name: '엑스포넌트',       sh: 1,   pr: 68.30,  ac: 69.63,    div: 1.24,  sec: '산업' },
+    { t: 'HUBB',  name: '허벨',             sh: 4,   pr: 446.92, ac: 455.6350, div: 5.68,  sec: '산업' }
   ]
 };
 const PF_SECTOR_COLORS = {
