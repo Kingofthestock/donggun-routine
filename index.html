@@ -973,7 +973,7 @@ textarea.input{resize:vertical;min-height:64px}
    동건루틴 v1.0 — 할 일 · 루틴 · 목표 · 통계 · 공유
    데이터는 이 기기(localStorage)에만 저장됩니다.
    ============================================================ */
-const APP_VERSION = '1.14.3';
+const APP_VERSION = '1.14.4';
 const LS_KEY = 'dgr_data';
 const MOODS = ['😄','🙂','😐','😕','😢'];
 const KD = ['일','월','화','수','목','금','토'];
@@ -1270,7 +1270,7 @@ const PF_SNAPSHOT = {
   priceDate: '2026-09-28',   // 가격 종가일
   fx: 1359.61,               // 환율(원/$)
   taxRate: 0.15,             // 미국 배당세(한미 조세협약)
-  cashUSD: 22.83,            // 외화 예수금
+  cashUSD: 0,                // 외화 예수금
   holdings: [
     { t: 'GOOGL', name: '알파벳 A',        sh: 93,  pr: 342.75, ac: 155.29,   div: 0.88,  sec: '기술' },
     { t: 'VTI',   name: 'VTI(미국 전체)',   sh: 82,  pr: 375.84, ac: 235.5965, div: 4.18,  sec: 'ETF' },
@@ -1279,7 +1279,7 @@ const PF_SNAPSHOT = {
     { t: 'HRL',   name: '호멜 푸즈',        sh: 440, pr: 19.97,  ac: 31.9649,  div: 1.17,  sec: '필수소비재' },
     { t: 'C',     name: '씨티그룹',         sh: 71,  pr: 131.31, ac: 45.873,   div: 2.68,  sec: '금융' },
     { t: 'TSN',   name: '타이슨 푸드',      sh: 127, pr: 50.95,  ac: 53.9682,  div: 2.04,  sec: '필수소비재' },
-    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 121.14, ac: 102.3749, div: 2.62,  sec: '산업' },
+    { t: 'CNI',   name: '캐나디안 내셔널',   sh: 69,  pr: 121.14, ac: 102.3749, div: 2.65,  sec: '산업' },
     { t: 'DHI',   name: '닥터 호턴',        sh: 45,  pr: 139.42, ac: 99.1924,  div: 1.80,  sec: '임의소비재' },
     { t: 'BEPC',  name: '브룩필드 리뉴어블', sh: 158, pr: 27.97,  ac: 35.1756,  div: 1.57,  sec: '유틸리티' },
     { t: 'PEP',   name: '펩시코',           sh: 21,  pr: 128.50, ac: 154.7857, div: 5.92,  sec: '필수소비재' },
